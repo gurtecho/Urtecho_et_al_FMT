@@ -1,0 +1,74 @@
+---
+title: "psuedocode_r"
+output: html_document
+date: "2023-06-30"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("~/Dropbox/fmt/experiments/20230516_FMT_MaPS-Seq2/scripts/")
+library(tidyverse)
+library(cowplot)
+library(stringr)
+
+#pre_quant
+#pool_stats <- read.csv("../raw_data/sampleCounts.csv", header = F) 
+#postquant
+#pool2_stats <- read.csv("../raw_data/sampleCounts_quant2.csv", header = F) 
+
+#put samplesheet here
+metadata <- read.csv("../ref/20230816_MaPS_Miseq_SampleSheet.csv", skip = 21, header = T) %>% 
+  mutate(Sample_ID = gsub('20230816_', '', .$Sample_ID))
+
+#Use sampleCounts
+pool_stats <- read.table("../raw_data/sampleCounts.txt", header = F, sep = '\t') %>% #produced by shell script
+    mutate(V1 = gsub(' ', '', .$V1)) %>% #This just messes with my filenames, alter according to your file names
+      mutate(V1 = gsub('-', '_', .$V1)) %>% #This just messes with my filenames, alter according to your file names
+    separate(V1, sep = '20230816_', remove = T, into = c('read_depth', 'x')) %>% #^^^^^
+    separate(x, sep = '_R', remove = T, into = c('Sample_ID', 'waste')) %>% #^^^^
+    select(Sample_ID, read_depth) %>% distinct() %>% 
+    mutate(#Sample_ID = paste('PRT02-', Sample_ID, sep = ''),
+           read_depth = as.numeric(read_depth)) %>%
+    full_join(metadata, .) 
+
+pool_stats[is.na(pool_stats$read_depth),] <- 0
+
+
+filter(pool_stats, read_depth > 100) %>% nrow()
+
+#normalize by plate
+#norm_pool_stats <- pool_stats %>% select(Sample_ID, Sample_Plate, read_depth, Sample_Well) %>%
+#  group_by(Sample_Plate ) %>%
+#   mutate(median_plate = median(read_depth),
+#         Sample_Plate = as.character(Sample_Plate),
+#          norm_read_depth = (read_depth/median_plate)*1000) %>%
+#  ungroup %>%
+#  filter(Sample_Plate != 0)
+  
+
+```
+
+
+
+```{r}
+
+  
+temp <- pool_stats %>% 
+    mutate('uL add' = signif(30000/read_depth, 2), #8000 is an arbitrary scaling factor, should alter so that the figure below is centered within 2 & 20
+           'dest well' = 'A1') %>% 
+    select('source well'=Sample_Well, 'uL add', 'dest well')
+
+fig <- temp %>% ggplot(., aes(`uL add` )) + 
+    geom_histogram() + theme_cowplot() + scale_x_log10() + 
+    geom_vline(xintercept = c(2,20), color = 'red', linetype = 'dashed') 
+fig
+
+ggsave(paste("../ref/biomek_plate", plate, '.png', sep = ''), width = 3, height = 2.5)
+
+temp %>% mutate(`uL add`=ifelse(`uL add` > 20, 20, `uL add`), #bound volumes to 2-20
+                `uL add`=ifelse(`uL add`<2, 2, `uL add`)) %>%
+            write.csv(paste("../ref/biomek_plate", '.csv', sep = ''), 
+            row.names = F, quote = F)
+
+```
+

@@ -1,0 +1,458 @@
+assembly	domain	phylum	class	order	family	genus	species
+AZC9C_34	Bacteria	Actinobacteriota	Actinobacteria	Actinomycetales	Bifidobacteriaceae	Bifidobacterium	Bifidobacterium pseudolongum_A
+AZC3J_15	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Eggerthellaceae	NA	NA
+AZC3J_11	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Eggerthellaceae	NA	NA
+AZC9C_111	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Eggerthellaceae	NA	NA
+AZC5T_36	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Eggerthellaceae	Enterorhabdus	NA
+AZC7E_59	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Eggerthellaceae	Enterorhabdus	Enterorhabdus caecimuris
+AZC5T_37	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Bacteroides_B	GCA_002493165.1
+AZC7E_73	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Bacteroides	Bacteroides acidifaciens
+AZC9C_75	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Bacteroides	Bacteroides congonensis
+AZC9C_32	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Bacteroides	Bacteroides stercorirosoris
+AZC3J_18	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Bacteroides	Bacteroides thetaiotaomicron
+AZC5T_94	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Bacteroides	Bacteroides uniformis
+AZC5T_93	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Bacteroides	Bacteroides xylanisolvens
+AZC7E_12	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Bacteroides	GCA_002491635.1
+AZC5T_109	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Prevotella	Prevotella sp21
+AZC7E_113	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Prevotella	Prevotella sp21
+AZC5T_89	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Marinifilaceae	Butyricimonas	Butyricimonas virosa
+AZC9C_17	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Marinifilaceae	Butyricimonas	GCF_002161485.1
+AZC7E_106	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Marinifilaceae	Odoribacter	NA
+AZC7E_95	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	NA	NA
+AZC3J_62	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	NA
+AZC3J_88	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	NA
+AZC5T_1	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	NA
+AZC5T_6	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	NA
+AZC5T_123	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	NA
+AZC5T_122	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	NA
+AZC5T_7	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	NA
+AZC5T_61	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	NA
+AZC7E_109	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	NA
+AZC9C_46	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	NA
+AZC7E_89	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	CAG-1031 sp1
+AZC7E_38	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	GCA_001689425.1
+AZC7E_68	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	GCA_001689535.1
+AZC7E_58	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	GCA_001689575.1
+AZC7E_54	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	GCA_001689585.1
+AZC7E_111	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	GCA_002492665.1
+AZC7E_3	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-1031	GCA_002494015.1
+AZC5T_96	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-485	NA
+AZC7E_37	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-485	NA
+AZC3J_74	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-485	CAG-485 sp1
+AZC7E_25	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-485	CAG-485 sp1
+AZC9C_7	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-485	CAG-485 sp1
+AZC5T_12	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-485	CAG-485 sp4
+AZC7E_60	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-485	CAG-485 sp4
+AZC7E_100	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-485	CAG-485 sp5
+AZC3J_32	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-485	CAG-485 sp6
+AZC7E_81	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-485	CAG-485 sp6
+AZC7E_70	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-485	GCA_002361275.1
+AZC3J_89	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC5T_106	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC5T_53	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC5T_49	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC5T_102	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC5T_58	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC7E_4	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC7E_71	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC7E_22	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC7E_88	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC7E_79	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC7E_52	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC7E_84	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC7E_36	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC9C_40	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC9C_88	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	NA
+AZC5T_34	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	GCA_002490635.1
+AZC7E_17	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	CAG-873	GCA_002490635.1
+AZC5T_101	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	Homeothermus	NA
+AZC7E_23	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	Homeothermus	GCA_002358615.1
+AZC9C_68	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	Homeothermus	GCA_002358615.1
+AZC5T_97	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	Homeothermus	GCA_002492595.1
+AZC7E_39	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	Homeothermus	GCA_002492595.1
+AZC9C_6	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	Homeothermus	GCA_002492595.1
+AZC7E_101	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	Muribaculum	Muribaculum intestinale
+AZC7E_26	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	Muribaculum	Muribaculum sp1
+AZC7E_6	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	UBA3263	NA
+AZC7E_32	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	UBA3263	GCA_001689615.1
+AZC7E_104	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	UBA3263	UBA3263 sp2
+AZC7E_94	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	UBA7173	NA
+AZC7E_90	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	UBA7173	NA
+AZC7E_64	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	UBA7173	NA
+AZC3J_76	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	UBA7173	GCA_001689485.1
+AZC5T_107	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	UBA7173	GCA_001689485.1
+AZC7E_61	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	UBA7173	GCA_001689485.1
+AZC9C_25	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Muribaculaceae	UBA7173	GCA_002491305.1
+AZC7E_65	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	NA	NA
+AZC7E_29	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes_A	NA
+AZC5T_38	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	NA
+AZC7E_114	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	NA
+AZC7E_48	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	NA
+AZC7E_117	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	NA
+AZC9C_87	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	Alistipes finegoldii
+AZC7E_87	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	Alistipes sp3
+AZC9C_78	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	Alistipes timonensis
+AZC3J_87	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	GCA_002428825.1
+AZC5T_80	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Tannerellaceae	Parabacteroides	Parabacteroides goldsteinii
+AZC9C_18	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Tannerellaceae	Parabacteroides	Parabacteroides goldsteinii
+AZC7E_2	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	UBA932	RC9	NA
+AZC7E_93	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	UBA932	RC9	NA
+AZC9C_86	Bacteria	Bacteroidota	Bacteroidia	Flavobacteriales	UBA1820	UBA1820	NA
+AZC5T_115	Bacteria	Cyanobacteriota	Vampirovibrionia	Gastranaerophilales	Gastranaerophilaceae	NA	NA
+AZC5T_29	Bacteria	Cyanobacteriota	Vampirovibrionia	Gastranaerophilales	Gastranaerophilaceae	NA	NA
+AZC5T_11	Bacteria	Cyanobacteriota	Vampirovibrionia	Gastranaerophilales	Gastranaerophilaceae	NA	NA
+AZC7E_72	Bacteria	Cyanobacteriota	Vampirovibrionia	Gastranaerophilales	Gastranaerophilaceae	Gastranaerophilus	Gastranaerophilus phascolarctosicola
+AZC5T_114	Bacteria	Cyanobacteriota	Vampirovibrionia	Gastranaerophilales	Gastranaerophilaceae	Zag1	NA
+AZC9C_8	Bacteria	Cyanobacteriota	Vampirovibrionia	Gastranaerophilales	Gastranaerophilaceae	Zag1	GCA_001917115.1
+AZC5T_54	Bacteria	Cyanobacteriota	Vampirovibrionia	Gastranaerophilales	Gastranaerophilaceae	Zag111	NA
+AZC5T_15	Bacteria	Deferribacterota	Deferribacteres	Deferribacterales	Mucispirillaceae	Mucispirillum	Mucispirillum schaedleri
+AZC7E_14	Bacteria	Deferribacterota	Deferribacteres	Deferribacterales	Mucispirillaceae	Mucispirillum	Mucispirillum schaedleri
+AZC9C_91	Bacteria	Deferribacterota	Deferribacteres	Deferribacterales	Mucispirillaceae	Mucispirillum	Mucispirillum schaedleri
+AZC7E_45	Bacteria	Desulfobacterota	Desulfovibrionia	Desulfovibrionales	Desulfovibrionaceae	Desulfovibrio	NA
+AZC9C_16	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-314	CAG-1435	NA
+AZC3J_14	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-552	NA	NA
+AZC3J_42	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-552	NA	NA
+AZC3J_38	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	NA	NA
+AZC3J_85	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	NA	NA
+AZC3J_40	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC3J_51	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC3J_24	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC3J_39	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC3J_17	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC3J_41	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC5T_113	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC5T_46	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC5T_45	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC5T_84	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC5T_117	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC9C_10	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC9C_90	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC9C_56	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC9C_105	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-727	UBA11940	NA
+AZC9C_109	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-917	NA	NA
+AZC3J_27	Bacteria	Firmicutes_A	Clostridia	4C28d-15	CAG-917	CAG-475	NA
+AZC5T_118	Bacteria	Firmicutes_A	Clostridia	4C28d-15	UBA1242	UBA11517	NA
+AZC5T_16	Bacteria	Firmicutes_A	Clostridia	4C28d-15	UBA1242	UBA6345	NA
+AZC9C_101	Bacteria	Firmicutes_A	Clostridia	4C28d-15	UBA1242	UBA6345	NA
+AZC3J_22	Bacteria	Firmicutes_A	Clostridia	4C28d-15	UBA3700	NA	NA
+AZC3J_95	Bacteria	Firmicutes_A	Clostridia	4C28d-15	UBA3700	NA	NA
+AZC7E_102	Bacteria	Firmicutes_A	Clostridia	4C28d-15	UBA3700	NA	NA
+AZC7E_92	Bacteria	Firmicutes_A	Clostridia	4C28d-15	UBA3700	NA	NA
+AZC9C_106	Bacteria	Firmicutes_A	Clostridia	4C28d-15	UBA3700	NA	NA
+AZC9C_36	Bacteria	Firmicutes_A	Clostridia	4C28d-15	UBA3700	NA	NA
+AZC9C_114	Bacteria	Firmicutes_A	Clostridia	4C28d-15	UBA3700	NA	NA
+AZC9C_44	Bacteria	Firmicutes_A	Clostridia	4C28d-15	UBA3700	NA	NA
+AZC3J_9	Bacteria	Firmicutes_A	Clostridia	CAG-41	UBA1381	CAG-41	NA
+AZC3J_53	Bacteria	Firmicutes_A	Clostridia	CAG-41	UBA1381	CAG-41	NA
+AZC3J_52	Bacteria	Firmicutes_A	Clostridia	Clostridiales	Savagellaceae	Savagella	Savagella sp1
+AZC5T_39	Bacteria	Firmicutes_A	Clostridia	Clostridiales	Savagellaceae	Savagella	Savagella sp1
+AZC7E_110	Bacteria	Firmicutes_A	Clostridia	Clostridiales	Savagellaceae	Savagella	Savagella sp1
+AZC9C_57	Bacteria	Firmicutes_A	Clostridia	Clostridiales	Savagellaceae	Savagella	Savagella sp1
+AZC3J_44	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Anaerotignaceae	ASF356	NA
+AZC5T_112	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Anaerotignaceae	ASF356	NA
+AZC5T_3	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	CAG-274	NA	NA
+AZC3J_10	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC3J_56	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC3J_72	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC3J_90	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC3J_6	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC3J_98	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC3J_16	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC3J_5	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC5T_95	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC5T_13	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC5T_18	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC5T_62	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC5T_48	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC5T_86	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC5T_83	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC5T_63	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC7E_19	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC7E_103	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC7E_112	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC7E_99	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC7E_20	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC7E_33	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC7E_13	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC7E_44	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC7E_41	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC7E_63	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC7E_21	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC9C_12	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC9C_85	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC9C_4	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC9C_70	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC9C_42	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC9C_55	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC9C_35	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC9C_5	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC9C_52	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC9C_9	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC9C_28	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC9C_65	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC9C_99	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	NA	NA
+AZC3J_37	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	14-2	NA
+AZC5T_60	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	14-2	NA
+AZC7E_66	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	14-2	NA
+AZC7E_108	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	14-2	NA
+AZC9C_43	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	14-2	NA
+AZC3J_91	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	28-4	NA
+AZC7E_62	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	28-4	NA
+AZC7E_46	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	28-4	NA
+AZC7E_77	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	28-4	NA
+AZC9C_49	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	28-4	NA
+AZC5T_9	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	28-4	GCF_000403275.1
+AZC9C_27	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	28-4	GCF_000403275.1
+AZC5T_104	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-303	NA
+AZC7E_105	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-303	NA
+AZC7E_80	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-303	NA
+AZC9C_67	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-303	NA
+AZC7E_40	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-510	NA
+AZC9C_19	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-510	NA
+AZC3J_3	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-56	NA
+AZC5T_119	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-56	NA
+AZC7E_76	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-56	NA
+AZC9C_113	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-56	NA
+AZC5T_105	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-590	NA
+AZC9C_20	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-590	NA
+AZC7E_35	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-632	NA
+AZC3J_65	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC3J_33	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC3J_67	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC3J_45	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC3J_59	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC5T_14	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC5T_71	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC5T_27	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC5T_24	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC7E_86	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC7E_67	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC7E_27	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC9C_74	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC9C_107	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC9C_92	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC9C_45	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC9C_23	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC9C_50	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-65	NA
+AZC3J_69	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-95	NA
+AZC3J_63	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-95	NA
+AZC5T_90	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-95	NA
+AZC5T_79	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-95	NA
+AZC7E_30	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-95	NA
+AZC9C_62	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-95	NA
+AZC7E_57	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	CAG-95	GCF_000403495.2
+AZC5T_103	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Clostridium_Q	NA
+AZC9C_26	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Clostridium_Q	NA
+AZC3J_73	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	NA
+AZC3J_21	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	NA
+AZC5T_8	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	NA
+AZC5T_57	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	NA
+AZC5T_21	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	NA
+AZC7E_24	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	NA
+AZC7E_15	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	NA
+AZC7E_34	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	NA
+AZC9C_112	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	NA
+AZC9C_102	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	NA
+AZC9C_93	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	NA
+AZC9C_80	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	NA
+AZC5T_85	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	GCA_002358575.1
+AZC7E_97	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	GCA_002358575.1
+AZC3J_34	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	GCA_002490665.1
+AZC9C_108	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	GCA_002490665.1
+AZC5T_30	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	GCF_000403215.1
+AZC3J_81	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	GCF_000403335.2
+AZC5T_99	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	COE1	GCF_000403335.2
+AZC3J_47	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Dorea	NA
+AZC3J_82	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Dorea	NA
+AZC5T_47	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Dorea	NA
+AZC5T_77	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Dorea	NA
+AZC5T_73	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Dorea	NA
+AZC9C_98	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Dorea	NA
+AZC5T_121	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Dorea	GCF_000403475.2
+AZC3J_43	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium_F	NA
+AZC3J_20	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium_F	NA
+AZC5T_65	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium_F	NA
+AZC7E_51	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium_F	NA
+AZC9C_24	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium_F	NA
+AZC9C_100	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium_F	NA
+AZC9C_77	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium_F	NA
+AZC3J_84	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium_J	NA
+AZC5T_68	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium_J	NA
+AZC7E_98	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium_J	NA
+AZC7E_85	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium_J	NA
+AZC9C_15	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium_J	NA
+AZC3J_26	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Hungatella_A	NA
+AZC3J_83	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Hungatella_A	NA
+AZC9C_13	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Hungatella_A	GCA_002358555.1
+AZC3J_58	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Lachnospira	NA
+AZC5T_91	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Lachnospira	NA
+AZC9C_37	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Lachnospira	NA
+AZC9C_29	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Parasporobacterium	NA
+AZC3J_77	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Ruminococcus_B	NA
+AZC3J_94	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Ruminococcus_B	NA
+AZC5T_81	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Ruminococcus_B	NA
+AZC7E_74	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Ruminococcus_B	NA
+AZC9C_81	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	Ruminococcus_B	NA
+AZC5T_2	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	TF01-11	NA
+AZC5T_69	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	TF01-11	NA
+AZC9C_72	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	TF01-11	NA
+AZC9C_110	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	TF01-11	NA
+AZC5T_78	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA3282	NA
+AZC7E_28	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA3282	NA
+AZC9C_116	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA3282	NA
+AZC9C_73	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA7050	NA
+AZC3J_68	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA7160	NA
+AZC5T_40	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA7182	NA
+AZC9C_39	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA7182	NA
+AZC3J_86	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA9502	NA
+AZC3J_2	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA9502	NA
+AZC3J_61	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA9502	NA
+AZC3J_93	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA9502	NA
+AZC5T_43	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA9502	NA
+AZC5T_55	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA9502	NA
+AZC9C_89	Bacteria	Firmicutes_A	Clostridia	Lachnospirales	Lachnospiraceae	UBA9502	NA
+AZC3J_48	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Butyricicoccaceae	NA	NA
+AZC5T_23	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Butyricicoccaceae	NA	NA
+AZC7E_18	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Butyricicoccaceae	NA	NA
+AZC3J_35	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	CAG-272	NA	NA
+AZC5T_50	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	CAG-272	NA	NA
+AZC7E_10	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	CAG-272	NA	NA
+AZC9C_64	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	CAG-272	NA	NA
+AZC9C_84	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	CAG-272	NA	NA
+AZC5T_20	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	DTU089	Acutalibacter	NA
+AZC3J_1	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	DTU089	Acutalibacter	Acutalibacter muris
+AZC9C_47	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	DTU089	Acutalibacter	Acutalibacter muris
+AZC3J_80	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	DTU089	Eubacterium_R	NA
+AZC3J_60	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	DTU089	Eubacterium_R	NA
+AZC5T_52	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	DTU089	Eubacterium_R	NA
+AZC5T_67	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	DTU089	Eubacterium_R	NA
+AZC7E_5	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	DTU089	Eubacterium_R	NA
+AZC7E_1	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	DTU089	Eubacterium_R	NA
+AZC7E_107	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	DTU089	Eubacterium_R	NA
+AZC9C_2	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	DTU089	Eubacterium_R	NA
+AZC9C_97	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	DTU089	Eubacterium_R	NA
+AZC5T_33	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	DTU089	Neglecta	NA
+AZC3J_31	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	NA	NA
+AZC3J_19	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	NA	NA
+AZC3J_66	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	NA	NA
+AZC5T_92	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	NA	NA
+AZC9C_38	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	NA	NA
+AZC9C_83	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	CAG-103	NA
+AZC3J_70	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	CAG-110	NA
+AZC3J_36	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	Flavonifractor	NA
+AZC3J_78	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	Oscillibacter	NA
+AZC5T_82	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	Oscillibacter	NA
+AZC5T_74	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	Oscillibacter	NA
+AZC9C_104	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	Oscillibacter	NA
+AZC3J_50	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	UBA9475	NA
+AZC3J_29	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	UBA9475	NA
+AZC5T_4	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	UBA9475	NA
+AZC9C_59	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	UBA9475	NA
+AZC9C_82	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Oscillospiraceae	UBA9475	NA
+AZC5T_110	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	Anaerotruncus	NA
+AZC3J_97	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	Anaerotruncus	GCF_000403395.2
+AZC7E_49	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	Anaerotruncus	GCF_000403395.2
+AZC3J_4	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	Angelakisella	NA
+AZC5T_5	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	CAG-115	NA
+AZC7E_43	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	CAG-115	NA
+AZC3J_75	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	Ruminiclostridium_E	NA
+AZC9C_21	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	Ruminiclostridium_E	NA
+AZC7E_115	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	Ruminococcus	NA
+AZC3J_64	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	UBA1394	NA
+AZC5T_19	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	UBA1394	NA
+AZC9C_54	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	UBA1394	NA
+AZC3J_8	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	UBA1405	NA
+AZC9C_66	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	UBA1405	NA
+AZC3J_49	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	UBA946	NA
+AZC5T_59	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	Ruminococcaceae	UBA946	NA
+AZC5T_25	Bacteria	Firmicutes_A	Clostridia	Oscillospirales	UBA644	NA	NA
+AZC7E_11	Bacteria	Firmicutes_A	Clostridia	TANB77	NA	NA	NA
+AZC9C_103	Bacteria	Firmicutes_A	Clostridia	TANB77	NA	NA	NA
+AZC5T_28	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-465	NA	NA
+AZC9C_63	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-465	NA	NA
+AZC5T_88	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-465	CAG-465	NA
+AZC3J_13	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	NA	NA
+AZC3J_46	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	NA	NA
+AZC5T_72	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	NA	NA
+AZC5T_17	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	NA	NA
+AZC5T_26	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	NA	NA
+AZC5T_76	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	NA	NA
+AZC7E_78	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	NA	NA
+AZC9C_1	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	NA	NA
+AZC9C_11	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	NA	NA
+AZC9C_94	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	NA	NA
+AZC9C_3	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	NA	NA
+AZC3J_12	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	CAG-269	NA
+AZC3J_99	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	CAG-273	NA
+AZC5T_44	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	CAG-492	NA
+AZC7E_56	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	CAG-492	NA
+AZC9C_41	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	CAG-492	NA
+AZC9C_53	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	CAG-793	NA
+AZC5T_64	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	UBA7001	NA
+AZC5T_116	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	UBA7001	NA
+AZC7E_91	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	UBA7001	NA
+AZC7E_42	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	UBA7001	NA
+AZC9C_58	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	UBA7001	NA
+AZC9C_48	Bacteria	Firmicutes_A	Clostridia	TANB77	CAG-508	UBA7001	NA
+AZC3J_7	Bacteria	Firmicutes_B	Dehalobacteriia	UBA4068	UBA5755	NA	NA
+AZC5T_124	Bacteria	Firmicutes_B	Dehalobacteriia	UBA4068	UBA5755	NA	NA
+AZC7E_9	Bacteria	Firmicutes_B	Dehalobacteriia	UBA4068	UBA5755	NA	NA
+AZC9C_95	Bacteria	Firmicutes_B	Peptococcia	Peptococcales	Peptococcaceae	UBA7185	NA
+AZC5T_56	Bacteria	Firmicutes_B	Peptococcia	Peptococcales	Peptococcaceae	UBA7185	UBA7185 sp1
+AZC3J_25	Bacteria	Firmicutes	Bacilli	Acholeplasmatales	CAG-307	UBA7004	NA
+AZC3J_92	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelatoclostridiaceae	Erysipelatoclostridium	Erysipelatoclostridium cocleatum
+AZC5T_35	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelotrichaceae	NA	NA
+AZC3J_30	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelotrichaceae	Faecalibaculum	Faecalibaculum rodentium
+AZC9C_69	Bacteria	Firmicutes	Bacilli	Haloplasmatales	Turicibacteraceae	Turicibacter	GCA_002311155.1
+AZC5T_66	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactobacillus_B	Lactobacillus_B murinus
+AZC7E_96	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactobacillus_B	Lactobacillus_B murinus
+AZC9C_71	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactobacillus_B	Lactobacillus_B murinus
+AZC5T_111	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactobacillus_H	NA
+AZC7E_53	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactobacillus_H	Lactobacillus_H reuteri_C
+AZC5T_120	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactobacillus	Lactobacillus intestinalis
+AZC7E_82	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactobacillus	Lactobacillus intestinalis
+AZC9C_61	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactobacillus	Lactobacillus intestinalis
+AZC3J_55	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactobacillus	Lactobacillus johnsonii
+AZC5T_98	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactobacillus	Lactobacillus johnsonii
+AZC7E_16	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactobacillus	Lactobacillus johnsonii
+AZC3J_23	Bacteria	Firmicutes	Bacilli	RF39	UBA660	NA	NA
+AZC9C_79	Bacteria	Firmicutes	Bacilli	RF39	UBA660	NA	NA
+AZC9C_51	Bacteria	Firmicutes	Bacilli	RF39	UBA660	NA	NA
+AZC5T_32	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-460	NA
+AZC3J_79	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-582	NA
+AZC5T_87	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-582	NA
+AZC7E_55	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-582	NA
+AZC9C_30	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-582	NA
+AZC5T_31	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-594	NA
+AZC5T_70	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-628	NA
+AZC9C_33	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-628	NA
+AZC3J_57	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-776	NA
+AZC3J_71	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-776	NA
+AZC9C_96	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-776	NA
+AZC9C_115	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-776	NA
+AZC9C_14	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-822	NA
+AZC5T_75	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-877	NA
+AZC7E_8	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-877	NA
+AZC9C_22	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-877	NA
+AZC9C_76	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-988	NA
+AZC7E_31	Bacteria	Firmicutes	Bacilli	RF39	UBA660	UBA11963	NA
+AZC3J_96	Bacteria	Firmicutes	Bacilli	RF39	UBA660	UBA5026	NA
+AZC5T_51	Bacteria	Firmicutes	Bacilli	RF39	UBA660	UBA5026	NA
+AZC7E_50	Bacteria	Firmicutes	Bacilli	RF39	UBA660	UBA5026	NA
+AZC5T_42	Bacteria	Firmicutes	Bacilli	RF39	UBA660	UBA5578	NA
+AZC9C_31	Bacteria	Firmicutes	Bacilli	RF39	UBA660	UBA7057	NA
+AZC5T_41	Bacteria	Firmicutes	Bacilli	RF39	UBA660	UBA9416	NA
+AZC5T_108	Bacteria	Firmicutes	Bacilli	RF39	UBA660	UBA9416	NA
+AZC5T_10	Bacteria	Patescibacteria	Saccharimonadia	Saccharimonadales	Saccharimonadaceae	NA	NA
+AZC7E_47	Bacteria	Patescibacteria	Saccharimonadia	Saccharimonadales	Saccharimonadaceae	NA	NA
+AZC7E_7	Bacteria	Patescibacteria	Saccharimonadia	Saccharimonadales	Saccharimonadaceae	NA	NA
+AZC7E_118	Bacteria	Patescibacteria	Saccharimonadia	Saccharimonadales	Saccharimonadaceae	NA	NA
+AZC7E_75	Bacteria	Patescibacteria	Saccharimonadia	Saccharimonadales	Saccharimonadaceae	NA	NA
+AZC7E_116	Bacteria	Proteobacteria	Alphaproteobacteria	RF32	CAG-239	CAG-495	NA
+AZC9C_60	Bacteria	Proteobacteria	Alphaproteobacteria	RF32	CAG-239	CAG-495	GCA_001917125.1
+AZC5T_100	Bacteria	Proteobacteria	Gammaproteobacteria	Betaproteobacteriales	Burkholderiaceae	Parasutterella	NA
+AZC7E_69	Bacteria	Proteobacteria	Gammaproteobacteria	Betaproteobacteriales	Burkholderiaceae	Parasutterella	NA
+AZC3J_54	Bacteria	Proteobacteria	Gammaproteobacteria	Betaproteobacteriales	Burkholderiaceae	Parasutterella	Parasutterella excrementihominis
+AZC3J_28	Bacteria	Verrucomicrobiota	Verrucomicrobiae	Verrucomicrobiales	Akkermansiaceae	Akkermansia	Akkermansia muciniphila
+AZC5T_22	Bacteria	Verrucomicrobiota	Verrucomicrobiae	Verrucomicrobiales	Akkermansiaceae	Akkermansia	Akkermansia muciniphila
+AZC7E_83	Bacteria	Verrucomicrobiota	Verrucomicrobiae	Verrucomicrobiales	Akkermansiaceae	Akkermansia	Akkermansia muciniphila_A

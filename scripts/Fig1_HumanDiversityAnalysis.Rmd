@@ -1,0 +1,323 @@
+---
+title: "Fig1_HumanDiversity_analysis"
+output: html_document
+date: "2022-08-11"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+setwd("~/Dropbox/fmt/scripts/")
+library(tidyverse)
+library(wesanderson)
+library(ggthemes)
+library(cowplot)
+#library(svglite)
+
+ven <- c('#FAAF40',"#1B75BB","#37B34A", "#F05A28")
+pal <- wes_palette("Zissou1", 100, type = "continuous")
+
+
+options(stringsAsFactors = F)
+options(scipen = 10000)
+
+```
+
+```{r cars}
+zotu <- read.table("../experiments/20210530_16SV4_HMP_UC_CD_CTRL/output/otu_table_zotu.txt", 
+                   col.names = c("OTU", 
+                                 (read.table("../experiments/20210530_16SV4_HMP_UC_CD_CTRL/metadata/sample.list") %>% 
+                                    t() %>% as.vector()))) %>% t() %>% as.data.frame()
+
+names(zotu) <- zotu[1,]
+zotu <- zotu[-1,] %>% mutate(seqid = row.names(.)) %>% select(seqid, everything())
+
+zotu <- cbind((zotu %>% select(seqid)),
+      (zotu %>% select(-seqid) %>% mutate_if(is.character, as.numeric)))
+
+meta <- read.table("../experiments/20210530_16SV4_HMP_UC_CD_CTRL/metadata/sample.metadata.tsv", header = T) %>% 
+  rename('seqid'='label')
+
+```
+
+
+```{r}
+
+# Check read counts
+read.counts <- zotu %>%
+  rowwise(seqid) %>%
+  mutate(numreads = rowSums(across(where(is.numeric)))) %>%
+  ungroup() %>%
+  select(seqid, numreads)
+
+# Pull out samples w/ >10k reads
+samples.to.keep <- read.counts %>%
+  filter(numreads > 1000) %>%
+  select(seqid) %>%
+  as_vector()
+
+# Drop <10k read samples from zotu table
+zotu <- zotu %>%
+  filter(seqid %in% samples.to.keep)
+
+# make tidy data
+# Convert to relative abundance
+zotu <- zotu %>%
+  pivot_longer(!seqid, names_to="OTU", values_to="reads") %>%
+  group_by(seqid) %>%
+  mutate(relabd = (reads / sum(reads))) %>% ungroup
+#  mutate(relabd = (reads / sum(reads))*1000) %>% ungroup
+
+
+# calc log10 OTU abd
+zotu <- zotu %>%
+  mutate(log10relabd = if_else(relabd == 0, -6, log10(relabd)))
+
+
+
+# Join metadata to zotu table
+zotu <- zotu %>%
+  left_join(meta, by="seqid")
+
+
+otus.to.keep <- zotu %>%
+  group_by(OTU, type) %>%
+  summarise(avg_abd = mean(relabd)) %>%
+  filter(avg_abd > .005) %>% ungroup() %>%
+  select(OTU) %>%
+  distinct() %>%
+  as_vector()
+
+```
+
+Score shannon diversity
+```{r , echo=FALSE}
+
+library(vegan)
+library(reshape2)
+library(M3C)
+
+vendor <- zotu %>% #filter(day == 0, OTU != 'Otu10') %>% #Look @ D0 samples, remove sporo spike-in
+  select(OTU, seqid, type, relabd) %>%
+  filter(relabd > .005) %>%
+  reshape2::dcast(., type + seqid ~ OTU) 
+
+vendor[is.na(vendor)] <- 0
+
+grp_key <- vendor[,1:2]
+
+#create such that samples as columns, rows as features
+tSNE_header <- (vendor %>% select(seqid) %>% t() %>% as.data.frame())[1,]
+
+
+tSNE_input <- (vendor %>% select(-seqid) %>% t() %>% as.data.frame())[-1,] %>% 
+              mutate_all(., function(x) as.numeric(as.character(x))) 
+
+names(tSNE_input) <- tSNE_header[1,]
+
+#now calculate shannon diversity
+
+set.seed(123)
+sd_df<- tSNE_input %>% t() %>% vegan::diversity(index = 'shannon')
+
+sd_lab <- tSNE_header %>% t()
+
+shannonD <- sd_df %>% as.data.frame() %>% cbind(., sd_lab) %>% select(shannD = '.', seqid)
+
+#normalize by log(k) where k is number of species over 0.05
+numk <- zotu %>%# filter(day == 0, OTU != 'Otu10') %>% 
+  select(OTU, seqid, relabd) %>% 
+  melt(id.vars = c('seqid', 'OTU')) %>% 
+  filter(value > .005) %>% 
+  select(-value) %>% distinct() %>% 
+  group_by(seqid) %>% mutate(kval = log2(n())) %>%
+  ungroup() %>% select(seqid, kval) %>% distinct() %>% na.omit()
+
+shannonD <- left_join(shannonD, numk) %>% mutate(shann_entropy = shannD/kval) %>% left_join(.,grp_key)
+
+#all side by side
+shannonD$type <- factor(shannonD$type,      # Reordering group factor levels
+                         levels = rev(c("CTRL", "nonIBD", "UC", "CD")))
+
+
+s1c.a <- shannonD %>% filter(type != 'CTRL') %>% ggplot(., aes(type,shann_entropy), fill = 'white') + 
+    stat_boxplot(geom= 'errorbar', width = .2, lwd = 1) +
+  geom_boxplot(outlier.shape = NA, lwd = 1) + geom_jitter(alpha=.3) +
+  labs(y = 'Normalized Shannon Entropy', x = '') +
+  theme_clean() +
+  ggsignif::geom_signif(comparisons = list(c("Donor", "C.diff")), 
+                         y_position = c(0.65),
+                         map_signif_level=TRUE, #Comment out for p-values
+                         test = "wilcox.test") +
+    ylim(.1, .7) +
+  theme_cowplot() +
+  theme(axis.text.x = element_text(size = 12), 
+  axis.text.y = element_text(size = 12),
+axis.title.x.bottom = element_text(size = 10),
+axis.title.y.left = element_text(size = 12),
+legend.position = 'none')
+
+s1c.a
+
+ggsave("../figs/s1/S1C.a_human_ShannonDiversity.png", width = 3, height = 2.5)
+
+
+```
+FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+CDiff cohort; weingarden et al. 2015
+```{r}
+
+zotu <- read.csv("../experiments/20210530_16SV4_HMP_UC_CD_CTRL/output/Weingarden_2015_OTU.csv") %>% t() %>% as.data.frame()
+
+names(zotu) <- zotu[1,]
+zotu <- zotu[-1,] %>% mutate(seqid = row.names(.)) %>% select(seqid, everything())
+
+zotu <- cbind((zotu %>% select(seqid)),
+      (zotu %>% select(-seqid) %>% mutate_if(is.character, as.numeric))) %>% na.omit()
+
+meta <- rbind((zotu[c(1,60,125:134),] %>% mutate(type = 'C.diff')), # #cdiff d0 samples
+              (zotu[c(115:124),] %>% mutate(type = 'Donor'))) %>% select(seqid, type)
+
+zotu <- rbind(zotu[c(1,60,125:134),], # #cdiff d0 samples
+              zotu[c(115:124),]) # #donor d0 samples
+
+```
+
+```{r}
+
+# Check read counts
+read.counts <- zotu %>%
+  rowwise(seqid) %>%
+  mutate(numreads = rowSums(across(where(is.numeric)))) %>%
+  ungroup() %>%
+  select(seqid, numreads)
+
+# Pull out samples w/ >10k reads
+samples.to.keep <- read.counts %>%
+  filter(numreads > 1000) %>%
+  select(seqid) %>%
+  as_vector()
+
+# Drop <10k read samples from zotu table
+zotu <- zotu %>%
+  filter(seqid %in% samples.to.keep)
+
+# make tidy data
+# Convert to relative abundance
+zotu <- zotu %>%
+  pivot_longer(!seqid, names_to="OTU", values_to="reads") %>%
+  group_by(seqid) %>%
+  mutate(relabd = (reads / sum(reads))) %>% ungroup
+#  mutate(relabd = (reads / sum(reads))*1000) %>% ungroup
+
+
+# calc log10 OTU abd
+zotu <- zotu %>%
+  mutate(log10relabd = if_else(relabd == 0, -6, log10(relabd)))
+
+
+
+# Join metadata to zotu table
+zotu <- zotu %>%
+  left_join(meta, by="seqid")
+
+
+otus.to.keep <- zotu %>%
+  group_by(OTU, type) %>%
+  summarise(avg_abd = mean(relabd)) %>%
+  filter(avg_abd > .005) %>% ungroup() %>%
+  select(OTU) %>%
+  distinct() %>%
+  as_vector()
+
+```
+
+Score shannon diversity
+```{r , echo=FALSE}
+
+library(vegan)
+library(reshape2)
+library(M3C)
+
+vendor <- zotu %>% 
+  select(OTU, seqid, type, relabd) %>%
+  filter(relabd > 0.005) %>%
+  reshape2::dcast(., type + seqid ~ OTU) 
+
+vendor[is.na(vendor)] <- 0
+
+grp_key <- vendor[,1:2]
+
+#create such that samples as columns, rows as features
+tSNE_header <- (vendor %>% select(seqid) %>% t() %>% as.data.frame())[1,]
+
+
+tSNE_input <- (vendor %>% select(-seqid) %>% t() %>% as.data.frame())[-1,] %>% 
+              mutate_all(., function(x) as.numeric(as.character(x))) 
+
+names(tSNE_input) <- tSNE_header[1,]
+
+#now calculate shannon diversity
+set.seed(123)
+sd_df<- tSNE_input %>% t() %>% vegan::diversity(index = 'shannon')
+
+sd_lab <- tSNE_header %>% t()
+
+shannonD <- sd_df %>% as.data.frame() %>% cbind(., sd_lab) %>% select(shannD = '.', seqid)
+
+#normalize by log(k) where k is number of species over 0.05
+numk <- zotu %>%# filter(day == 0, OTU != 'Otu10') %>% 
+  select(OTU, seqid, relabd) %>% 
+  melt(id.vars = c('seqid', 'OTU')) %>% 
+  filter(value > .005) %>% 
+  select(-value) %>% distinct() %>% 
+  group_by(seqid) %>% mutate(kval = log2(n())) %>%
+  ungroup() %>% select(seqid, kval) %>% distinct() %>% na.omit()
+
+shannonD <- left_join(shannonD, numk) %>% mutate(shann_entropy = shannD/kval) %>% left_join(.,grp_key)
+
+#plot
+s1c.b <- ggplot(shannonD, aes(type,shann_entropy, 
+                     shann_entropy), fill = 'white') +
+    stat_boxplot(geom= 'errorbar', width = .2, lwd = 1) +
+  geom_boxplot(outlier.shape = NA, lwd = 1) + geom_jitter(alpha=.3) +
+  labs(y = 'Normalized Shannon Entropy', x = '') +
+  theme_clean() +
+  ggsignif::geom_signif(comparisons = list(c("Donor", "C.diff")), 
+                         y_position = c(0.65),
+                         map_signif_level=TRUE, #Comment out for p-values
+                         test = "wilcox.test") +
+  ylim(.1, .7) +
+  theme_cowplot() +
+  theme(axis.text.x = element_text(size = 12), 
+  axis.text.y = element_text(size = 12),
+axis.title.x.bottom = element_text(size = 10),
+axis.title.y.left = element_text(size = 12),
+legend.position = 'none')
+
+
+s1c.b
+
+#p-value, W = 23, p-value = 0.01377, wilcoxon rank sum test
+
+wilcox.test(filter(shannonD, type == 'C.diff')$shann_entropy, 
+            filter(shannonD, type == 'Donor')$shann_entropy)
+
+ggsave("../figs/s1/S1C.B_human_ShannonDiversity.png", width = 3, height = 1.5)
+ggsave("../figs/s1/S1C.B_human_ShannonDiversity.pdf", width = 3, height = 1.5)
+
+
+```
+
+
+Combine plots
+```{r}
+
+plot_grid(s1c.a, s1c.b, nrow = 1, rel_heights = c(1,.6))
+ggsave("../figs/s1/S1C_human_ShannonDiversity.png", width = 3.5, height = 2.5)
+ggsave("../figs/s1/S1C_human_ShannonDiversity.pdf", width = 3.5, height = 2.5)
+
+```

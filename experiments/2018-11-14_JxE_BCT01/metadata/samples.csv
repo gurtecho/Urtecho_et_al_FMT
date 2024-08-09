@@ -1,0 +1,9 @@
+﻿seqid,sample,day,status,cage,tx_group,mouse_type,mouse_num
+bct01.01,FMTC5J1d0,0,baseline,C5,E_fec_cult_BCT,Jackson,J1
+bct01.02,FMTC5J2d0,0,baseline,C5,E_fec_cult_BCT,Jackson,J2
+bct01.03,FMTC6J1d0,0,baseline,C6,E_si_cult_BCT,Jackson,J1
+bct01.04,FMTC6J2d0,0,baseline,C6,E_si_cult_BCT,Jackson,J2
+bct01.05,FMTC5J1d5,5,post-gavage,C5,E_fec_cult_BCT,Jackson,J1
+bct01.06,FMTC5J2d5,5,post-gavage,C5,E_fec_cult_BCT,Jackson,J2
+bct01.07,FMTC6J1d5,5,post-gavage,C6,E_si_cult_BCT,Jackson,J1
+bct01.08,FMTC6J2d5,5,post-gavage,C6,E_si_cult_BCT,Jackson,J2

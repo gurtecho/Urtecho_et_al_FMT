@@ -1,0 +1,148 @@
+import glob
+import os
+
+
+# Experiment list
+# Add new experiemnts to this list to re-run pipeline
+experiment_list = [
+    "../experiments/MaPS_Bulk"
+]
+
+# Collect seq_id's from filepaths
+def collect_seq_ids():
+    experiments = []
+    seq_ids = []
+
+    for experiment in experiment_list:
+        reads = glob.glob("{}/seq/00_raw_reads/*.fastq.gz".format(experiment))
+        for read in reads:
+            seq_id = os.path.basename(read).split("_")[0]
+            if seq_id not in seq_ids:
+                seq_ids.append(seq_id)
+                experiments.append(experiment)
+    
+    return seq_ids, experiments
+
+seq_ids, experiments = collect_seq_ids()
+
+
+rule all:
+    input:
+        tax = "tax.csv",
+        zcsv = "zotu.csv"
+
+rule decompress:
+    input:
+        R1 = "{experiment}/seq/00_raw_reads/{seq_id}_R1.fastq.gz",
+        R2 = "{experiment}/seq/00_raw_reads/{seq_id}_R2.fastq.gz"
+    output:
+        decompressed_R1 = "{experiment}/seq/01_decompressed_reads/{seq_id}_R1.fastq",
+        decompressed_R2 = "{experiment}/seq/01_decompressed_reads/{seq_id}_R2.fastq"
+    shell:
+        "gunzip -c {input.R1} > {output.decompressed_R1}; "
+        "gunzip -c {input.R2} > {output.decompressed_R2}"
+
+rule merge:
+    input:
+        decompressed_R1 = "{experiment}/seq/01_decompressed_reads/{seq_id}_R1.fastq",
+        decompressed_R2 = "{experiment}/seq/01_decompressed_reads/{seq_id}_R2.fastq"
+    params:
+        sample = "{seq_id}"
+    output:
+        merged = "{experiment}/seq/02_merged_reads/{seq_id}.fastq"
+    shell:
+        "usearch10 -fastq_mergepairs {input.decompressed_R1} "
+        "-reverse {input.decompressed_R2} "
+        "-fastqout {output.merged} -sample {params.sample}"
+
+rule filter:
+    input:
+        merged = "{experiment}/seq/02_merged_reads/{seq_id}.fastq"
+    output:
+        filtered = "{experiment}/seq/03_filtered_reads/filtered_{seq_id}.fasta"
+    shell:
+        "usearch10 -fastq_filter {input.merged} -fastq_maxee 1.0 "
+        "-fastq_minlen 240 -fastaout {output.filtered}"
+
+rule pool:
+    input:
+        filtered = expand("{experiment}/seq/03_filtered_reads/filtered_{seq_id}.fasta", zip, experiment=experiments, seq_id=seq_ids)
+    output:
+        pooled = "01_pooled.fasta"
+    shell:
+        "cat {input.filtered} >> {output.pooled}"
+
+rule derep:
+    input:
+        pooled = "01_pooled.fasta"
+    output:
+        derep = "02_derep.fasta"
+    shell:
+        "usearch10 -fastx_uniques {input.pooled} -sizeout -relabel uniq "
+        "-fastaout {output.derep}"
+
+rule zotu:
+    input:
+        derep = "02_derep.fasta"
+    output:
+        zotus = "zotus.fa"
+    shell:
+        "usearch10 -unoise3  {input.derep} -zotus {output.zotus}"
+
+rule clean_zotu:
+    input:
+        zotus = "zotus.fa"
+    output:
+        cleaned_zotus = "cleaned_zotus.fa"
+    shell:
+        "sed 's/Zotu/Otu/g' {input.zotus} > {output.cleaned_zotus}"
+
+rule tax:
+    input:
+        cleaned_zotus = "cleaned_zotus.fa"
+    params:
+        sintax_db = "db/rdp_16s_v18.udb"
+    output:
+        sintax="reads.sintax"
+    shell:
+        "usearch10 -sintax {input.cleaned_zotus} -db {params.sintax_db} "
+        "-tabbedout {output.sintax} -strand both -sintax_cutoff 0.8"
+
+rule process_tax:
+    input:
+        sintax="reads.sintax"
+    output:
+        tax = "tax.csv"
+    shell:
+        "python scripts/process_tax.py --sintax {input.sintax} "
+        "--taxtable {output.tax}"
+
+rule compile_reads:
+    input:
+        merged = expand("{experiment}/seq/02_merged_reads/{seq_id}.fastq", zip, experiment = experiments, seq_id = seq_ids)
+    output:
+        compiled = "03_compiled.fastq"
+    shell:
+        "cat {input.merged} >> {output.compiled}"
+
+rule table:
+    input:
+        compiled = "03_compiled.fastq",
+        cleaned_zotus = "cleaned_zotus.fa"
+    output:
+        ztable = "zotutab.txt",
+        zmap = "zmap.txt"
+    shell:
+        "usearch10 -otutab {input.compiled} -zotus {input.cleaned_zotus} "
+        "-otutabout {output.ztable} -mapout {output.zmap}"
+
+rule process_table:
+    input:
+        ztable = "zotutab.txt"
+    output:
+        zcsv = "zotu.csv"
+    shell:
+        "python scripts/process_otu.py --zotutab {input.ztable} "
+        "--otutable {output.zcsv}"
+
+

@@ -1,0 +1,17 @@
+﻿sample,mouse,day,mouse_type,cage,tx_group,treatment
+Jaxctrl_1,J1,7,Jax,J1,J,Jax
+Jaxctrl_2,J2,7,Jax,J1,J,Jax
+Jaxctrl_3,J5,7,Jax,J2,J,Jax
+Jaxctrl_4,J6,7,Jax,J2,J,Jax
+Envctrl_1,E1,7,Env,E1,E,Env
+Envctrl_2,E2,7,Env,E1,E,Env
+Envctrl_3,E5,7,Env,E2,E,Env
+Envctrl_4,E6,7,Env,E2,E,Env
+Env2Jax_1,J3,7,Jax,JE1,JE,Env2Jax
+Env2Jax_2,J4,7,Jax,JE2,JE,Env2Jax
+Env2Jax_3,J7,7,Jax,JE3,JE,Env2Jax
+Env2Jax_4,J8,7,Jax,JE4,JE,Env2Jax
+Jax2Env_1,E3,7,Env,JE1,JE,Jax2Env
+Jax2Env_2,E4,7,Env,JE2,JE,Jax2Env
+Jax2Env_3,E7,7,Env,JE3,JE,Jax2Env
+Jax2Env_4,E8,7,Env,JE4,JE,Jax2Env

@@ -1,0 +1,27 @@
+---
+title: "FMT DE Analysis"
+author: "Thomas Moody"
+date: "4/8/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r imports}
+library("tidyverse")
+library("DESeq2")
+```
+
+
+### Count Data Exploratory Analysis
+```{r cars}
+# Prepare count matrix from CSV file
+cts <- read_csv("../data/fmt_GI_spatialMetagenomics_Genecounts.csv")
+```
+
+### Normalization
+Normalization Protocol
+* Generate 
+

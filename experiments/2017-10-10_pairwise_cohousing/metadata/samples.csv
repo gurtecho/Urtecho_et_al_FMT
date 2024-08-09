@@ -1,0 +1,81 @@
+﻿seqid,sample,day,mouse,mouse_type,cage,tx_type,tx_grup
+prw01.001,T11d0,0,T1.1,Taconic,F01,control,T_cntrl
+prw01.002,T21d0,0,T2.1,Taconic,F01,control,T_cntrl
+prw01.003,J11d0,0,J1.1,Jackson,F02,2mix,TxJ
+prw01.004,J21d0,0,J2.1,Jackson,F02,2mix,TxJ
+prw01.005,T12d0,0,T1.2,Taconic,F02,2mix,TxJ
+prw01.006,T22d0,0,T2.2,Taconic,F02,2mix,TxJ
+prw01.007,E11d0,0,E1.1,Envigo,F03,2mix,TxE
+prw01.008,E21d0,0,E2.1,Envigo,F03,2mix,TxE
+prw01.009,T13d0,0,T1.3,Taconic,F03,2mix,TxE
+prw01.010,T23d0,0,T2.3,Taconic,F03,2mix,TxE
+prw01.011,C11d0,0,C1.1,Charles River,F04,2mix,TxC
+prw01.012,C21d0,0,C2.1,Charles River,F04,2mix,TxC
+prw01.013,T14d0,0,T1.4,Taconic,F04,2mix,TxC
+prw01.014,T24d0,0,T2.4,Taconic,F04,2mix,TxC
+prw01.015,J12d0,0,J1.2,Jackson,F05,control,J_cntrl
+prw01.016,J22d0,0,J2.2,Jackson,F05,control,J_cntrl
+prw01.017,E12d0,0,E1.2,Envigo,F06,2mix,JxE
+prw01.018,E22d0,0,E2.2,Envigo,F06,2mix,JxE
+prw01.019,J13d0,0,J1.3,Jackson,F06,2mix,JxE
+prw01.020,J23d0,0,J2.3,Jackson,F06,2mix,JxE
+prw01.021,C12d0,0,C1.2,Charles River,F07,2mix,JxC
+prw01.022,C22d0,0,C2.2,Charles River,F07,2mix,JxC
+prw01.023,J14d0,0,J1.4,Jackson,F07,2mix,JxC
+prw01.024,J24d0,0,J2.4,Jackson,F07,2mix,JxC
+prw01.025,E13d0,0,E1.3,Envigo,F08,control,E_cntrl
+prw01.026,E23d0,0,E2.3,Envigo,F08,control,E_cntrl
+prw01.027,C13d0,0,C1.3,Charles River,F09,2mix,ExC
+prw01.028,C23d0,0,C2.3,Charles River,F09,2mix,ExC
+prw01.029,E14d0,0,E1.4,Envigo,F09,2mix,ExC
+prw01.030,E24d0,0,E2.4,Envigo,F09,2mix,ExC
+prw01.031,C14d0,0,C1.4,Charles River,F10,control,C_cntrl
+prw01.032,C24d0,0,C2.4,Charles River,F10,control,C_cntrl
+prw01.033,C15d0,0,C1.5,Charles River,F11,4mix,TxJxExC
+prw01.034,E15d0,0,E1.5,Envigo,F11,4mix,TxJxExC
+prw01.035,J15d0,0,J1.5,Jackson,F11,4mix,TxJxExC
+prw01.036,T15d0,0,T1.5,Taconic,F11,4mix,TxJxExC
+prw01.037,C25d0,0,C2.5,Charles River,F12,4mix,TxJxExC
+prw01.038,E25d0,0,E2.5,Envigo,F12,4mix,TxJxExC
+prw01.039,J25d0,0,J2.5,Jackson,F12,4mix,TxJxExC
+prw01.040,T25d0,0,T2.5,Taconic,F12,4mix,TxJxExC
+prw01.041,T11d5,5,T1.1,Taconic,F01,control,T_cntrl
+prw01.042,T21d5,5,T2.1,Taconic,F01,control,T_cntrl
+prw01.043,J11d5,5,J1.1,Jackson,F02,2mix,TxJ
+prw01.044,J21d5,5,J2.1,Jackson,F02,2mix,TxJ
+prw01.045,T12d5,5,T1.2,Taconic,F02,2mix,TxJ
+prw01.046,T22d5,5,T2.2,Taconic,F02,2mix,TxJ
+prw01.047,E11d5,5,E1.1,Envigo,F03,2mix,TxE
+prw01.048,E21d5,5,E2.1,Envigo,F03,2mix,TxE
+prw01.049,T13d5,5,T1.3,Taconic,F03,2mix,TxE
+prw01.050,T23d5,5,T2.3,Taconic,F03,2mix,TxE
+prw01.051,C11d5,5,C1.1,Charles River,F04,2mix,TxC
+prw01.052,C21d5,5,C2.1,Charles River,F04,2mix,TxC
+prw01.053,T14d5,5,T1.4,Taconic,F04,2mix,TxC
+prw01.054,T24d5,5,T2.4,Taconic,F04,2mix,TxC
+prw01.055,J12d5,5,J1.2,Jackson,F05,control,J_cntrl
+prw01.056,J22d5,5,J2.2,Jackson,F05,control,J_cntrl
+prw01.057,E12d5,5,E1.2,Envigo,F06,2mix,JxE
+prw01.058,E22d5,5,E2.2,Envigo,F06,2mix,JxE
+prw01.059,J13d5,5,J1.3,Jackson,F06,2mix,JxE
+prw01.060,J23d5,5,J2.3,Jackson,F06,2mix,JxE
+prw01.061,C12d5,5,C1.2,Charles River,F07,2mix,JxC
+prw01.062,C22d5,5,C2.2,Charles River,F07,2mix,JxC
+prw01.063,J14d5,5,J1.4,Jackson,F07,2mix,JxC
+prw01.064,J24d5,5,J2.4,Jackson,F07,2mix,JxC
+prw01.065,E13d5,5,E1.3,Envigo,F08,control,E_cntrl
+prw01.066,E23d5,5,E2.3,Envigo,F08,control,E_cntrl
+prw01.067,C13d5,5,C1.3,Charles River,F09,2mix,ExC
+prw01.068,C23d5,5,C2.3,Charles River,F09,2mix,ExC
+prw01.069,E14d5,5,E1.4,Envigo,F09,2mix,ExC
+prw01.070,E24d5,5,E2.4,Envigo,F09,2mix,ExC
+prw01.071,C14d5,5,C1.4,Charles River,F10,control,C_cntrl
+prw01.072,C24d5,5,C2.4,Charles River,F10,control,C_cntrl
+prw01.073,C15d5,5,C1.5,Charles River,F11,4mix,TxJxExC
+prw01.074,E15d5,5,E1.5,Envigo,F11,4mix,TxJxExC
+prw01.075,J15d5,5,J1.5,Jackson,F11,4mix,TxJxExC
+prw01.076,T15d5,5,T1.5,Taconic,F11,4mix,TxJxExC
+prw01.077,C25d5,5,C2.5,Charles River,F12,4mix,TxJxExC
+prw01.078,E25d5,5,E2.5,Envigo,F12,4mix,TxJxExC
+prw01.079,J25d5,5,J2.5,Jackson,F12,4mix,TxJxExC
+prw01.080,T25d5,5,T2.5,Taconic,F12,4mix,TxJxExC

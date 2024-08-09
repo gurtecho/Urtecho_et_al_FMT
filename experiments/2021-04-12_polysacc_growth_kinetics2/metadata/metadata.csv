@@ -1,0 +1,61 @@
+﻿well,polysacc,sample,sample_type,sample_day,sample_dilution,replicate
+B02,Water,jxe.066,Jax,2,10^-1,1
+B03,Arabinogalactan,jxe.066,Jax,2,10^-1,1
+B04,Pectin,jxe.066,Jax,2,10^-1,1
+B05,Pectic Galactan,jxe.066,Jax,2,10^-1,1
+B06,A_Cellulose,jxe.066,Jax,2,10^-1,1
+B07,Arabinan,jxe.066,Jax,2,10^-1,1
+B08,Cellulose,jxe.066,Jax,2,10^-1,1
+B09,Dextran,jxe.066,Jax,2,10^-1,1
+B10,Mucin,jxe.066,Jax,2,10^-1,1
+B11,MCF,jxe.066,Jax,2,10^-1,1
+C02,Water,jxe.066,Jax,2,10^-1,2
+C03,Arabinogalactan,jxe.066,Jax,2,10^-1,2
+C04,Pectin,jxe.066,Jax,2,10^-1,2
+C05,Pectic Galactan,jxe.066,Jax,2,10^-1,2
+C06,A_Cellulose,jxe.066,Jax,2,10^-1,2
+C07,Arabinan,jxe.066,Jax,2,10^-1,2
+C08,Cellulose,jxe.066,Jax,2,10^-1,2
+C09,Dextran,jxe.066,Jax,2,10^-1,2
+C10,Mucin,jxe.066,Jax,2,10^-1,2
+C11,MCF,jxe.066,Jax,2,10^-1,2
+D02,Water,jxe.066,Jax,2,10^-1,3
+D03,Arabinogalactan,jxe.066,Jax,2,10^-1,3
+D04,Pectin,jxe.066,Jax,2,10^-1,3
+D05,Pectic Galactan,jxe.066,Jax,2,10^-1,3
+D06,A_Cellulose,jxe.066,Jax,2,10^-1,3
+D07,Arabinan,jxe.066,Jax,2,10^-1,3
+D08,Cellulose,jxe.066,Jax,2,10^-1,3
+D09,Dextran,jxe.066,Jax,2,10^-1,3
+D10,Mucin,jxe.066,Jax,2,10^-1,3
+D11,MCF,jxe.066,Jax,2,10^-1,3
+E02,Water,jxe.072,Envigo,2,10^-1,1
+E03,Arabinogalactan,jxe.072,Envigo,2,10^-1,1
+E04,Pectin,jxe.072,Envigo,2,10^-1,1
+E05,Pectic Galactan,jxe.072,Envigo,2,10^-1,1
+E06,A_Cellulose,jxe.072,Envigo,2,10^-1,1
+E07,Arabinan,jxe.072,Envigo,2,10^-1,1
+E08,Cellulose,jxe.072,Envigo,2,10^-1,1
+E09,Dextran,jxe.072,Envigo,2,10^-1,1
+E10,Mucin,jxe.072,Envigo,2,10^-1,1
+E11,MCF,jxe.072,Envigo,2,10^-1,1
+F02,Water,jxe.072,Envigo,2,10^-1,2
+F03,Arabinogalactan,jxe.072,Envigo,2,10^-1,2
+F04,Pectin,jxe.072,Envigo,2,10^-1,2
+F05,Pectic Galactan,jxe.072,Envigo,2,10^-1,2
+F06,A_Cellulose,jxe.072,Envigo,2,10^-1,2
+F07,Arabinan,jxe.072,Envigo,2,10^-1,2
+F08,Cellulose,jxe.072,Envigo,2,10^-1,2
+F09,Dextran,jxe.072,Envigo,2,10^-1,2
+F10,Mucin,jxe.072,Envigo,2,10^-1,2
+F11,MCF,jxe.072,Envigo,2,10^-1,2
+G02,Water,jxe.072,Envigo,2,10^-1,3
+G03,Arabinogalactan,jxe.072,Envigo,2,10^-1,3
+G04,Pectin,jxe.072,Envigo,2,10^-1,3
+G05,Pectic Galactan,jxe.072,Envigo,2,10^-1,3
+G06,A_Cellulose,jxe.072,Envigo,2,10^-1,3
+G07,Arabinan,jxe.072,Envigo,2,10^-1,3
+G08,Cellulose,jxe.072,Envigo,2,10^-1,3
+G09,Dextran,jxe.072,Envigo,2,10^-1,3
+G10,Mucin,jxe.072,Envigo,2,10^-1,3
+G11,MCF,jxe.070,Envigo,2,10^-1,3

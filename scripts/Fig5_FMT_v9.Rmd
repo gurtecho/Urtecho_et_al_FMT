@@ -1,0 +1,1938 @@
+---
+title: "fig5_PolysaccharideMuribac"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+setwd("~/Dropbox/fmt/scripts/")
+library(tidyverse)
+library(wesanderson)
+library(ggthemes)
+library(data.table)
+library(tidytext)
+library(cowplot)
+#library(proxy)
+
+#source("CompteSpearmanCorrelationAndMelt.R")
+
+#Function to Convert to a pseudo log scale to wherein negative values may be "logged" i.e. log2(-8) = -3:
+
+ven <- c('#FAAF40',"#1B75BB","#37B34A", "#F05A28")
+pal <- wes_palette("Zissou1", 100, type = "continuous")
+
+
+options(stringsAsFactors = F)
+options(scipen = 10000)
+
+subgroups <- read.csv('../tables/OTUSubgroups.csv') %>% mutate(subgroup =as.factor(subgroup))
+
+CorrectedData <- data.table::fread("~/Dropbox/fmt/experiments/20230516_FMT_MaPS-Seq2/20230823_MaPSFMT_redo_ProcessingScripts/ProcessedResults/CorrectedDataFrame.csv") %>% 
+                separate(col = Sample,     #split into column
+                       into = c('date', 'MouseGroup', 'Mouse_num', 'replicate'),
+                       sep = '-', remove = F) %>% 
+                select(-date)  #remove unnecessary date file
+  
+
+Tax_Table <- data.table::fread("~/Dropbox/fmt/experiments/20230516_FMT_MaPS-Seq2/20230823_MaPSFMT_redo_ProcessingScripts/ProcessedResults/tax.csv") %>% select(-ends_with('conf'))
+
+otumapping <- read.csv("../experiments/20230516_FMT_MaPS-Seq2/processed_data/DeSeq_OTU_dynamics.csv")
+
+```
+
+
+
+### NOTES ###
+This time was a bit tricky, I had to do a few data transformations since not so strong associations as last time (probably for the best)
+1) log-modulus transform Z scores so everything is log2 of its absolute values (negative coassociations can't be logged normally)
+2) replace NA values in Matrix with 0s
+3) subset OTUs that appear in mouse particles over .1% abundance
+
+#Assemble all prevalent sets
+```{r}
+
+PrevalentSets <- rbind((read.csv("../experiments/20230516_FMT_MaPS-Seq2/processed_data/PrevalentSet_noclust1_J.csv") %>% 
+  mutate(MouseGroup = 'Jax')),
+(read.csv("../experiments/20230516_FMT_MaPS-Seq2/processed_data/PrevalentSet_noclust1_E.csv") %>% 
+  mutate(MouseGroup = 'Env')),
+(read.csv("../experiments/20230516_FMT_MaPS-Seq2/processed_data/PrevalentSet_noclust1_JEJ.csv") %>% 
+  mutate(MouseGroup = 'Env2Jax')), 
+  (read.csv("../experiments/20230516_FMT_MaPS-Seq2/processed_data/PrevalentSet_noclust1_JEE.csv") %>% 
+  mutate(MouseGroup = 'Jax2Env'))) %>% 
+  select(-X, -X.2, -X.1) %>% mutate(MouseGroup = as.factor(MouseGroup)) %>%
+    group_by(MouseGroup) %>% 
+  mutate(Zscore = ifelse(is.infinite(Zscore), max(Zscore[!is.infinite(Zscore)]), Zscore)) %>% ungroup()
+
+#Bound Zscores if negative
+#PrevalentSets$Zscore[PrevalentSets$Zscore < -1e6] <- -16
+
+#How many associations?
+PrevalentSets %>% filter(MouseGroup != 'Jax2Env') %>% nrow()
+
+#How many significant associations total?
+PrevalentSets %>% filter(MouseGroup != 'Jax2Env' & Significant == T) %>% nrow()
+
+#How many significant associations by mouse group?
+PrevalentSets %>% filter(MouseGroup != 'Jax2Env' & Significant == T) %>% group_by(MouseGroup) %>% 
+  mutate(num_interactions = n()) %>% select(MouseGroup, num_interactions) %>% ungroup %>% distinct
+
+bugColors <- setNames(c(scales::hue_pal()(length(unique(PrevalentSets$Class_OTU1)))), c(levels(as.factor(PrevalentSets$Class_OTU1)))) 
+
+write.csv(bugColors,"../misc/bugColors_MapsSeq_redo.csv", quote = F, row.names = T)
+
+```
+
+Find OTUs to keep
+```{r}
+
+# Assuming J, E, JEE, JEJ are vectors/lists you want to iterate over. 
+groups <- c("J", "E", "JEE", "JEJ")
+
+# Create a list to hold the results for each group
+otus_to_keep_list <- list()
+
+for (group_name in groups) {
+  temp <- CorrectedData %>% 
+    filter(MouseGroup == group_name) %>%
+    select(OTU, Count) %>%
+    group_by(OTU) %>%
+    mutate(Count = ifelse(Count > 1, 1, 0)) %>% #binarize counts since mapsseq not quantitative
+    mutate(OTU_Count = sum(Count)) %>%
+    ungroup() %>%
+    select(-Count) %>%
+    distinct() %>%
+    mutate(OTU_relabd = (OTU_Count / sum(OTU_Count)) * 100) %>%
+    filter(OTU_relabd > 0.2) %>%
+    select(OTU) %>%
+    distinct()
+
+#remove donor taxa for recipient analysis
+if (group_name == "J") {
+  exclusion_data <- PrevalentSets %>% select(OTU1, OTU1Type) %>%
+                      distinct() %>%
+                      filter(OTU1Type == 'Donor Taxa')
+  temp <- anti_join(temp, exclusion_data, by = c('OTU' = "OTU1")) #%>% filter(OTU != 'Otu1')
+}
+
+  #remove recipient taxa for recipient analysis
+  if (group_name == "E") {
+  exclusion_data <- PrevalentSets %>% select(OTU1, OTU1Type) %>%
+                      distinct() %>%
+                      filter(OTU1Type == 'Recipient Taxa')
+  temp <- anti_join(temp, exclusion_data, by = c('OTU' = "OTU1")) #%>% filter(OTU != 'Otu1') #gotta manually remove Otu1 since oesn't show up in OTU1 column
+}
+
+   print(paste("# OTUs in", group_name, ":", nrow(temp)))
+   
+   otus_to_keep_list[[group_name]] <- unique(temp$OTU)
+
+ }
+
+# If you want to access the result for a particular group, say 'E':
+result_for_E <- otus_to_keep_list[["E"]]
+
+```
+
+
+5A - Env2Jax
+```{r}
+
+#group <- 'E' #can change to other mouse groups too
+
+samples <- c('J','E','JEJ', 'JEE') #list of mouse groups to loop through
+num_clusters <- c(4,4,4,4) #specify the number of cuts for cuttree
+#samples <- c('E')
+
+#FOR SOME REASon, pre FMT stops after generating associations, just keep running last few lines
+
+for (i in 1:length(samples)) {
+  set.seed(123)
+  print(samples[i])
+  
+    group <- samples[i]
+    num_cuts <- num_clusters[i]
+    
+#Need to duplicate df to mirror heatmap
+PrevalentSet <-
+  rbind(
+  read.csv(
+     paste("../experiments/20230516_FMT_MaPS-Seq2/processed_data/PrevalentSet_noclust1_",group, ".csv", sep = '')) %>%
+        filter(OTU1 %in% otus_to_keep_list[[group]] & OTU2 %in% otus_to_keep_list[[group]]) %>% #filter group specific
+    select(OTU1ColorName, OTU2ColorName, Zscore, Significant, Class_OTU1, Order_OTU1) %>% distinct(),
+     read.csv(
+       paste("../experiments/20230516_FMT_MaPS-Seq2/processed_data/PrevalentSet_noclust1_",group, ".csv", sep = '')) %>%
+           filter(OTU1 %in% otus_to_keep_list[[group]] & OTU2 %in% otus_to_keep_list[[group]]) %>% #filter group-specific
+    select(OTU1ColorName, OTU2ColorName, Zscore, Significant, Class_OTU2, Order_OTU2) %>% distinct() %>%
+   rename(c("OTU1ColorName"="OTU2ColorName", "OTU2ColorName"="OTU1ColorName", "Class_OTU1"="Class_OTU2", "Order_OTU1"="Order_OTU2"))) %>%
+  mutate(Zscore = ifelse(is.infinite(Zscore), max(Zscore[!is.infinite(Zscore)], na.rm = TRUE), Zscore)) %>% ungroup() %>% mutate(Zscore = sign(Zscore) * log2(1 + abs(Zscore))) #log-modulus transformation
+
+  
+
+PrevalentSet.cast <- PrevalentSet %>%
+  filter(OTU1ColorName != 'NA') %>% 
+  select(OTU1ColorName, OTU2ColorName, Zscore) %>% distinct() %>% 
+  reshape2::dcast(OTU1ColorName~OTU2ColorName)
+
+#clustering
+PrevalentSet.cast.matrix <- as.matrix(PrevalentSet.cast[, -c(1)])
+
+#replace NAs NOT NECESSARY IF USING PROXY COMMAND or pairwise.complete.obs
+#PrevalentSet.cast.matrix <- ifelse(is.na(PrevalentSet.cast.matrix), 0 , PrevalentSet.cast.matrix)
+
+
+#continue with clustering
+rownames(PrevalentSet.cast.matrix) <- PrevalentSet.cast$OTU1ColorName
+
+#adapt matrix for to exclude missing values
+correlation_matrix <- cor(PrevalentSet.cast.matrix, use = "pairwise.complete.obs", method = 'spearman') 
+
+#Calculate correlation of zscore and compute distance
+#disttest <- dist(sqrt(2*(1-as.matrix(cor(correlation_matrix))))) #what miles gave me, cluster by correlation of correlations...
+disttest <-  stats::dist(sqrt(2*(1-as.matrix(correlation_matrix)))) #cluster by transformed correlation converted to distance
+#disttest <- stats::dist(as.matrix(correlation_matrix))  #cluster by correlation matrix
+#disttest <- stats::dist(as.matrix(PrevalentSet.cast.matrix))  #cluster by regular matrix
+
+  # cluster using ward.D2
+clustres <- hclust(disttest,"ward.D2")
+
+#get subgroups 
+branchcuts <- cutree(clustres, k = num_cuts) %>% 
+  as.data.frame() %>% 
+  rownames_to_column('OTU1ColorName') %>% 
+  left_join(PrevalentSets %>% select(OTU1ColorName, 'Otu'=OTU1) %>% distinct()) %>% 
+    mutate(Otu = gsub('Otu', '', Otu)) %>%
+  rename(!!paste0('community_', group) := .) %>% select(-OTU1ColorName)
+  
+  assign(paste0("branchcuts_", group), branchcuts)
+
+
+
+PrevalentSet.cast$order <- clustres$order
+PrevalentSet.cast.dendro <- as.dendrogram(clustres) #create dendrogram
+
+
+# Create dendro
+dendro.plot <- ggdendro::ggdendrogram(data = PrevalentSet.cast.dendro, 
+                            rotate=FALSE) + 
+                  coord_flip() + scale_y_reverse() + scale_x_reverse() + 
+                  theme(axis.line = element_blank(),
+                        axis.text = element_blank()) + theme_void()
+#####
+
+# Preview the plot
+print(dendro.plot)
+#write out if need be
+PrevalentSet.cast.long <- reshape2::melt(PrevalentSet.cast, id = c("OTU1ColorName", "order")) %>% distinct()
+
+#reorder
+#PrevalentSet.cast.order <- order.dendrogram(PrevalentSet.cast.dendro)
+PrevalentSet.cast.long$OTU1ColorName <- factor(x = PrevalentSet.cast.long$OTU1ColorName,
+                               levels = PrevalentSet.cast$OTU1ColorName[PrevalentSet.cast$order], 
+                               ordered = TRUE)
+
+temp <- PrevalentSet.cast.long %>% 
+          select(OTU1ColorName, OTU2ColorName=variable, Zscore = 'value') %>% 
+          left_join(., 
+            (PrevalentSet %>% 
+               select(OTU1ColorName, OTU2ColorName, Significant, 
+                      Class_OTU1)), 
+            by = c("OTU1ColorName", "OTU2ColorName")) %>% 
+          left_join(., select(PrevalentSets, OTU1, OTU1ColorName, OTU1Type)) %>% distinct() %>%
+          left_join(., select(otumapping, OTU1=OTU, log2FoldChange, emergence)) %>% distinct() %>%
+    mutate(Zscore = replace_na(Zscore, 0))
+
+#heatmap
+#y_min <- round(min(temp$Zscore, na.rm = T),digits = -1)
+#y_max <- round(max(temp$Zscore, na.rm = T),digits = -1)
+y_min <- floor(min(temp$Zscore, na.rm = T))
+y_max <- ceiling(max(temp$Zscore, na.rm = T))
+
+clustr <- temp %>% 
+                 ggplot(aes(x = OTU1ColorName, y = OTU2ColorName, fill = Zscore)) +
+  geom_tile(color = 'white') +
+  scale_fill_gradient2(low="blue", high="darkred",midpoint = 0, breaks = seq(y_min, y_max, by = (y_max-y_min)/5)) +
+  theme_cowplot() +
+  scale_y_discrete(limits = rev(PrevalentSet.cast.long$OTU1ColorName[PrevalentSet.cast$order])) +
+  scale_x_discrete(limits = rev(PrevalentSet.cast.long$OTU1ColorName[PrevalentSet.cast$order])) +
+  theme(
+    axis.text.x = ggtext::element_markdown(angle = 90, vjust = 0.35, hjust=1, size = 9),
+    axis.text.y = ggtext::element_markdown(size = 9)) +
+  labs(fill = "Co-Assoc.\nScore")  +
+  xlab("OTU X") +
+  ylab("OTU Y") +
+  geom_point(data=function(x){x[temp$Significant == TRUE, ]},size=.3,color="black", fill = 'black')
+
+
+
+corplot_fam <- PrevalentSet %>% select(OTU1ColorName, Class_OTU1) %>% distinct() %>%
+  ggplot(., aes(OTU1ColorName, y = 1, fill = Class_OTU1)) +
+  geom_tile(color = 'black') +
+  scale_x_discrete(limits = rev(PrevalentSet.cast.long$OTU1[PrevalentSet.cast$order])) +
+  scale_fill_manual(values = bugColors) +
+  theme_cowplot() + 
+    theme(
+    axis.text.x = ggtext::element_markdown(angle = 90, vjust = 0.35, hjust=1, size = 10),
+    axis.text.y = ggtext::element_markdown()) +
+  theme(legend.position = "right")
+
+corplot_fam
+
+#order_info <- rev(PrevalentSet.cast.long$OTU1ColorName[PrevalentSet.cast$order])
+
+corplot_fc <-  temp %>% select(OTU1ColorName, emergence) %>% na.omit() %>% distinct() %>% 
+  left_join(PrevalentSet,.) %>% select(OTU1ColorName,emergence) %>% distinct() %>%
+  ggplot(., aes(OTU1ColorName, y = 1, fill=factor(emergence, levels = c('unchanged', 'depleted', 'enriched')))) +
+  geom_tile(color = 'black') +
+  scale_x_discrete(limits = rev(PrevalentSet.cast.long$OTU1ColorName[PrevalentSet.cast$order])) +
+  scale_fill_manual(values = c('gray80','#000000','#ff0000')) +
+  labs(fill = 'Emergence') +
+  theme_cowplot() +
+    theme(
+    axis.text.x = ggtext::element_markdown(angle = 90, vjust = 0.35, hjust=1, size = 10),
+    axis.text.y = ggtext::element_markdown()) +
+  theme(legend.position = "right")
+
+corplot_fc
+
+ggsave(paste("../figs/fig5/", group, "/emergence_mapSeq_", group, ".pdf",sep = ''), corplot_fc,width = 6, height = 1.5)
+
+#OTU1 missing from these...
+corplot_type <- data.frame(OTU1ColorName = rev(PrevalentSet.cast.long$OTU1[PrevalentSet.cast$order])) %>%
+  left_join(., select(PrevalentSets, OTU1ColorName, OTU1Type) %>% distinct(), by = 'OTU1ColorName') %>%
+    mutate(OTU1Type= ifelse(OTU1ColorName == "<b style='color:#377EB8'>Otu1", 'Shared Taxa', OTU1Type)) %>%
+  ggplot(.,aes(OTU1ColorName, y = 1, fill = OTU1Type)) +
+                 geom_tile(color = 'black') + theme_void() +
+  scale_x_discrete(limits = rev(PrevalentSet.cast.long$OTU1ColorName[PrevalentSet.cast$order])) +
+  scale_fill_manual(values = c('#377EB8', '#E41A1C','#828382')) +
+  theme(
+    axis.text.x = ggtext::element_markdown(angle = 90, vjust = 0.35, hjust=1, size = 8),
+    axis.text.y = ggtext::element_markdown(size = 8)) +
+  labs(fill = "Class", x = "OTU 1") 
+corplot_type
+
+
+ggsave(paste("../figs/fig5/", group, "/type_mapSeq_", group, ".pdf",sep = ''), corplot_type, 
+       width = 6, height = 1.5)
+
+#graphic for type and class
+bars <- cowplot::plot_grid(corplot_fam, corplot_fc, nrow = 2)
+
+#print dendrogram
+temp_dendro <- dendro.plot + theme(plot.margin = unit(c(-.3, .5, 1.6, 1), "cm"))
+
+#altogether
+cowplot::plot_grid(temp_dendro, clustr, bars, nrow = 1, rel_widths = c(.25, 1, 1))
+
+ggsave(paste("../figs/fig5/", group, "/5AMaPSSeq_order_noclust1_", group, ".pdf",sep = ''), width = 15, height = 5.5)
+
+}
+```
+
+
+
+
+Are interactions occuring between Env taxa or Env-recipient or recipient-recipient
+```{r}
+
+#uncomment lines to separate engrafted vs unengrafted microbes
+temp <- PrevalentSets %>% 
+  filter(Significant == T) %>% 
+  mutate(interaction_type = ifelse(Zscore > 0, 'Positive', 'Negative')) %>%
+  select(MouseGroup, OTU1Type, OTU2Type,OTU1, OTU2,Class_OTU1, Class_OTU2, interaction_type) %>%
+  mutate(interaction = NA) %>% 
+  distinct() %>%
+  mutate(interaction = ifelse(OTU1Type == 'Donor Taxa' & OTU2Type == 'Donor Taxa', 'Env-Env', interaction),
+         interaction = ifelse(OTU1Type == 'Recipient Taxa' & OTU2Type == 'Recipient Taxa', 'Jax-Jax', interaction),
+         interaction = ifelse(OTU1Type == 'Shared Taxa' & OTU2Type == 'Shared Taxa', 'shared-shared', interaction),
+         interaction = ifelse(OTU1Type == 'Donor Taxa' & OTU2Type == 'Recipient Taxa', 'Env-Jax', interaction),
+         interaction = ifelse(OTU1Type == 'Recipient Taxa' & OTU2Type == 'Donor Taxa', 'Env-Jax', interaction), #do reverse too
+         interaction = ifelse(OTU1Type == 'Shared Taxa' & OTU2Type == 'Donor Taxa', 'Env-shared', interaction),
+         interaction = ifelse(OTU1Type == 'Donor Taxa' & OTU2Type == 'Shared Taxa', 'Env-shared', interaction),
+         interaction = ifelse(OTU1Type == 'Recipient Taxa' & OTU2Type == 'Shared Taxa', 'Jax-shared', interaction),
+         interaction = ifelse(OTU1Type == 'Shared Taxa' & OTU2Type == 'Recipient Taxa', 'Jax-shared', interaction)
+         ) %>% na.omit() 
+
+
+#how many interactions for each?
+num_ints <- (temp %>% group_by(MouseGroup, interaction_type) %>% 
+  mutate(num_interactions = n()) %>% ungroup %>%
+  select(MouseGroup, num_interactions,interaction_type) %>% distinct()) %>% group_by(MouseGroup) %>% mutate(prop_interactions = num_interactions/sum(num_interactions)) %>% ungroup()
+num_ints
+
+temp$interaction <- factor(temp$interaction, levels=c("Env-Env", "Jax-Jax", "Env-Jax", "Env-shared", "Jax-shared", "shared-shared")) 
+
+
+#Sheer # of interactions
+temp %>% 
+  ggplot(., aes(x=interaction, fill =interaction_type)) + 
+  geom_bar(stat = 'count', position = 'stack') + 
+  scale_fill_manual(values = c('#f7941d','#27aae1')) +
+  labs(x= 'Co-association pair', y = '# of Associations', 
+       fill = 'Association Type') +
+  theme_cowplot() + 
+  facet_wrap(~factor(MouseGroup, levels = c('Jax', 'Env', 'Env2Jax', 'Jax2Env')), nrow = 3, strip.position = 'top') +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1,size = 10),
+        axis.text.y = element_text(size=10, color = 'black'),
+        axis.title.x.bottom = element_text(size = 12,color = 'black'),
+        axis.title.y.left = element_text(size = 12,color = 'black'),
+        legend.position = 'right', strip.text = element_text(size = 14), strip.background = element_blank())
+
+ggsave("../figs/s6/s6_ALLInteractionCounts.png", width = 5, height = 5)
+ggsave("../figs/s6/s6_ALLInteractionCounts.pdf", width = 5, height = 5)
+
+```
+
+What is distribution of number of interactions amongst OTUs?
+```{r}
+df <- rbind(
+  temp %>% select(MouseGroup, 'OTU'=OTU1),
+  temp %>% select(MouseGroup, 'OTU'=OTU2)) %>% 
+  group_by(MouseGroup, OTU) %>% mutate(num_OTU_interactions = n()) %>% 
+  ungroup %>% distinct() 
+  
+  
+ggplot(df, aes(num_OTU_interactions, fill = MouseGroup)) + 
+  geom_histogram(bins = 10, color = 'black') + facet_wrap(~MouseGroup) + theme_cowplot() + geom_density()
+  
+```
+
+
+
+#Are engrafting microbes the ones with most interactions? Number of interactions within donor predicts success in recipient?
+
+FIGURE 5D
+
+```{r}
+#What happens to Env microbes?
+group <- 'Env'
+
+engrafted_Envs <- 
+  rbind(PrevalentSets %>% #need to flip Prevalent sets so interactions go both ways correct
+  filter(MouseGroup == group & zpadjusted < .05) %>% #& OTU1Type != 'Recipient Taxa') %>% 
+    select(OTU1, OTU2),
+    rbind(PrevalentSets %>% #need to flip Prevalent sets so interactions go both ways correct
+  filter(MouseGroup == group & zpadjusted < .05) %>%# & OTU2Type != 'Recipient Taxa') %>% 
+    select(OTU1=OTU2, OTU2=OTU1))) %>%  filter(OTU1!=OTU2)%>% distinct() %>% select(OTU1) %>%
+  group_by(OTU1) %>% mutate(num_interactions = n()) %>% 
+  select(OTU1, num_interactions) %>% 
+  left_join(filter(otumapping, OTUType !='NA')%>% select(OTU1=OTU, emergence, OTUType, baseMean,log2FoldChange), .) %>%
+  distinct() #%>% 
+  #filter(OTU1 %in% otus_to_keep_list[["E"]]) %>% na.omit()
+
+
+engrafted_Envs$num_interactions[is.na(engrafted_Envs$num_interactions)] <- 0 
+
+
+#Can look at Env-only OTUs
+corr <- cor.test((engrafted_Envs %>% filter(OTUType == 'Donor Taxa'))$log2FoldChange, (engrafted_Envs %>% filter(OTUType == 'Donor Taxa'))$num_interactions, method = 'spearman',exact=FALSE)$estimate
+pval <-  cor.test((engrafted_Envs %>% filter(OTUType == 'Donor Taxa'))$log2FoldChange, (engrafted_Envs %>% filter(OTUType == 'Donor Taxa'))$num_interactions, method = 'spearman',exact=FALSE)$p.value
+
+engrafted_Envs %>% filter(OTUType == 'Donor Taxa') %>%
+  ggplot(., aes(x=log2FoldChange, y = num_interactions), color = 'black') +
+  #ggplot(., aes(x=baseMean*log2FoldChange, y = num_interactions)) +
+  geom_point(size = 2) + geom_smooth(method = 'lm') + theme_cowplot() +# facet_wrap(~OTUType) +
+  annotate('text', x = .8, y = 15, label = paste('R2 = ', signif(corr, 2), ', p = ', signif(pval, 2), sep = ''), size = 5) +
+  labs(title = '', x = 'Engraftment Efficiency\nin Env2Jax', y = 'Number of interactions in Env')
+
+
+#But it's better to look at Non-recipient taxa fold change! Includes shared and donor-only taxa
+corr <- cor.test((engrafted_Envs %>% filter(OTUType != 'Recipient Taxa'))$log2FoldChange, (engrafted_Envs %>% filter(OTUType != 'Recipient Taxa'))$num_interactions, method = 'spearman',exact=FALSE)$estimate
+pval <-  cor.test((engrafted_Envs %>% filter(OTUType != 'Recipient Taxa'))$log2FoldChange, (engrafted_Envs %>% filter(OTUType != 'Recipient Taxa'))$num_interactions, method = 'spearman',exact=FALSE)$p.value
+
+engrafted_Envs %>% filter(OTUType != 'Recipient Taxa') %>%
+  ggplot(., aes(x=log2FoldChange, y = num_interactions), color = 'black') +
+  #ggplot(., aes(x=baseMean*log2FoldChange, y = num_interactions)) +
+  geom_point(size = 2) + geom_smooth(method = 'lm') + theme_cowplot() +# facet_wrap(~OTUType) +
+  annotate('text', x = .8, y = 25, label = paste('R2 = ', signif(corr, 2), ', p = ', signif(pval, 2), sep = ''), size = 5) +
+  labs(title = '', x = 'Engraftment Efficiency\nin Env2Jax', y = 'Number of interactions in Env')
+
+ggsave("../figs/fig5/5D_DonorOutcomes_correlations.pdf", width = 3.5, height = 4)
+
+
+#cor.test((engrafted_Envs %>% filter(OTUType == 'Donor Taxa'))$log2FoldChange, (engrafted_Envs %>% filter(OTUType == 'Donor Taxa'))$num_interactions, method = 'spearman',exact=FALSE)
+
+#cor.test(engrafted_Envs$baseMean*engrafted_Envs$log2FoldChange, engrafted_Envs$num_interactions, method = 'spearman', exact=FALSE)
+
+```
+
+
+ABUNDANCE IN ENV2JAX CORRELATED WITH THEIR NUMBER OF INTERACTIONS
+
+Figure 5E
+```{r}
+
+group <- 'Env2Jax'
+
+engrafted_Envs <- 
+  rbind(PrevalentSets %>% #need to flip Prevalent sets so interactions go both ways correct
+  filter(MouseGroup == group & zpadjusted < .05) %>%# & OTU1Type != 'Recipient Taxa') %>% 
+    select(OTU1, OTU2),
+    rbind(PrevalentSets %>% #need to flip Prevalent sets so interactions go both ways correct
+  filter(MouseGroup == group & zpadjusted < .05) %>% # & OTU2Type != 'Recipient Taxa') %>% 
+    select(OTU1=OTU2, OTU2=OTU1))) %>%  filter(OTU1!=OTU2)%>% distinct() %>% select(OTU1) %>%
+  group_by(OTU1) %>% mutate(num_interactions = n()) %>% 
+  select(OTU1, num_interactions) %>% left_join(filter(otumapping, OTUType !='NA')%>% select(OTU1=OTU, emergence, OTUType, baseMean,log2FoldChange), .) %>%
+  distinct() 
+
+engrafted_Envs$num_interactions[is.na(engrafted_Envs$num_interactions)] <- 0 
+
+
+engrafted_Envs %>% #filter(OTUType != 'Recipient Taxa') %>%
+  ggplot(., aes(factor(emergence, levels = c('depleted', 'unchanged', 'enriched')), 
+                                   num_interactions)) + 
+  stat_boxplot(geom='errorbar', width = .1) +
+  geom_boxplot(notchwidth = .2, outlier.shape = NA, width = .4, fill = 'white') +
+    geom_jitter(alpha = .4, aes(color = OTUType), width = .2) + 
+    scale_color_manual(values = c('#377EB8', '#E41A1C','#828382')) +
+  theme_cowplot() +
+  ggsignif::geom_signif(
+    comparisons = list(c('depleted', 'unchanged'), 
+                       c('unchanged', 'enriched'),
+                       c('enriched', 'depleted')),
+    test = 'wilcox.test',
+    y_position = c(19, 42, 45)
+  ) +
+  labs(x = 'OTU FMT Outcome', y = '# of Interactions in Env2Jax', fill =NA) + 
+  theme(axis.text.x = element_text(size=16,color = 'black', angle = 45, hjust = 1), 
+        axis.text.y = element_text(size=16, color = 'black'),
+        axis.title.x.bottom = element_text(size = 16,color = 'black'),
+        axis.title.y.left = element_text(size = 16,color = 'black'),
+        legend.text = element_text(size=12,color = 'black'),
+        legend.title = element_text(size = 14, hjust = .5,color = 'black')) + 
+    theme(
+  legend.position = c(0.01, 0.95), 
+  legend.justification = c(0, 1),
+  legend.background = element_rect(fill="grey90", color=NA),
+  legend.key.size = grid::unit(.6, "cm"),  # Increase the key size
+  legend.text = element_text(size = 12)     # Adjust text size accordingly, if needed
+)
+
+ggsave("../figs/fig5/5Ealt_FMTOutcomes.pdf", width = 3.5, height = 4)
+
+
+```
+
+#Are interactions conserved across FMT
+```{r}
+
+#group <- 'Jax'
+
+#need to flip Prevalent sets so interactions go both ways correct
+interactions <- 
+  rbind(PrevalentSets %>% rename(OTU1=OTU2, OTU2=OTU1, Class_OTU1=Class_OTU2, Class_OTU2=Class_OTU1, OTU1Type=OTU2Type, OTU2Type=OTU1Type),
+        PrevalentSets) %>%  filter(OTU1!=OTU2)%>% distinct() %>%
+  select(OTU1, OTU2, Class_OTU1, Class_OTU2, OTU1Type, OTU2Type, Significant, Zscore, MouseGroup) %>% 
+  mutate(interaction_type = ifelse(Zscore > 0, 'Positive', 'Negative'),
+         interaction_type = ifelse(Significant == T, interaction_type, 'None')) %>% filter(Significant == T) %>%
+  #select(-Zscore, -Significant) %>% 
+ # select(OTU1, OTU2, MouseGroup,  interaction_type)
+  distinct()
+
+jax_interactions <- filter(interactions, MouseGroup == 'Jax') %>% rename(jax_interaction_type=interaction_type) %>% 
+                    select(OTU1, OTU2, jax_interaction_type) %>% distinct()
+env_interactions <- filter(interactions, MouseGroup == 'Env') %>% rename(env_interaction_type=interaction_type) %>% 
+                    select(OTU1, OTU2, env_interaction_type) %>% distinct()
+
+postfmt_interactions <- filter(interactions, MouseGroup == 'Env2Jax') %>% 
+  rename(env2jax_interaction_type=interaction_type) %>% filter(Significant == T) %>%
+                        left_join(., jax_interactions, by = c('OTU1', 'OTU2')) %>%
+                        left_join(., env_interactions, by = c('OTU1', 'OTU2')) %>% 
+  mutate(jax_interaction_type = ifelse(is.na(jax_interaction_type), 'None', jax_interaction_type),
+         env_interaction_type = ifelse(is.na(env_interaction_type), 'None', env_interaction_type)) %>%
+          mutate(`Jax` = ifelse(jax_interaction_type == env2jax_interaction_type, T, F),
+                 `Env` = ifelse(env_interaction_type == env2jax_interaction_type, T, F),
+                 intermicrobiome_conservation = ifelse(env_interaction_type == jax_interaction_type, T, F)) %>%
+          mutate(interaction_source = NA,
+                 interaction_source = ifelse(Jax == T & Env == T, 'Both', interaction_source),
+                 interaction_source = ifelse(Jax == T & Env == F, 'Jax', interaction_source),
+                 interaction_source = ifelse(Jax == F & Env == T, 'Env', interaction_source),
+                 interaction_source = ifelse(Jax == F & Env == F, 'Neither', interaction_source))  #See where postFMT interactions came from
+
+category_proportions <- table(postfmt_interactions$interaction_source) / nrow(postfmt_interactions)
+
+# Make the plot
+ggplot(postfmt_interactions, aes(x = 1, y = value, width = category_proportions)) +
+  geom_bar(position = 'stack') +
+  labs(title = "Proportional Boxplot", x = "Category", y = "Value") +
+  theme_minimal()
+
+
+postfmt_interactions %>% 
+  select(Class_OTU1, Class_OTU2, `Env`, `Jax`) %>% # add inttermicrobiome_conservation to look at in 
+  melt(id.vars = c('Class_OTU1', 'Class_OTU2')) %>%
+mutate(`Interaction \nConserved?` = case_when(
+    value == TRUE ~ "True",
+    value == FALSE ~ "False",
+    is.na(value) ~ "Not Observed"
+  )) %>%
+  mutate(`Interaction \nConserved?` = factor(`Interaction \nConserved?`, levels = c("True", "False", "Not Observed"))) %>%
+  ggplot(., aes(variable, fill=`Interaction \nConserved?`)) + geom_bar(stat = 'count') + 
+  theme_cowplot() + 
+  scale_fill_manual(values = c('#0077be','#ffd700', 'grey60')) +
+  theme(axis.text = element_text(size = 16))
+
+ggsave("../figs/fig5/Interaction_Conservation.pdf", width = 4, height = 3.5)  
+    #+ 
+#  facet_grid(Class_OTU1~Class_OTU2). #uncomment if want to separate by OTU
+
+```
+
+
+Sankey Diagram with dendrogram
+```{r}
+#install.packages("networkD3")
+library(networkD3)
+
+#fix branchcut labels
+
+branchcuts_E[, 1] <- ifelse(branchcuts_E[, 1] == 1, 10,
+                    ifelse(branchcuts_E[, 1] == 3, 20,
+                           ifelse(branchcuts_E[, 1] == 4, 30,
+                                  ifelse(branchcuts_E[, 1] == 2, 40, branchcuts_E[, 1]))))
+branchcuts_E[, 1] <- branchcuts_E[, 1]/10
+
+branchcuts_J[, 1] <- ifelse(branchcuts_J[, 1] == 4, 10,
+                    ifelse(branchcuts_J[, 1] == 2, 20,
+                           ifelse(branchcuts_J[, 1] == 3, 30,
+                                  ifelse(branchcuts_J[, 1] == 1, 40, branchcuts_J[, 1]))))
+branchcuts_J[, 1] <- branchcuts_J[, 1]/10
+
+
+branchcuts_JEJ[, 1] <- ifelse(branchcuts_JEJ[, 1] == 1, 10,
+                    ifelse(branchcuts_JEJ[, 1] == 3, 20,
+                           ifelse(branchcuts_JEJ[, 1] == 4, 30,
+                                  ifelse(branchcuts_JEJ[, 1] == 2, 40, branchcuts_JEJ[, 1]))))
+branchcuts_JEJ[, 1] <- branchcuts_JEJ[, 1]/10
+
+
+#create nodes
+env_df <- full_join(branchcuts_E, branchcuts_JEJ, by = 'Otu') %>% #full_join(., jax_spinglass, by = 'Otu') %>%
+  mutate(across(everything(), ~replace(., is.na(.), 0))) %>% 
+  mutate(branchcuts_JEJ = paste('env2jax', as.character(community_JEJ+1)),
+         community_rec = paste('zenv',as.character(community_E+1))) %>% 
+  mutate(value = 1, OTUType = 'Env Taxa') %>% select(Otu, branchcuts_JEJ, community_rec, value, OTUType)
+
+jax_df <- full_join(branchcuts_J, branchcuts_JEJ, by = 'Otu') %>%
+  mutate(across(everything(), ~replace(., is.na(.), 0))) %>% 
+  mutate(branchcuts_JEJ = paste('env2jax', as.character(community_JEJ+1)),
+         community_rec = paste('jax',as.character(community_J+1))) %>% 
+  mutate(value = 1, OTUType = 'Jax Taxa') %>% select(Otu, branchcuts_JEJ, community_rec, value, OTUType)
+
+df <- rbind(env_df, jax_df) %>% filter(community_rec != 'zenv 1' & community_rec != 'jax 1') %>%
+  # left_join(otumapping %>% select('Otu'=OTU, OTUType) %>% #can add regular otutype here
+  #             mutate(Otu = gsub("Otu", "", Otu))) %>% 
+  left_join(PrevalentSets %>% select('Otu'=OTU1, Class_OTU1) %>% 
+              distinct() %>% mutate(Otu = gsub("Otu", "", Otu))) %>%
+  arrange(community_rec, branchcuts_JEJ, OTUType)
+
+# Convert to ordered factors
+#df$community_rec <- factor(df$community_rec, levels = unique(df$community_rec), ordered = TRUE)
+
+df$community_rec <- factor(df$community_rec, levels = unique(df$community_rec), ordered = TRUE)
+df$branchcuts_JEJ <- factor(df$branchcuts_JEJ, 
+                            levels = c("env2jax 1", "env2jax 2", "env2jax 3", "env2jax 4", "env2jax 5"), 
+                            ordered = TRUE)
+
+#df$OTUType <- factor(df$OTUType, levels = unique(df$OTUType), ordered = TRUE)
+
+
+nodes <- data.frame(name=c(as.character(df$community_rec), as.character(factor(df$branchcuts_JEJ, levels = c("env2jax 1", "env2jax 2", "env2jax 3", "env2jax 4", "env2jax 5"), ordered = TRUE))) %>% unique()) %>% filter(name != 'zenv 1' & name != 'jax 1') %>% arrange(name)
+
+
+# Create an ordered factor for the 'group' column
+nodes$group <- as.factor(nodes$name)
+levels(nodes$group) <- levels(nodes$group)[order(levels(nodes$group))]
+
+# Create the links data frame
+df$IDsource=match(df$community_rec, nodes$name)-1
+df$IDtarget=match(df$branchcuts_JEJ, nodes$name)-1
+
+#add Type information
+
+head(df)
+
+#color links
+# Create a column 'LinkColor' in df which is the same as 'IDsource'
+# Modify the original data frame to include a 'group' column, which will be used for coloring
+df$group <- df$community_rec
+
+
+# Define a color scale
+#my_color <- 'd3.scaleOrdinal() .domain(["Donor Taxa", "Recipient Taxa", "Shared Taxa"]) .range(["#E41A1C","#828382","#377EB8"])'
+my_color <- 'd3.scaleOrdinal() .domain(["Env Taxa", "Jax Taxa"]) .range(["#E41A1C","#377EB8"])'
+
+
+# Create the Sankey diagram
+sankey <- sankeyNetwork(Links =  df, Nodes = nodes, Source = "IDsource",
+                        Target = "IDtarget", Value = "value", 
+                        NodeID = "name",
+                        units = "TWh", 
+                        width = 600, height = 400,
+                        colourScale = my_color, 
+                        LinkGroup = "OTUType",
+                        iterations = 0)
+                      
+
+# Show the Sankey diagram
+print(sankey)
+
+```
+
+
+Save sankey after manual organization
+```{r}
+require(htmlwidgets)
+saveWidget(sankey, file="../figs/fig5/Sankey.html")
+
+require(webshot)
+webshot("../figs/fig5/Sankey.html", "../figs/fig5/Sankey.pdf")
+```
+
+Print family on recipients and then on donor
+
+```{r}
+
+typeColors <- setNames(c("#E41A1C","#828382", "#377EB8"), c("Recipient Taxa", "Shared Taxa", "Donor Taxa"))
+
+
+# Arrange the data and set levels
+df <- df %>% arrange(community_rec, branchcuts_JEJ)
+df$branchcuts_JEJ <- factor(df$branchcuts_JEJ, levels = c("env2jax 1", "env2jax 2", "env2jax 3", "env2jax 4", "env2jax 5", "env2jax 6","env2jax 7"), ordered = TRUE)
+df$community_rec <- factor(df$community_rec, levels = unique(df$community_rec), ordered = TRUE)
+
+plot_list <- list()
+
+unique_communities <- unique(df$community_rec)
+
+for (i in seq_along(unique_communities)) {
+  community <- unique_communities[i]
+  temp_df <- df[df$community_rec == community,]
+  temp_df$Otu <- factor(temp_df$Otu, levels = rev(temp_df$Otu), ordered = TRUE)
+
+  
+  p <- ggplot(temp_df, aes(y = Otu, x = 1, fill = Class_OTU1)) +
+    geom_tile(color = 'white') +
+    scale_fill_manual(values = bugColors) +
+    #scale_y_reverse() +
+   # theme_cowplot() +
+    theme_void() +
+    theme(
+      axis.text.y = ggtext::element_markdown(angle = 0, vjust = 0.5, hjust = 1, size = 10),
+      axis.text.x = element_blank(),
+      strip.background = element_blank()
+    ) +
+    theme(legend.position = "right") +
+    labs(title = paste("Community:", community))
+    
+    
+  plot_list[[i]] <- p
+}
+
+fam_fig <- gridExtra::grid.arrange(grobs = plot_list, ncol = 1)
+
+ggsave('../figs/fig5/family_sankey_rec.pdf', fam_fig, height = 15, width = 8)
+
+```
+
+
+
+```{r}
+
+# Arrange the data and set levels
+df <- df %>% arrange(branchcuts_JEJ,community_rec) %>% mutate(Otu=paste(community_rec, Otu))
+df$branchcuts_JEJ <- factor(df$branchcuts_JEJ, levels = c("env2jax 1", "env2jax 2", "env2jax 3", "env2jax 4", "env2jax 5", "env2jax 6", "env2jax 7"), ordered = TRUE)
+df$community_rec <- factor(df$community_rec, levels = unique(df$community_rec), ordered = TRUE)
+
+plot_list <- list()
+
+unique_communities <- unique(df$branchcuts_JEJ)
+
+for (i in seq_along(unique_communities)) {
+  community <- unique_communities[i]
+  temp_df <- df[df$branchcuts_JEJ == community,]
+  temp_df$Otu <- factor(temp_df$Otu, levels = rev(temp_df$Otu), ordered = TRUE)
+
+  
+  p <- ggplot(temp_df, aes(y = Otu, x = 1, fill = Class_OTU1)) +
+    geom_tile(color = 'white') +
+    scale_fill_manual(values = bugColors) +
+    #scale_y_reverse() +
+   # theme_cowplot() +
+    theme_void() +
+    theme(
+      axis.text.y = ggtext::element_markdown(angle = 0, vjust = 0.5, hjust = 1, size = 10),
+      axis.text.x = element_blank(),
+      strip.background = element_blank()
+    ) +
+    theme(legend.position = "right") +
+    labs(title = paste("Community:", community))
+    
+  plot_list[[i]] <- p
+}
+
+fam_fig <- gridExtra::grid.arrange(grobs = plot_list, ncol = 1)
+
+ggsave('../figs/fig5/family_sankey_post.pdf', fam_fig, height = 15, width = 8)
+
+```
+
+
+Do Jax OTUs engraft without losing the spatial association?
+
+Approach: Calculte the number of interactions of jax microbiota in jax, then calculate their number of interactions in Env2Jax. 
+
+```{r}
+
+temp <- full_join(
+PrevalentSets %>% filter(Significant == T & MouseGroup == 'Jax') %>% distinct() %>%
+  filter(OTU1 %in% otus_to_keep_list[['J']]) %>%
+  select(OTU1,MouseGroup) %>% group_by(OTU1) %>% mutate(`Interactions\nin Jax` = n()) %>% ungroup() %>% 
+  select(OTU1, `Interactions\nin Jax`) %>% distinct(),
+PrevalentSets %>% filter(Significant == T & MouseGroup == 'Env2Jax') %>% distinct() %>%
+    filter(OTU1 %in% otus_to_keep_list[['JEJ']]) %>%
+  select(OTU1,MouseGroup) %>% group_by(OTU1) %>% mutate(`Interactions\nin Env2Jax` = n()) %>% ungroup() %>%
+  select(OTU1, `Interactions\nin Env2Jax`) %>% distinct()) %>% 
+  filter(OTU1 %in% otus_to_keep_list[['J']]) %>%
+  replace_na(list(`Interactions\nin Env2Jax` = 0)) %>%
+  mutate(`Stable?` = if_else(OTU1 %in% otus_to_keep_list[['JEJ']], "T", "F")) #Check if OTU was present in Env2Jax
+
+
+a <- temp %>% melt(id.vars = c('OTU1', 'Stable?')) %>%
+  ggplot(aes(x = variable, y = value, color = `Stable?`, group = OTU1)) +
+  geom_line(alpha = .5) +
+  geom_point(alpha = .8) +
+  scale_color_manual(values =  c("grey60","dodgerblue")) +
+  labs(
+    title = "Jax Microbiota: # of Interactions through FMT",
+    x = "",
+    y = "Number of Interactions"
+  ) + theme_cowplot() +
+  theme(axis.text = element_text(size = 12))
+
+#Correlation for ones that engraft,
+
+temp_filtered <- temp %>% filter(`Stable?` == "T")
+t.test(temp_filtered$`Interactions\nin Jax`, temp_filtered$`Interactions\nin Env2Jax`, alternative = 'less')
+
+PrevalentSets %>% select(OTU1, Significant, MouseGroup)
+
+```
+
+
+Cool, OTUs that are stable actually increase in structuring. who are they interacting with? Look at who retained/interacting taxa are interacting with
+
+```{r}
+
+#interaction proportions in Jax
+b <- PrevalentSets %>% filter(OTU1 %in% temp_filtered$OTU1 & MouseGroup == 'Jax') %>%
+  filter(Significant == T) %>% 
+   filter(OTU2 %in% otus_to_keep_list[['JEJ']]) %>%
+   select(OTU1, OTU2, OTU1Type, OTU2Type) %>% distinct() %>% 
+   count(OTU2Type) %>%
+   mutate(proportion = n / sum(n)) %>%
+  ggplot(., aes(x = "", y = proportion, fill = OTU2Type)) +
+  geom_bar(stat = "identity", position = 'stack') +
+  ylab("Relative Proportion") +
+  xlab("Interacting Partner\nin Jax") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c('#0077be','#ffd700', 'grey60')) +
+  theme_cowplot() +
+  theme(axis.text = element_text(size = 12))
+
+#interaction proportions after FMT
+c <- PrevalentSets %>% filter(OTU1 %in% temp_filtered$OTU1 & MouseGroup == 'Env2Jax') %>%
+  filter(Significant == T) %>% 
+   filter(OTU2 %in% otus_to_keep_list[['JEJ']]) %>%
+   select(OTU1, OTU2, OTU1Type, OTU2Type) %>% distinct() %>% 
+   count(OTU2Type) %>%
+   mutate(proportion = n / sum(n)) %>%
+  ggplot(., aes(x = "", y = proportion, fill = OTU2Type)) +
+  geom_bar(stat = "identity", position = 'stack') +
+  ylab("Relative Proportion") +
+  xlab("Interacting Partner\nin Env2Jax") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c('#0077be','#ffd700', 'grey60')) +
+  theme_cowplot() +
+  theme(axis.text = element_text(size = 12))
+
+plots <- plot_grid(a,b,c, nrow = 1, rel_widths = c(1,.75, .75))
+plots
+
+ggsave("../figs/s6/InteractionStability.pdf",plots,  width = 10, height = 2.5)
+
+```
+
+
+
+Do any OTUs have 0 interactions? Not really
+```{r}
+
+count_df <- PrevalentSets %>%
+  group_by(OTU1, MouseGroup) %>%
+  summarise(count_true = sum(Significant, na.rm = TRUE))
+
+
+
+```
+
+
+
+
+============= OLD STUFF ==================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Network analysis of communities
+```{r}
+
+#FOR BACTEROIDALES   Jax (A) COLOR_FLIPPED
+
+library(ggraph)
+library(igraph)
+
+#bugColors <- setNames(c(scales::hue_pal()(length(unique(PrevalentSets$Family_OTU1)))), c(levels(as.factor(PrevalentSets$Family_OTU1))))
+
+#average interactions 
+mean_interactions <- PrevalentSets %>%
+  filter(zpadjusted < .01) %>% 
+  mutate(interaction = ifelse(Zscore > 0, 'Positive', 'Negative')) %>% 
+  select(OTU1, OTU2, Zscore, zpadjusted,interaction,MouseGroup, 
+         Class_OTU1, Family_OTU1, Class_OTU2, Family_OTU2, OTU1Type, OTU2Type)%>%
+  distinct %>% ungroup()
+
+#Count OTU instances
+Instances <- rbind(PrevalentSets %>% select(MouseGroup, OTU1, Instances=InstancesOTU1) %>% distinct(),
+                   PrevalentSets %>% select(MouseGroup, OTU1=OTU2, Instances=InstancesOTU2) %>% distinct()) %>% 
+  group_by(MouseGroup, OTU1) %>% mutate(total_instances = (sum(Instances))) %>% ungroup() %>% 
+  select(OTU1, MouseGroup, total_instances) %>% distinct() %>% 
+  mutate(OTU1 = gsub('Otu', '', .$OTU1))
+
+#Let's try when we count instances immediately
+Instances_new <- read.csv("../tables/Instances_MaPS-Seq.csv") %>% 
+    select(OTU1=OTU, prop_OTU, MouseGroup, Order, Family, alpha) %>%
+    mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% distinct()
+
+
+#tbl_nodes[unique(tbl_nodes$Class_OTU1) %in% unique(PrevalentSet$Class_OTU1),]
+#unique(tbl_nodes$Class_OTU1) %in% unique(PrevalentSet$Class_OTU1)
+
+
+# Create data frame for edges
+
+cluster_network <- PrevalentSets %>% #left_join(., Instances, by = c("OTU1", "MouseGroup")) %>%
+  left_join(., data.frame(OTU1Type = c("Env Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2))  %>%#only significant interactions
+    mutate(Zscore = ifelse(is.infinite(Zscore), max(Zscore[!is.infinite(Zscore)], na.rm = TRUE), Zscore)) %>% ungroup() %>% mutate(Zscore = sign(Zscore) * log2(1 + abs(Zscore))) #log-modulus transformation
+
+
+
+
+#Make dummy edges
+tbl_edges_all <- cluster_network %>% 
+ # filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+        filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+    select(OTU1, OTU2, Class_OTU1,Class_OTU2) %>% 
+    #mutate(interaction = 1) %>% 
+    distinct()
+
+edges <- rbind(select(tbl_edges_all,OTU1, Class_OTU1), select(tbl_edges_all, OTU1=OTU2, Class_OTU1=Class_OTU2)) %>% distinct()
+
+
+#create node information
+tbl_nodes_all <- cluster_network %>% 
+      filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+#  filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+  select(OTU1, Class_OTU1) %>%
+  distinct() %>% left_join(edges,.) %>%   
+  mutate(OTU1 = as.numeric(OTU1)) %>%
+  arrange(OTU1) %>% mutate(OTU1 = as.character(OTU1)) %>% distinct()
+# %>%filter(OTU1 != '81' & OTU1 != '84') #remove OTUs in Env but not others...
+
+
+
+
+# - FMT
+
+
+#Now layer edges for -FMT
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Jax' & Significant == T) #%>%
+    filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+      select(OTU1, OTU2, Zscore, zpadjusted) %>% 
+    mutate(interaction = ifelse(Zscore > 0, 'Positive', 'Negative'),
+           zpadjusted=log10(1/zpadjusted)) %>%
+    select(OTU1, OTU2, interaction, Zscore) %>%
+    #left_join(tbl_edges_all, ., by = c('OTU1','OTU2')) %>%
+    #replace(is.na(.), 0) %>%
+    na.omit() %>%
+    distinct()
+
+
+#Get nodes found in -FMT
+
+tbl_nodes <- rbind(cluster_network %>% filter(MouseGroup == 'Jax') %>%
+    filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% select(OTU1, Family_OTU1)%>% distinct(),
+    cluster_network %>% filter(MouseGroup == 'Jax') %>%
+    filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+   mutate(OTU2 = gsub('Otu', '', .$OTU2)) %>% select(OTU1=OTU2, Family_OTU1=Family_OTU2)%>% distinct()) %>% 
+    mutate(alpha = 1) %>% distinct() %>% left_join(., filter(Instances, MouseGroup == 'Jax'), by = 'OTU1') %>%
+    select(-MouseGroup) %>% mutate(total_instances = as.numeric(total_instances)) %>%
+  left_join(tbl_nodes_all, ., by = 'OTU1') %>% 
+  mutate(Family_OTU1 = ifelse(is.na(Family_OTU1), 'Undetermined', Family_OTU1)) %>%
+  replace(is.na(.), .01) %>% distinct() %>% select(-alpha) %>%
+  left_join(., filter(Instances_new, MouseGroup == 'Jax'))
+
+#Find missing taxa & remove their edges
+missing_taxa <- tbl_nodes %>% filter(alpha == .01) %>% select(OTU1) %>% mutate(OTU2=OTU1)
+
+tbl_edges <- tbl_edges %>% anti_join(., missing_taxa, 'OTU1') %>% anti_join(., missing_taxa, 'OTU2')
+
+#How many negative interactions from 28, 21, or 76?
+#nrow(filter(filter(tbl_edges, interaction == 'Negative'), OTU1== 28 | OTU2 == 28))
+#nrow(filter(filter(tbl_edges, interaction == 'Negative'), OTU1== 21 | OTU2 == 21))
+#nrow(filter(filter(tbl_edges, interaction == 'Negative'), OTU1== 76 | OTU2 == 76))
+#nrow(filter(filter(tbl_edges, interaction == 'Negative'), OTU1== 62 | OTU2 == 62))
+#nrow(filter(filter(tbl_edges, interaction == 'Negative'), OTU1== 99 | OTU2 == 99))
+
+
+
+#merge node and edge data
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = T)# %>% 
+        #delete_vertices(., V(.)$name == 28 | V(.)$name == 62 | V(.)$name == 84)
+
+#graph just nodes
+nodes <- ggraph(graph_nodes, layout = 'circle') +
+   geom_edge_link(aes(
+                      edge_width = abs(Zscore)*.001, 
+                       alpha = abs(Zscore), 
+                       edge_color = interaction),) +
+      scale_edge_width(
+                       aes((Zscore)),
+                       range = c(.001, 2)
+                       ) +
+    scale_edge_color_manual(values = c('navyblue', 'firebrick')) + #FLIPPED
+  #geom_node_point(aes(size = prop_OTU, alpha = alpha), color = 'black') +
+  geom_node_point(aes( size = prop_OTU*.6, color = Family, alpha = alpha)) +
+  scale_color_manual(values = bugColors) +
+     scale_size(range = c(.001,11)) +
+  labs(color = 'Order', 
+         title = "Jax") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+a <- nodes + geom_node_text(aes(label = name), size = 3,  nudge_x = nodes$data$x * .3, nudge_y = nodes$data$y * .3, check_overlap=FALSE)
+a
+# Env
+
+#Get nodes found in Env
+
+
+
+#Now layer edges for Env
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Env' & Significant == T) %>%
+ #   filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+    filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+      select(OTU1, OTU2, Zscore, zpadjusted) %>% 
+    mutate(interaction = ifelse(Zscore > 0, 'Positive', 'Negative'),
+           zpadjusted=log10(1/zpadjusted)) %>%
+    select(OTU1, OTU2, interaction, Zscore) %>%
+    #left_join(tbl_edges_all, ., by = c('OTU1','OTU2')) %>%
+    na.omit() %>%
+    distinct()
+
+
+#Get nodes found in Env
+
+tbl_nodes <- rbind(cluster_network %>% filter(MouseGroup == 'Env') %>%
+ #   filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+  #        filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% select(OTU1, Family_OTU1)%>% distinct(),
+    cluster_network %>% filter(MouseGroup == 'Env') %>%
+  #  filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+  #    filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+   mutate(OTU2 = gsub('Otu', '', .$OTU2)) %>% select(OTU1=OTU2, Family_OTU1=Family_OTU2)%>% distinct()) %>% 
+    mutate(alpha = 1) %>% distinct() %>% left_join(., filter(Instances, MouseGroup == 'Jax'), by = 'OTU1') %>%
+    select(-MouseGroup) %>% mutate(total_instances = as.numeric(total_instances)) %>%
+  left_join(tbl_nodes_all, ., by = 'OTU1') %>% 
+  mutate(Family_OTU1 = ifelse(is.na(Family_OTU1), 'Undetermined', Family_OTU1)) %>%
+  replace(is.na(.), .01) %>% distinct() %>% select(-alpha) %>%
+    left_join(., filter(Instances_new, MouseGroup == 'Env'))
+
+
+
+#Find missing taxa & remove their edges
+missing_taxa <- tbl_nodes %>% filter(alpha == .01) %>% select(OTU1) %>% mutate(OTU2=OTU1)
+
+tbl_edges <- tbl_edges %>% anti_join(., missing_taxa, 'OTU1') %>% anti_join(., missing_taxa, 'OTU2') 
+
+
+#merge node and edge data. remove OTU not found in Env2jax or Jax
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = T)# %>%
+        #delete_vertices(., V(.)$name == 28 | V(.)$name == 62 | V(.)$name == 84)
+
+# Remove disconnected components
+graph_nodes_cleaned <- delete_vertices(graph_nodes, which(degree(graph_nodes) == 0))
+
+# Then apply the algorithm
+spinglass_clusters <- spinglass.community(graph_nodes_cleaned)
+
+#add cluster information to nodes
+V(graph_nodes_cleaned)$community <- membership(spinglass_clusters)
+
+
+#graph just nodes
+nodes <- ggraph(graph_nodes_cleaned, layout = 'circle') +
+   geom_edge_link(aes(
+                      edge_width = abs(Zscore)*.001, 
+                       alpha = abs(Zscore), 
+                       edge_color = interaction),) +
+      scale_edge_width(
+                       aes((Zscore)),
+                       range = c(.01, 2)
+                       ) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+  #geom_node_point(aes(size = prop_OTU, alpha = alpha), color = 'black') +
+  #geom_node_point(aes( size = prop_OTU , color = Family,alpha = alpha)) +
+  #scale_color_manual(values = bugColors) +
+  geom_node_point(aes(size = prop_OTU*.6, color = as.factor(community), alpha = alpha)) +
+     scale_size(range = c(.001,11)) +
+  #scale_color_manual(values = bugColors) +
+  labs(color = 'Order', 
+         title = "Env") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+b <- nodes + geom_node_text(aes(label = name), size = 3,  nudge_x = nodes$data$x * .3, nudge_y = nodes$data$y * .3, check_overlap=FALSE)
+b
+
+#Do communities share engraftment?
+
+# Create a vector of community memberships
+community_vector <- as.vector(membership(spinglass_clusters))
+
+# Get vertex names (assuming the graph object is named 'graph_nodes')
+vertex_names <- V(graph_nodes)$name
+
+# Combine them into a data frame
+test <- data.frame(
+  community = community_vector,
+  Otu = vertex_names
+)
+
+# +FMT
+
+#get edges for +FMT
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Env2Jax' & Significant == T) %>%
+   filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+      filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+      select(OTU1, OTU2, Zscore, zpadjusted) %>% 
+    mutate(interaction = ifelse(Zscore > 0, 'Positive', 'Negative'),
+           zpadjusted=log10(1/zpadjusted)) %>%
+    select(OTU1, OTU2, interaction, Zscore) %>%
+    #left_join(tbl_edges_all, ., by = c('OTU1','OTU2')) %>%
+    #replace(is.na(.), 0) %>%
+    na.omit() %>%
+    distinct()
+
+
+#Get nodes found in +FMT
+
+tbl_nodes <- rbind(cluster_network %>% filter(MouseGroup == 'Env2Jax') %>%
+    filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+          filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% select(OTU1, Family_OTU1)%>% distinct(),
+    cluster_network %>% filter(MouseGroup == 'Env2Jax') %>%
+    filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+      filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+   mutate(OTU2 = gsub('Otu', '', .$OTU2)) %>% select(OTU1=OTU2, Family_OTU1=Family_OTU2)%>% distinct()) %>% 
+    mutate(alpha = 1) %>% distinct() %>% left_join(., filter(Instances, MouseGroup == 'Jax'), by = 'OTU1') %>%
+    select(-MouseGroup) %>% mutate(total_instances = as.numeric(total_instances)) %>%
+  left_join(tbl_nodes_all, ., by = 'OTU1') %>% 
+  mutate(Family_OTU1 = ifelse(is.na(Family_OTU1), 'Undetermined', Family_OTU1)) %>%
+  replace(is.na(.), .01) %>% distinct() %>% select(-alpha) %>%
+    left_join(., filter(Instances_new, MouseGroup == 'Env2Jax'))
+
+#Find missing taxa & remove their edges
+missing_taxa <- tbl_nodes %>% filter(alpha == .01) %>% select(OTU1) %>% mutate(OTU2=OTU1)
+
+tbl_edges <- tbl_edges %>% anti_join(., missing_taxa, 'OTU1') %>% anti_join(., missing_taxa, 'OTU2')
+
+#merge node and edge data
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = T)# %>%
+       # delete_vertices(., V(.)$name == 28 | V(.)$name == 62 | V(.)$name == 84)
+
+
+#graph just nodes
+nodes <- ggraph(graph_nodes, layout = 'auto') +
+   geom_edge_link(aes(
+                      edge_width = abs(Zscore)*.001, 
+                       alpha = abs(Zscore), 
+                       edge_color = interaction),) +
+      scale_edge_width(
+                       aes((Zscore)),
+                       range = c(.01, 2)
+                       ) +
+      scale_edge_color_manual(values = c('navyblue', 'firebrick')) + #FLIPPED
+    #scale_edge_color_manual(values = c('firebrick')) + #add 'navyblue' if necessary
+  #geom_node_point(aes(size = prop_OTU, alpha = alpha), color = 'black') +
+  geom_node_point(aes( size = prop_OTU*.6, color = Family, alpha = alpha)) +
+  scale_color_manual(values = bugColors) +
+     scale_size(range = c(.001,11)) +
+  scale_color_manual(values = bugColors) +
+  labs(color = 'Order', 
+         title = "Env2Jax") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+
+c <- nodes + geom_node_text(aes(label = name), size = 3,  nudge_x = nodes$data$x * .3, nudge_y = nodes$data$y * .3, check_overlap=FALSE)
+c
+
+leg <- cowplot::get_legend(ggraph(graph_nodes, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = Zscore), alpha =.4) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(size = 14, aes(color = Family_OTU1)) +
+    scale_color_manual(values = bugColors) +labs(color = 'Order') +
+      theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'bottom'))
+    
+
+temp <- cowplot::plot_grid(a,c,b,  nrow = 1)
+temp <- cowplot::plot_grid(c,b,  nrow = 1)
+temp
+ggsave("../figs/fig5/5E_InteractionNetworks_all.png", width = 8,height = 2.8)
+ggsave("../figs/fig5/5E_InteractionNetworks_all.pdf", width = 8,height = 2.8)
+
+cowplot::plot_grid(leg)
+ggsave("../figs/fig5/5E_InteractionNetworks_leg_all.png", width = 14,height = 2.8)
+ggsave("../figs/fig5/5E_InteractionNetworks_leg_all.pdf", width = 14,height = 2.8)
+cowplot::plot_grid(temp, leg, nrow = 2)
+```
+
+Env network
+```{r}
+
+
+#FOR BACTEROIDALES   Jax (A) COLOR_FLIPPED
+
+library(ggraph)
+library(igraph)
+
+bugColors <- setNames(c(scales::hue_pal()(length(unique(PrevalentSets$Class_OTU1)))), c(levels(as.factor(PrevalentSets$Class_OTU1))))
+
+
+#Count OTU instances
+Instances <- rbind(PrevalentSets %>% select(MouseGroup, OTU1, Instances=InstancesOTU1) %>% distinct(),
+                   PrevalentSets %>% select(MouseGroup, OTU1=OTU2, Instances=InstancesOTU2) %>% distinct()) %>% 
+  group_by(MouseGroup, OTU1) %>% mutate(total_instances = (sum(Instances))) %>% ungroup() %>% 
+  select(OTU1, MouseGroup, total_instances) %>% distinct() %>% 
+  mutate(OTU1 = gsub('Otu', '', .$OTU1))
+
+#Instances <- read.csv("../tables/Instances_MaPS-Seq.csv") %>% 
+#    select(OTU1=OTU, prop_OTU, MouseGroup, Order, Family, alpha) %>%
+#    mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% distinct()
+
+
+# Create data frame for edges
+
+cluster_network <- PrevalentSets %>% 
+  filter(OTU1 %in% otus_to_keep_list[['E']] & OTU2 %in% otus_to_keep_list[['E']]) %>%
+  left_join(., data.frame(OTU1Type = c("Env Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2))  %>%#only significant interactions
+    mutate(Zscore = ifelse(is.infinite(Zscore), max(Zscore[!is.infinite(Zscore)], na.rm = TRUE), Zscore)) %>% ungroup() %>% mutate(Zscore = sign(Zscore) * log2(1 + abs(Zscore))) #log-modulus transformation
+
+
+
+
+#Make dummy edges
+tbl_edges_all <- cluster_network %>% 
+ # filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+   #     filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+    select(OTU1, OTU2, Class_OTU1,Class_OTU2) %>% 
+    #mutate(interaction = 1) %>% 
+    distinct()
+
+edges <- rbind(select(tbl_edges_all,OTU1, Class_OTU1), select(tbl_edges_all, OTU1=OTU2, Class_OTU1=Class_OTU2)) %>% distinct()
+
+
+#create node information
+tbl_nodes_all <- cluster_network %>% 
+     # filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+#  filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+  select(OTU1, Class_OTU1) %>%
+  distinct() %>% left_join(edges,.) %>%   
+  mutate(OTU1 = as.numeric(OTU1)) %>%
+  arrange(OTU1) %>% mutate(OTU1 = as.character(OTU1)) %>% distinct()
+# %>%filter(OTU1 != '81' & OTU1 != '84') #remove OTUs in Env but not others...
+
+
+
+
+
+#Get nodes found in Env
+
+
+
+#Now layer edges for Env
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Env' & Significant == T) %>%
+ #   filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+    #filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+      select(OTU1, OTU2, Zscore, zpadjusted) %>% 
+    mutate(interaction = ifelse(Zscore > 0, 'Positive', 'Negative'),
+           zpadjusted=log10(1/zpadjusted)) %>%
+    select(OTU1, OTU2, interaction, Zscore) %>%
+    #left_join(tbl_edges_all, ., by = c('OTU1','OTU2')) %>%
+    na.omit() %>%
+    distinct()
+
+
+#Get nodes found in Env
+
+tbl_nodes <- rbind(cluster_network %>% filter(MouseGroup == 'Env') %>%
+ #   filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+  #        filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% select(OTU1, Family_OTU1)%>% distinct(),
+    cluster_network %>% filter(MouseGroup == 'Env') %>%
+  #  filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+  #    filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+   mutate(OTU2 = gsub('Otu', '', .$OTU2)) %>% select(OTU1=OTU2, Family_OTU1=Family_OTU2)%>% distinct()) %>% 
+    mutate(alpha = 1) %>% distinct() %>% left_join(., filter(Instances, MouseGroup == 'Env'), by = 'OTU1') %>%
+    select(-MouseGroup) %>% mutate(total_instances = as.numeric(total_instances)) %>%
+  left_join(tbl_nodes_all, ., by = 'OTU1') %>% 
+  mutate(Family_OTU1 = ifelse(is.na(Family_OTU1), 'Undetermined', Family_OTU1)) %>%
+  replace(is.na(.), .01) %>% distinct() %>% select(-alpha) %>%
+    left_join(., filter(Instances, MouseGroup == 'Env')) %>% mutate(prop_OTU = (total_instances/sum(total_instances)*100))
+
+
+
+#Find missing taxa & remove their edges
+#missing_taxa <- tbl_nodes %>% filter(alpha == .01) %>% select(OTU1) %>% mutate(OTU2=OTU1)
+
+#tbl_edges <- tbl_edges %>% anti_join(., missing_taxa, 'OTU1') %>% anti_join(., missing_taxa, 'OTU2') 
+
+
+#merge node and edge data. remove OTU not found in Env2jax or Jax
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = T)# %>%
+        #delete_vertices(., V(.)$name == 28 | V(.)$name == 62 | V(.)$name == 84)
+
+# Remove disconnected components
+graph_nodes_cleaned <- delete_vertices(graph_nodes, which(degree(graph_nodes) == 0))
+
+# Then apply the algorithm
+set.seed(13)
+spinglass_clusters <- spinglass.community(graph_nodes_cleaned)
+
+#add cluster information to nodes
+V(graph_nodes_cleaned)$community <- membership(spinglass_clusters)
+
+
+#graph just nodes
+
+#Layouts: c('circle', 'kk', 'auto', 'fr', 'lgl', 'drl')
+set.seed(123)
+nodes <- ggraph(graph_nodes_cleaned, layout = 'fr') +
+   geom_edge_link(aes(
+                      edge_width = abs(Zscore)*.01, 
+                       alpha = abs(Zscore), 
+                       edge_color = interaction),) +
+      scale_edge_width(
+                       aes((Zscore)),
+                       range = c(.01, 2)
+                       ) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+    geom_node_point(aes(size = (prop_OTU)), color = 'black') +
+  #geom_node_point(aes(size = (prop_OTU)*.9 , color = Class_OTU1)) + scale_color_manual(values = bugColors) +
+  geom_node_point(aes(size = (prop_OTU)*.95, color = as.factor(community))) +
+  #scale_color_manual() +
+     scale_size(range = c(.1,25)) +
+
+  labs(color = 'Order', 
+         title = "Env") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+b <- nodes + geom_node_text(aes(label = name), size = 3)#,  nudge_x = nodes$data$x * .3, nudge_y = nodes$data$y * .3, check_overlap=FALSE)
+b
+
+#Do communities share engraftment?
+# Create a vector of community memberships
+community_vector <- as.vector(membership(spinglass_clusters))
+
+# Get vertex names (assuming the graph object is named 'graph_nodes')
+vertex_names <- V(graph_nodes_cleaned)$name
+
+
+# Combine them into a data frame
+env_spinglass <- data.frame(
+  community_env = community_vector,
+  Otu = vertex_names
+)
+
+
+```
+
+
+```{r}
+
+cluster_network <- PrevalentSets %>% 
+  filter(OTU1 %in% otus_to_keep_list[['J']] & OTU2 %in% otus_to_keep_list[['J']]) %>%
+  left_join(., data.frame(OTU1Type = c("Env Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2))  %>%#only significant interactions
+    mutate(Zscore = ifelse(is.infinite(Zscore), max(Zscore[!is.infinite(Zscore)], na.rm = TRUE), Zscore)) %>% ungroup() %>% mutate(Zscore = sign(Zscore) * log2(1 + abs(Zscore))) #log-modulus transformation
+
+
+
+
+#Make dummy edges
+tbl_edges_all <- cluster_network %>% 
+ # filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+   #     filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+    select(OTU1, OTU2, Class_OTU1,Class_OTU2) %>% 
+    #mutate(interaction = 1) %>% 
+    distinct()
+
+edges <- rbind(select(tbl_edges_all,OTU1, Class_OTU1), select(tbl_edges_all, OTU1=OTU2, Class_OTU1=Class_OTU2)) %>% distinct()
+
+
+#create node information
+tbl_nodes_all <- cluster_network %>% 
+     # filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+#  filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+  select(OTU1, Class_OTU1) %>%
+  distinct() %>% left_join(edges,.) %>%   
+  mutate(OTU1 = as.numeric(OTU1)) %>%
+  arrange(OTU1) %>% mutate(OTU1 = as.character(OTU1)) %>% distinct()
+# %>%filter(OTU1 != '81' & OTU1 != '84') #remove OTUs in Env but not others...
+
+
+
+
+
+#Get nodes found in Env
+
+
+
+#Now layer edges for Env
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Jax' & Significant == T) %>%
+ #   filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+    #filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+      select(OTU1, OTU2, Zscore, zpadjusted) %>% 
+    mutate(interaction = ifelse(Zscore > 0, 'Positive', 'Negative'),
+           zpadjusted=log10(1/zpadjusted)) %>%
+    select(OTU1, OTU2, interaction, Zscore) %>%
+    #left_join(tbl_edges_all, ., by = c('OTU1','OTU2')) %>%
+    na.omit() %>%
+    distinct()
+
+
+#Get nodes found in Jax
+
+tbl_nodes <- rbind(cluster_network %>% filter(MouseGroup == 'Jax') %>%
+ #   filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+  #        filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% select(OTU1, Family_OTU1)%>% distinct(),
+    cluster_network %>% filter(MouseGroup == 'Jax') %>%
+  #  filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+  #    filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+   mutate(OTU2 = gsub('Otu', '', .$OTU2)) %>% select(OTU1=OTU2, Family_OTU1=Family_OTU2)%>% distinct()) %>% 
+    mutate(alpha = 1) %>% distinct() %>% left_join(., filter(Instances, MouseGroup == 'Jax'), by = 'OTU1') %>%
+    select(-MouseGroup) %>% mutate(total_instances = as.numeric(total_instances)) %>%
+  left_join(tbl_nodes_all, ., by = 'OTU1') %>% 
+  mutate(Family_OTU1 = ifelse(is.na(Family_OTU1), 'Undetermined', Family_OTU1)) %>%
+  replace(is.na(.), .01) %>% distinct() %>% select(-alpha) %>%
+    left_join(., filter(Instances, MouseGroup == 'Jax')) %>% mutate(prop_OTU = (total_instances/sum(total_instances)*100))
+
+
+
+#Find missing taxa & remove their edges
+#missing_taxa <- tbl_nodes %>% filter(alpha == .01) %>% select(OTU1) %>% mutate(OTU2=OTU1)
+
+#tbl_edges <- tbl_edges %>% anti_join(., missing_taxa, 'OTU1') %>% anti_join(., missing_taxa, 'OTU2') 
+
+
+#merge node and edge data. remove OTU not found in Jax2jax or Jax
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = T)# %>%
+        #delete_vertices(., V(.)$name == 28 | V(.)$name == 62 | V(.)$name == 84)
+
+# Remove disconnected components
+graph_nodes_cleaned <- delete_vertices(graph_nodes, which(degree(graph_nodes) == 0))
+
+# Then apply the algorithm
+set.seed(13)
+spinglass_clusters <- spinglass.community(graph_nodes_cleaned)
+
+#add cluster information to nodes
+V(graph_nodes_cleaned)$community <- membership(spinglass_clusters)
+
+
+#graph just nodes
+
+#Layouts: c('circle', 'kk', 'auto', 'fr', 'lgl', 'drl')
+set.seed(123)
+nodes <- ggraph(graph_nodes_cleaned, layout = 'fr') +
+   geom_edge_link(aes(
+                      edge_width = abs(Zscore)*.01, 
+                       alpha = abs(Zscore), 
+                       edge_color = interaction),) +
+      scale_edge_width(
+                       aes((Zscore)),
+                       range = c(.01, 2)
+                       ) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+    geom_node_point(aes(size = (prop_OTU)), color = 'black') +
+  #geom_node_point(aes(size = (prop_OTU)*.9 , color = Class_OTU1)) + scale_color_manual(values = bugColors) +
+  geom_node_point(aes(size = (prop_OTU)*.95, color = as.factor(community))) +
+  #scale_color_manual() +
+     scale_size(range = c(.1,25)) +
+
+  labs(color = 'Order', 
+         title = "Jax") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+a <- nodes + geom_node_text(aes(label = name), size = 3)#,  nudge_x = nodes$data$x * .3, nudge_y = nodes$data$y * .3, check_overlap=FALSE)
+a
+
+#Do communities share engraftment?
+# Create a vector of community memberships
+community_vector <- as.vector(membership(spinglass_clusters))
+
+# Get vertex names (assuming the graph object is named 'graph_nodes')
+vertex_names <- V(graph_nodes_cleaned)$name
+
+
+# Combine them into a data frame
+jax_spinglass <- data.frame(
+  community_jax = community_vector,
+  Otu = vertex_names
+)
+
+
+```
+
+
+
+
+
+#now do network for env2jax
+```{r}
+
+
+cluster_network <- PrevalentSets %>% 
+  filter(OTU1 %in% otus_to_keep_list[['JEJ']] & OTU2 %in% otus_to_keep_list[['JEJ']]) %>%
+  left_join(., data.frame(OTU1Type = c("Env Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2))  %>%#only significant interactions
+    mutate(Zscore = ifelse(is.infinite(Zscore), max(Zscore[!is.infinite(Zscore)], na.rm = TRUE), Zscore)) %>% ungroup() %>% mutate(Zscore = sign(Zscore) * log2(1 + abs(Zscore))) #log-modulus transformation
+
+
+
+
+#Make dummy edges
+tbl_edges_all <- cluster_network %>% 
+ # filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+   #     filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+    select(OTU1, OTU2, Class_OTU1,Class_OTU2) %>% 
+    #mutate(interaction = 1) %>% 
+    distinct()
+
+edges <- rbind(select(tbl_edges_all,OTU1, Class_OTU1), select(tbl_edges_all, OTU1=OTU2, Class_OTU1=Class_OTU2)) %>% distinct()
+
+
+#create node information
+tbl_nodes_all <- cluster_network %>% 
+     # filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+#  filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+  select(OTU1, Class_OTU1) %>%
+  distinct() %>% left_join(edges,.) %>%   
+  mutate(OTU1 = as.numeric(OTU1)) %>%
+  arrange(OTU1) %>% mutate(OTU1 = as.character(OTU1)) %>% distinct()
+# %>%filter(OTU1 != '81' & OTU1 != '84') #remove OTUs in Env but not others...
+
+
+
+
+
+#Get nodes found in Env
+
+
+
+#Now layer edges for Env
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Env2Jax' & Significant == T) %>%
+ #   filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+    #filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+      select(OTU1, OTU2, Zscore, zpadjusted) %>% 
+    mutate(interaction = ifelse(Zscore > 0, 'Positive', 'Negative'),
+           zpadjusted=log10(1/zpadjusted)) %>%
+    select(OTU1, OTU2, interaction, Zscore) %>%
+    #left_join(tbl_edges_all, ., by = c('OTU1','OTU2')) %>%
+    na.omit() %>%
+    distinct()
+
+
+#Get nodes found in Env
+
+tbl_nodes <- rbind(cluster_network %>% filter(MouseGroup == 'Env2Jax') %>%
+ #   filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+  #        filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% select(OTU1, Family_OTU1,OTU1Type)%>% distinct(),
+    cluster_network %>% filter(MouseGroup == 'Env2Jax') %>%
+  #  filter(Class_OTU1 == 'Bacteroidia' & Class_OTU2 == 'Bacteroidia') %>%
+  #    filter(OTU1Type != 'Recipient Taxa' & OTU2Type != 'Recipient Taxa') %>%
+   mutate(OTU2 = gsub('Otu', '', .$OTU2)) %>% select(OTU1=OTU2, Family_OTU1=Family_OTU2,OTU1Type=OTU2Type)%>% distinct()) %>% 
+    mutate(alpha = 1) %>% distinct() %>% left_join(., filter(Instances, MouseGroup == 'Env2Jax'), by = 'OTU1') %>%
+    select(-MouseGroup) %>% mutate(total_instances = as.numeric(total_instances)) %>%
+  left_join(tbl_nodes_all, ., by = 'OTU1') %>% 
+  mutate(Family_OTU1 = ifelse(is.na(Family_OTU1), 'Undetermined', Family_OTU1)) %>%
+  #replace(is.na(.), .01) %>% 
+  distinct() %>% select(-alpha) %>%
+    left_join(., filter(Instances, MouseGroup == 'Env2Jax')) %>% mutate(prop_OTU = (total_instances/sum(total_instances)*100))
+
+
+
+#Find missing taxa & remove their edges
+#missing_taxa <- tbl_nodes %>% filter(alpha == .01) %>% select(OTU1) %>% mutate(OTU2=OTU1)
+
+#tbl_edges <- tbl_edges %>% anti_join(., missing_taxa, 'OTU1') %>% anti_join(., missing_taxa, 'OTU2') 
+
+
+#merge node and edge data. remove OTU not found in Env2jax or Jax
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = T)# %>%
+        #delete_vertices(., V(.)$name == 28 | V(.)$name == 62 | V(.)$name == 84)
+
+# Remove disconnected components
+graph_nodes_cleaned <- delete_vertices(graph_nodes, which(degree(graph_nodes) == 0))
+
+# Then apply the algorithm
+set.seed(13)
+spinglass_clusters <- spinglass.community(graph_nodes_cleaned)
+
+#add cluster information to nodes
+V(graph_nodes_cleaned)$community <- c(membership(spinglass_clusters))
+
+
+#graph just nodes
+
+#Layouts: c('circle', 'kk', 'auto', 'fr', 'lgl', 'drl', 'auto')
+set.seed(123)
+nodes <- ggraph(graph_nodes_cleaned, layout = 'fr') +
+   geom_edge_link(aes(
+                      edge_width = abs(Zscore)*.01, 
+                       alpha = abs(Zscore), 
+                       edge_color = interaction),) +
+      scale_edge_width(
+                       aes((Zscore)),
+                       range = c(.01, 2)
+                       ) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+    geom_node_point(aes(size = (prop_OTU)), color = 'black') +
+  #geom_node_point(aes(size = (prop_OTU)*.9 , color = Class_OTU1)) + scale_color_manual(values = bugColors) +
+  geom_node_point(aes(size = (prop_OTU)*.95, color = as.factor(community))) +
+  #  geom_node_point(aes(size = (prop_OTU)*.95, color = as.factor(OTU1Type))) +
+  #scale_color_manual() +
+     scale_size(range = c(.1,25)) +
+
+  labs(color = 'Class', 
+         title = "Env2Jax") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+c <- nodes + geom_node_text(aes(label = name), size = 3)#,  nudge_x = nodes$data$x * .3, nudge_y = nodes$data$y * .3, check_overlap=FALSE)
+c
+
+#Do communities share engraftment?
+
+# Create a vector of community memberships
+community_vector <- as.vector(membership(spinglass_clusters))
+
+# Get vertex names (assuming the graph object is named 'graph_nodes')
+vertex_names <- V(graph_nodes_cleaned)$name
+
+
+# Combine them into a data frame
+env2jax_spinglass <- data.frame(
+  community_env2jax = community_vector,
+  Otu = vertex_names
+)
+
+```
+
+
+Sankey Diagram with spinglass
+```{r}
+#install.packages("networkD3")
+library(networkD3)
+
+#create nodes
+env_df <- full_join(env_spinglass, env2jax_spinglass, by = 'Otu') %>% #full_join(., jax_spinglass, by = 'Otu') %>%
+  mutate(across(everything(), ~replace(., is.na(.), 0))) %>% 
+  mutate(community_env2jax = paste('env2jax', as.character(community_env2jax+1)),
+         community_rec = paste('env',as.character(community_env+1))) %>% 
+  mutate(value = 1) %>% select(Otu, community_env2jax, community_rec, value)
+
+jax_df <- full_join(jax_spinglass, env2jax_spinglass, by = 'Otu') %>%
+  mutate(across(everything(), ~replace(., is.na(.), 0))) %>% 
+  mutate(community_env2jax = paste('env2jax', as.character(community_env2jax+1)),
+         community_rec = paste('jax',as.character(community_jax+1))) %>% 
+  mutate(value = 1) %>% select(Otu, community_env2jax, community_rec, value)
+
+df <- rbind(env_df, jax_df) %>% filter(community_rec != 'env 1' & community_rec != 'jax 1') %>%
+   left_join(otumapping %>% select('Otu'=OTU, OTUType) %>%
+               mutate(Otu = gsub("Otu", "", Otu))) %>% 
+  left_join(PrevalentSets %>% select('Otu'=OTU1, Class_OTU1, OTU1ColorName) %>% 
+              distinct() %>% mutate(Otu = gsub("Otu", "", Otu))) %>%
+  arrange(community_rec, OTUType)
+
+# Convert to ordered factors
+df$community_rec <- factor(df$community_rec, levels = unique(df$community_rec), ordered = TRUE)
+df$OTUType <- factor(df$OTUType, levels = unique(df$OTUType), ordered = TRUE)
+
+
+nodes <- data.frame(name=c(as.character(df$community_rec), as.character(df$community_env2jax)) %>% unique()) %>% filter(name != 'env 1' & name != 'jax 1') #%>% arrange(name)
+
+# Create an ordered factor for the 'group' column
+nodes$group <- as.factor(nodes$name)
+levels(nodes$group) <- levels(nodes$group)[order(levels(nodes$group))]
+
+# Create the links data frame
+df$IDsource=match(df$community_rec, nodes$name)-1
+df$IDtarget=match(df$community_env2jax, nodes$name)-1
+
+#add Type information
+
+head(df)
+
+#color links
+# Create a column 'LinkColor' in df which is the same as 'IDsource'
+# Modify the original data frame to include a 'group' column, which will be used for coloring
+df$group <- df$community_rec
+
+
+# Define a color scale
+my_color <- 'd3.scaleOrdinal() .domain(["Donor Taxa", "Recipient Taxa", "Shared Taxa"]) .range(["#377EB8","#828382", "#E41A1C"])'
+
+#'#377EB8', '#E41A1C','#828382'
+
+# Create the Sankey diagram
+sankey <- sankeyNetwork(Links = df, Nodes = nodes, Source = "IDsource",
+                        Target = "IDtarget", Value = "value", 
+                        NodeID = "name",
+                        units = "TWh", 
+                        width = 600, height = 400,
+                        colourScale = my_color, 
+                        LinkGroup = "OTUType")
+                      
+
+# Show the Sankey diagram
+print(sankey)
+
+heights <- df %>% select(community_rec) %>% group_by(community_rec) %>% mutate(num_observations = n()) %>% distinct()
+#Can we get OTU family?
+
+  arrange(community_rec, community_env2jax) %>%
+  mutate(community_env2jax = reorder_within(community_env2jax, community_rec, Otu))
+
+fam <-  
+  ggplot(df %>% select(Otu, Class_OTU1, community_rec) %>% distinct(), 
+       aes(y = Otu, x = 1, fill = Class_OTU1)) +
+  geom_tile(color = 'black') +
+  scale_fill_manual(values = bugColors) +
+  theme_cowplot() + 
+  theme(
+    axis.text.y = ggtext::element_markdown(angle = 0, vjust = 0.5, hjust = 1, size = 10),
+    axis.text.x = element_blank(),
+    strip.background = element_blank(),
+  ) +
+  theme(legend.position = "right") +
+  facet_wrap(~community_rec, ncol = 1, scales = 'free_y', strip.position = 'left')
+
+# Arrange the data first by 'community_rec' and then by 'community_env2jax'
+df_sorted <- df %>% 
+  arrange(community_rec, community_env2jax, Otu) %>%
+  select(Otu, Class_OTU1, community_rec, community_env2jax)
+
+# Create the plot
+fam <- ggplot(df_sorted %>% select(Otu, Class_OTU1, community_rec) %>% distinct(), 
+       aes(y = Otu, x = 1, fill = Class_OTU1)) +
+  geom_tile(color = 'black') +
+  scale_fill_manual(values = bugColors) +
+  theme_cowplot() + 
+  theme(
+    axis.text.y = ggtext::element_markdown(angle = 0, vjust = 0.5, hjust = 1, size = 10),
+    axis.text.x = element_blank(),
+    strip.background = element_blank()
+  ) +
+  theme(legend.position = "right") +
+  facet_wrap(~community_rec, ncol = 1, scales = 'free_y', strip.position = 'left')
+
+# Show the plot
+fam
+
+ggsave('../figs/fig5/family_sankey.pdf', fam, height = 10, width = 8)
+
+```
+
+
+
+
+```{r}
+
+heights <- df %>% select(community_rec) %>% group_by(community_rec) %>% mutate(num_observations = n()) %>% distinct()
+#Can we get OTU family?
+
+  arrange(community_rec, branchcuts_JEJ) %>%
+  mutate(branchcuts_JEJ = reorder_within(branchcuts_JEJ, community_rec, Otu))
+
+fam <-  
+  ggplot(df %>% select(Otu, Class_OTU1, community_rec) %>% distinct(), 
+       aes(y = Otu, x = 1, fill = Class_OTU1)) +
+  geom_tile(color = 'black') +
+  scale_fill_manual(values = bugColors) +
+  theme_cowplot() + 
+  theme(
+    axis.text.y = ggtext::element_markdown(angle = 0, vjust = 0.5, hjust = 1, size = 10),
+    axis.text.x = element_blank(),
+    strip.background = element_blank(),
+  ) +
+  theme(legend.position = "right") +
+  facet_wrap(~community_rec, ncol = 1, scales = 'free_y', strip.position = 'left')
+
+# Arrange the data first by 'community_rec' and then by 'branchcuts_JEJ'
+df_sorted <- df %>% 
+  arrange(community_rec, branchcuts_JEJ, Otu) %>%
+  select(Otu, Class_OTU1, community_rec, branchcuts_JEJ)
+
+# Create the plot
+fam <- ggplot(df_sorted %>% select(Otu, Class_OTU1, community_rec) %>% distinct(), 
+       aes(y = Otu, x = 1, fill = Class_OTU1)) +
+  geom_tile(color = 'black') +
+  scale_fill_manual(values = bugColors) +
+  theme_cowplot() + 
+  theme(
+    axis.text.y = ggtext::element_markdown(angle = 0, vjust = 0.5, hjust = 1, size = 10),
+    axis.text.x = element_blank(),
+    strip.background = element_blank()
+  ) +
+  theme(legend.position = "right") +
+  facet_wrap(~community_rec, ncol = 1, scales = 'free_y', strip.position = 'left')
+
+# Show the plot
+fam
+
+ggsave('../figs/fig5/family_sankey.pdf', fam, height = 10, width = 8)
+
+```
+
+```{r}
+# Arrange the data and set levels
+df <- df %>% arrange(community_rec, branchcuts_JEJ)
+df$branchcuts_JEJ <- factor(df$branchcuts_JEJ, levels = c("env2jax 1", "env2jax 2", "env2jax 3", "env2jax 4", "env2jax 5", "env2jax 6"), ordered = TRUE)
+df$community_rec <- factor(df$community_rec, levels = unique(df$community_rec), ordered = TRUE)
+
+# Set the factor levels for Otu based on the new ordering
+#df$Otu <- factor(df$Otu, levels = df$Otu, ordered = TRUE)
+
+# Create the plot
+rec_fam <- ggplot(df %>% select(Otu, Class_OTU1, OTUType, community_rec) %>% distinct(), 
+                  aes(y = Otu, x = 1, fill = OTUType)) +
+  geom_tile(color = 'black') +
+    scale_y_discrete(limits = df$Otu) +
+  #scale_fill_manual(values = bugColors) +
+  theme_cowplot() + 
+  theme(
+    axis.text.y = ggtext::element_markdown(angle = 0, vjust = 0.5, hjust = 1, size = 10),
+    axis.text.x = element_blank(),
+    strip.background = element_blank(),
+  ) +
+  theme(legend.position = "right") 
+
+rec_fam
+
+```
+
+```{r}
+# Create an ordered factor
+df$combined_factor <- with(df, interaction(community_rec, community_env2jax, Otu, ordered = TRUE, lex.order = TRUE))
+
+# Arrange the data by this new factor
+df_sorted <- df %>% 
+  arrange(combined_factor) %>%
+  select(combined_factor, Class_OTU1, community_rec, community_env2jax)
+
+# Create the plot
+fam <- ggplot(df_sorted %>% select(combined_factor, Class_OTU1, community_rec) %>% distinct(), 
+       aes(y = combined_factor, x = 1, fill = Class_OTU1)) +
+  geom_tile(color = 'black') +
+  scale_fill_manual(values = bugColors) +
+  theme_cowplot() + 
+  theme(
+    axis.text.x = element_blank(),
+    strip.background = element_blank()
+  ) +
+  theme(legend.position = "right") +
+  facet_wrap(~community_rec, ncol = 1, scales = 'free_y', strip.position = 'left')
+
+# Show the plot
+fam
+
+```
+
+
+
+
+```{}
+library(ggforce)
+
+
+pd <- df %>% mutate(Pattern = paste(`community_rec`, `community_env2jax`, sep = "/")) %>%
+gather_set_data(2:3)
+
+ggplot(pd, aes(x = x, id = id, split = y, value = n)) +
+    geom_parallel_sets(aes(fill = Pattern), alpha = 0.6) +
+    geom_parallel_sets_axes(axis.width = 0.1, fill = "gray70") +
+    geom_parallel_sets_labels(color = 'White', size = 3)
+  )
+
+```

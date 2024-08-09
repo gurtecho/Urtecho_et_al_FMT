@@ -1,0 +1,933 @@
+---
+title: "fig5_PolysaccharideMuribac"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+setwd("~/Dropbox/fmt/scripts/")
+library(tidyverse)
+library(wesanderson)
+library(ggthemes)
+library(data.table)
+library(cowplot)
+library(Seurat)
+
+source("Null Model for Guillaume.R")
+
+
+ven <- c('#FAAF40',"#1B75BB","#37B34A", "#F05A28")
+pal <- wes_palette("Zissou1", 100, type = "continuous")
+samples <- c("Post FMT", "Pre FMT", "Donor")
+temp <- read.csv("../misc/bugColors_MapsSeq.csv")
+bugColors<- setNames(c(scales::hue_pal()(length(unique(temp$X)))), c(levels(as.factor(temp$X)))) 
+
+
+options(stringsAsFactors = F)
+options(scipen = 10000)
+
+
+#zotu <- read_csv("../seq/zotu.csv") 
+#tax <- read_csv("../seq/tax.csv")
+meta <- read_csv("../experiments/2021-12-22_JvEPolysaccharideScreen/metadata/metadata.csv")
+CorrectedData <- data.table::fread("~/Dropbox/fmt/experiments/2022-09-13 Guillaume FMT r3/CorrectedDataFrame.csv") %>% 
+  separate(Sample, into = c('Sample', 'waste'), sep = 's', remove = T) %>% 
+  filter(!(Sample %in% c('J1', 'J2', 'J3', 'J4', 'E5', 'E6', 'E7', 'E8', 'JE9', 'JE10', 'JE11', 'JE12'))) %>% select(-waste)
+
+Tax_Table <- data.table::fread("~/Dropbox/fmt/experiments/2022-09-13 Guillaume FMT r3/SilvaTax.csv")
+
+otumapping <- read.csv("../experiments/2022-09-13 Guillaume FMT r3/DeSeq_OTU_dynamics.csv")
+
+```
+
+MaPS-Seq Particle processing
+```{r}
+#set <- samples[1]
+  
+fulldataset <- CorrectedData %>% group_by(Particle) %>% 
+          mutate(total_particle_reads = sum(Count),
+                 OTU_rel_abd = Count/sum(Count))  %>% 
+                                                ungroup() %>%
+                                                filter(OTU_rel_abd > .01) %>% 
+                                                group_by(Particle) %>% 
+                                                mutate(num_OTUs_particle = n()) %>% 
+                                                ungroup %>% group_by(Sample) %>% 
+                                                mutate(ParticleNumberPerSample = n()) %>%
+                                                ungroup() %>%
+                                                filter(
+                                                       num_OTUs_particle > 1,
+                                                       total_particle_reads > 50,
+                                                       total_particle_reads < 10000
+                                                ) %>%
+                                                ungroup() %>% 
+                                                left_join(., Tax_Table) %>% drop_na() %>%
+                  semi_join(., otumapping) 
+
+fulldataset <- fulldataset[!grepl("bulk",fulldataset$Particle),]
+
+# fix names
+fulldataset$MouseGroup <- str_extract(fulldataset$Particle,"^[:alpha:]{1,2}")
+fulldataset$MouseGroup <- str_replace(fulldataset$MouseGroup,"J","Jax")
+fulldataset$MouseGroup <- str_replace(fulldataset$MouseGroup,"E","Env")
+fulldataset$MouseGroup <- str_replace(fulldataset$MouseGroup,"JE","Env2Jax")
+fulldataset$MouseGroup <- str_replace(fulldataset$MouseGroup,"JaxEnv","Env2Jax")
+
+unique(fulldataset$MouseGroup)
+
+```
+
+
+Redo fulldataset by selecting same number of particles
+```{r}
+#how many particles per sample? 20,023 total if swap min for sum here
+min_particles <- min((fulldataset %>% select(MouseGroup, Particle) %>% 
+      group_by(MouseGroup) %>% distinct() %>% mutate(num_particles = n()) %>% ungroup %>%
+      select(MouseGroup, num_particles) %>% distinct)$num_particles)
+
+
+#Subset min_particles from each group
+set.seed(123)
+particle_subset <- fulldataset %>% select(MouseGroup, Particle) %>% distinct() %>%
+  group_by(MouseGroup) %>% slice_sample(n=min_particles, replace = F) %>% ungroup()
+
+fulldataset <- semi_join(fulldataset, particle_subset, by = c('Particle', 'MouseGroup'))
+
+
+#now subset reads from those particles
+#how many particles per sample?
+min_reads <- min((fulldataset %>% select(MouseGroup, Count) %>% 
+      group_by(MouseGroup) %>% mutate(num_reads = sum(Count)) %>% ungroup %>%
+      select(MouseGroup, num_reads) %>% distinct)$num_reads)
+
+
+#Subset reads (3766857 each)
+set.seed(123)
+fulldataset <- fulldataset %>% uncount(Count) %>% group_by(MouseGroup) %>% 
+    slice_sample(n=min_reads, replace = F) %>% ungroup() %>% group_by(MouseGroup, Particle, OTU) %>% mutate(Count = n()) %>% distinct() %>% ungroup
+
+
+
+```
+
+
+#QUICK abundance calculations
+```{r}
+
+#This normalizes read counts in each sample, averages between samples for each group
+OTUcounts <- fulldataset %>% select(OTU, MouseGroup, Sample, Count, Class, Order, Family) %>%
+  mutate(Count = ifelse(Count >0, 1,0)) %>% #Binarize counts here
+  group_by(Sample) %>% mutate(norm_Count = Count/sum(Count)) %>% ungroup() %>% select(-Count) %>%
+  group_by(OTU, MouseGroup) %>% mutate(group_Count = mean(norm_Count),
+                                       Instances_OTU = sum(group_Count)) %>%
+  ungroup %>% select(OTU, MouseGroup, group_Count, Instances_OTU, Class, Order, Family) %>% distinct() %>%
+  group_by(MouseGroup) %>% mutate(prop_OTU = Instances_OTU/sum(Instances_OTU)*100) %>% ungroup() %>% 
+  mutate(alpha = ifelse(prop_OTU > .5, 1, .01)) 
+
+write.csv(OTUcounts, "../tables/Instances_MaPS-Seq.csv", row.names = F, quote = F)
+
+OTUcounts %>% select(OTU, MouseGroup) %>% group_by(MouseGroup) %>% distinct() %>% mutate(num_OTUs = n()) %>% select(-OTU) %>% distinct()
+
+
+```
+
+How many species per MouseGroup?
+```{r}
+
+
+read.csv("../tables/Instances_MaPS-Seq.csv") %>% #filter(prop_OTU > .1) %>%
+  select(OTU, Class, MouseGroup) %>% distinct() %>% 
+  group_by(MouseGroup, Class) %>% mutate(num_class = n()) %>% 
+  select(-OTU) %>% distinct() %>% 
+  write.csv("../tables/MaPS-Seq_ClassCounts.csv", quote = F, row.names = F)
+
+```
+
+
+
+Now let's generate associations for each sample group
+
+
+Fig 5A - MaPS-Seq Clustering
+```{r}
+samples <- c('Env','Jax','Env2Jax')
+
+#FOR SOME REASon, pre FMT stops after generating associations, just keep running last few lines
+
+for (i in 1:length(samples)) {
+  
+  print(samples[i])
+  
+    set <- samples[i]
+    subdataset <- filter(fulldataset, MouseGroup == set)
+
+    set.seed(1337)
+
+#Create metadata
+METADATA <- as.matrix(select(subdataset, Particle,Sample,MouseGroup,total_particle_reads,num_OTUs_particle))
+row.names(METADATA) <- subdataset$Particle
+METADATA <- as.data.frame(METADATA) %>% distinct()
+
+#add phylogenetic counts per cluster
+
+#Lactobacillaceae
+
+lacto <- subdataset %>% filter(Family == 'Lactobacillaceae') %>%
+         group_by(Particle) %>%
+         mutate(Lactobacillaceae=log10(sum(Count))) %>%
+         select(Particle, Lactobacillaceae)%>% distinct() #lactobacillaceae
+
+lachno <- subdataset %>% filter(Family == 'Lachnospiraceae') %>%
+  group_by(Particle) %>%
+  mutate(Lachnospiraceae=log10(sum(Count))) %>%
+  select(Particle, Lachnospiraceae) %>% distinct()  #Lachnospiraceae
+
+Muribac <- subdataset %>% filter(Family == 'Muribaculaceae') %>% 
+  group_by(Particle) %>%
+  mutate(Muribaculaceae=log10(sum(Count))) %>%
+  select(Particle, Muribaculaceae) %>% distinct() #Muribaculaceae
+
+bacter <- subdataset %>% filter(Family == 'Bacteroidaceae') %>%
+  group_by(Particle) %>%
+  mutate(Bacteroidaceae=log10(sum(Count))) %>%
+  select(Particle, Bacteroidaceae)%>% distinct() #Bacteroidaceae
+
+erys <- subdataset %>% filter(Family == 'Erysipelotrichaceae') %>% 
+  group_by(Particle) %>%
+  mutate(Erysipelotrichaceae=log10(sum(Count))) %>%
+  select(Particle, Erysipelotrichaceae) %>% distinct() #Erysipelotrichaceae
+
+temp <- full_join(lacto, lachno) %>% full_join(., Muribac) %>% full_join(., erys) %>% full_join(., bacter) %>% replace(is.na(.), 0) %>% distinct()
+
+METADATA<- left_join(METADATA, temp) %>% replace(is.na(.), 0)
+row.names(METADATA) <- METADATA$Particle
+
+
+
+# make the dataframe for seurat
+casted <- subdataset %>% select(Particle, OTU, Count) %>% 
+  reshape2::dcast(Particle~OTU) %>% 
+  mutate_all(~replace(., is.na(.), 0))
+
+castmat <- as.matrix(casted[,2:ncol(casted)])
+row.names(castmat) <- casted$Particle
+
+# load into seurat
+pbmc <- CreateSeuratObject(counts = t(castmat), 
+                           project = "maps", 
+                           min.cells = 3, 
+                           min.features = 2,
+                           meta.data = METADATA)
+
+# normalize data with log + 10000
+pbmc <- NormalizeData(pbmc, normalization.method = "LogNormalize", scale.factor = 10000)
+#pbmc@assays$RNA@counts@
+
+# look at variable features
+pbmc <- FindVariableFeatures(pbmc, selection.method = "vst", nfeatures = 2000)
+
+# scale the data and run PCA
+all.particles <- rownames(pbmc)
+pbmc <- ScaleData(pbmc, features = all.particles)
+pbmc <- RunPCA(pbmc, features = VariableFeatures(object = pbmc))
+
+# compute clusters and neighbors
+pbmc <- FindNeighbors(pbmc, dims = 1:15)
+pbmc <- FindClusters(pbmc, resolution = 0.5)
+
+# actually run umap
+pbmc <- RunUMAP(pbmc, dims = 1:15)
+
+
+#PLOT
+
+Plot1 <- DimPlot(pbmc, reduction = "umap") +
+  ggtitle("Cluster")
+
+a<- FeaturePlot(object = pbmc, features = "Lactobacillaceae",reduction = "umap", order = T, combine = T) +
+  scale_color_gradientn(colors = c('Gray90', '#3300ff'),limits = c(0,5)) + 
+  theme(axis.title = element_blank(), axis.text = element_blank())
+
+b<- FeaturePlot(object = pbmc, features = "Bacteroidaceae",reduction = "umap", order = T, combine = T) +
+  scale_color_gradientn(colors = c('Gray90', '#3300ff'),limits = c(0,5)) + 
+  theme(axis.title = element_blank(), axis.text = element_blank())
+
+c<- FeaturePlot(object = pbmc, features = "Lachnospiraceae",reduction = "umap", order = T, combine = T) +
+  scale_color_gradientn(colors = c('Gray90', '#3300ff'),limits = c(0,5)) + 
+  theme(axis.title = element_blank(), axis.text = element_blank())
+
+d<- FeaturePlot(object = pbmc, features = "Erysipelotrichaceae",reduction = "umap", order = T, combine = T) +
+  scale_color_gradientn(colors = c('Gray90', '#3300ff'),limits = c(0,5)) + 
+  theme(axis.title = element_blank(), axis.text = element_blank())
+                                                                                
+
+#Plot figures 5a here
+fxf <- plot_grid(a,b,c,d, ncol = 2)
+fxf
+ggsave(paste("../figs/fig5/", set, "/Family_UMAP_labels_noclust1per.pdf", sep = ''), width = 5, height = 4)
+#save projection 
+Plot1
+ggsave(paste("../figs/fig5/", set, "/Cluster_UMAP_noclust1per.pdf", sep = ''), width = 4.5, height = 3.5)
+
+plot_grid(Plot1, fxf, nrow = 1)
+ggsave(paste("../figs/fig5/", set, "/5a_UMAPs_labels_noclust1per.pdf", sep = ''), width = 9, height = 4)
+
+# extract the cluster identities
+seuratnorm <- t(as.matrix(pbmc@assays$RNA@data))
+
+clusteres <- data.table(pbmc@meta.data)
+clusteres$Sample <- factor(clusteres$Sample)
+
+plotframe <- clusteres[,.(NumberParticles=length(unique(Particle))),by=.(Sample,seurat_clusters,MouseGroup)] 
+
+
+names(plotframe)[2] <- c("Cluster")
+
+plotframe[, TotalParticleCluster:=sum(NumberParticles) , by=.(Cluster)]
+plotframe$ClusterProportion <- plotframe$NumberParticles/plotframe$TotalParticleCluster
+
+# calculate stats by mouse group
+plotframe[,ParticlesMouseGroupCluster:=sum(NumberParticles),by=.(Cluster,MouseGroup)]
+plotframe$ClusterProportionMouseGroup <- plotframe$ParticlesMouseGroupCluster/plotframe$TotalParticleCluster
+
+# add necessary data and calculate some more things
+
+plotframe <- merge(plotframe,distinct(select(subdataset, Sample, ParticleNumberPerSample)),by="Sample") #%>% filter(TotalParticleCluster > 100)
+
+plotframe$ParticleNumberPerSample <- as.numeric(plotframe$ParticleNumberPerSample)
+plotframe$SampleProportion <- plotframe$NumberParticles/plotframe$ParticleNumberPerSample
+
+# kruskal test for each cluster (to get significance)
+Kruskals <- NA
+for(i in unique(plotframe$Cluster)){
+  testframe <- plotframe[Cluster==i]
+  res <- kruskal.test(list(testframe$ClusterProportion,testframe$SampleProportion))
+  Kruskals <- rbind(Kruskals,cbind(rbind(res),i))
+}
+Kruskals <- data.table(Kruskals)
+Kruskals2 <- data.table(cbind(unlist(Kruskals$p.value),unlist(Kruskals$statistic),unlist(Kruskals$i)))
+names(Kruskals2) <- c("pvalue","statistic","Cluster")
+Kruskals2 <- Kruskals2[-1,]
+Kruskals2$AdjustedP <- p.adjust(Kruskals2$pvalue,"bonferroni")
+
+
+# subset associations
+
+# get particle clustering identity and subset
+ComparisonClusters <- merge(subdataset,clusteres[,.(Particle, seurat_clusters)],by="Particle")
+
+#Make sure that all clusters have > 2 OTUs over 50 instances Get rid of
+#pass <- ComparisonClusters %>% group_by(seurat_clusters, OTU) %>% 
+#  mutate(num_instances = sum(Count)) %>%# filter(num_instances > 50) %>% 
+#  ungroup() %>% 
+#  select(seurat_clusters, OTU) %>% distinct() %>% 
+#  group_by(seurat_clusters) %>%
+#  mutate(num_OTUs_cluster = n())%>% #filter(num_OTUs_cluster > 3)%>% 
+#  ungroup() %>%
+#  select(seurat_clusters) %>% distinct()
+  
+#ComparisonClusters <- semi_join(ComparisonClusters, pass)
+
+# initialize the data.table that will hold the results
+alldistsum <- NA
+
+#change to your dataframe
+Dataset <- data.table(subdataset)
+
+# do otu shuffling for each donor individually
+for(DONORNAME in unique(subdataset$MouseGroup)){
+  print(DONORNAME)
+  
+  print(paste("Getting Data Ready",DONORNAME))
+  
+  # cast the data from one donor
+  testcast <- dcast.data.table(Dataset[MouseGroup == DONORNAME],Particle~OTU,value.var = "Count")
+  setnafill(testcast,fill=0, cols=2:ncol(testcast))
+  
+  # binarize
+  testcast[,2:ncol(testcast)][testcast[,2:ncol(testcast)] > 1] <- 1
+  
+  # remove rare otus (<10 instances)
+  namestosave <- names(testcast[,2:ncol(testcast)])[colSums(testcast[,2:ncol(testcast)]) > 3]
+  testcast2 <- testcast[,namestosave,with=F]
+  
+  # make it a matrix for simulation, and make sure the row names are good
+  testmat <- as.matrix(testcast2)
+  row.names(testmat) <- testcast$Particle
+  
+  # do the actual simulation X times with Y processors
+  print("Simulating the Community")
+  simres <- ParallelSim9(testmat,30,4)
+  
+  # do the comparison to the overall distribution
+  print("Comparing to the Calculated Distribution")
+  distsum <- DistributionDistanceComparison(testmat,simres,"binary",DONORNAME,"SIM9")
+  
+  # label the data by donor, append to the existing collected donor data
+  print("Appending to Data")
+  distsum$MouseGroup <- DONORNAME #renamed from donor
+  #addInstances
+distsum <- left_join(distsum, (filter(subdataset, MouseGroup == DONORNAME) %>% 
+    select(Var1=OTU, Count) %>% group_by(Var1) %>% mutate(InstancesOTU1 = sum(Count)) %>% 
+    select(-Count) %>% distinct())) %>% 
+            left_join(.,(filter(subdataset, MouseGroup == DONORNAME) %>% 
+    select(Var2=OTU, Count) %>% group_by(Var2) %>% mutate(InstancesOTU2 = sum(Count)) %>% 
+    select(-Count) %>% distinct())) %>% mutate(zpvalue=signif(zpvalue, 5))
+  
+  alldistsum <- rbind(alldistsum,distsum,fill=T)
+  
+  print(paste("Done with",DONORNAME))
+  
+  # make sure there isn't any weirdness left from using multiple cores
+  closeAllConnections() 
+}
+
+# clean up result
+alldistsum$x <- NULL
+alldistsum <- alldistsum[-1,]
+
+
+#PrevalentSet Processing
+PrevalentSet <- alldistsum %>% 
+    dplyr::rename(c('OTU1'='Var1', 'OTU2'='Var2')) %>% 
+    #rename(c('Var1'='OTU1','Var2'='OTU2')) %>% 
+  mutate(OTU1=as.character(OTU1), OTU2 = as.character(OTU2))
+
+  #rename('Cluster'='Donor')
+
+# add significance
+PrevalentSet$Significant <- PrevalentSet$zpadjusted < .05
+
+# order the plot
+#PrevalentSet$Cluster <- factor(PrevalentSet$Cluster,levels=0:max(as.numeric(PrevalentSet$Cluster)))
+
+#subset, and rename to differentiate
+
+#OTU1Frame <- unique(fulldataset[,.(OTU,Phylum,Class,Order,Family)])
+OTU1Frame <- distinct(select(subdataset, OTU,Phylum,Class,Order,Family))
+names(OTU1Frame)[1] <- "OTU1"
+names(OTU1Frame)[2:ncol(OTU1Frame)] <- paste(names(OTU1Frame)[2:ncol(OTU1Frame)],"OTU1",sep="_")
+
+OTU2Frame <- distinct(select(subdataset, OTU,Phylum,Class,Order,Family))
+names(OTU2Frame)[1] <- "OTU2"
+names(OTU2Frame)[2:ncol(OTU2Frame)] <- paste(names(OTU2Frame)[2:ncol(OTU2Frame)],"OTU2",sep="_")
+
+# add the order to the otu names
+OTU1Frame$OTU1WithOrder <- paste(OTU1Frame$OTU1,OTU1Frame$Order_OTU1,sep="_")
+OTU2Frame$OTU2WithOrder <- paste(OTU2Frame$OTU2,OTU2Frame$Order_OTU2,sep="_")
+
+# merge them
+PrevalentSet <- merge(PrevalentSet,OTU1Frame,by="OTU1")
+PrevalentSet <- merge(PrevalentSet,OTU2Frame,by="OTU2")
+
+# add color for plotting
+
+#otumapping <- read.csv("../experiments/2022-09-13 Guillaume FMT r3/DeSeq_OTU_dynamics.csv") 
+
+#OTU type was determined from Analysis.R file
+PrevalentSet$OTU1ColorName <- otumapping$OTUcolor[match(PrevalentSet$OTU1,otumapping$OTU)]
+PrevalentSet$OTU2ColorName <- otumapping$OTUcolor[match(PrevalentSet$OTU2,otumapping$OTU)]
+PrevalentSet$OTU1Type <- otumapping$OTUType[match(PrevalentSet$OTU1,otumapping$OTU)]
+PrevalentSet$OTU2Type <- otumapping$OTUType[match(PrevalentSet$OTU2,otumapping$OTU)]
+PrevalentSet$OTU1emergence <- otumapping$emergence[match(PrevalentSet$OTU1,otumapping$OTU)]
+PrevalentSet$OTU2emergence <- otumapping$emergence[match(PrevalentSet$OTU2,otumapping$OTU)]
+
+
+PrevalentSet <- PrevalentSet[!is.na(PrevalentSet$OTU1Type),]
+PrevalentSet <- PrevalentSet[!is.na(PrevalentSet$OTU2Type),]
+
+
+
+write.csv(PrevalentSet, 
+          paste("../experiments/2022-09-13 Guillaume FMT r3/PrevalentSet_noclust1_", set, ".csv", sep = ''))
+}
+
+```
+
+
+
+MaPS-Seq correlation figure for all
+```{}
+set <- c('Env', 'Jax', 'Env2Jax')
+
+for (i in 1:length(set)) {
+     print(set[i])
+   group <- set[i]
+
+PrevalentSet <- read.csv(
+     paste("../experiments/2022-09-13 Guillaume FMT r3/PrevalentSet_noclust1_",group, ".csv", sep = '')) %>% rbind(.,
+              read.csv(
+     paste("../experiments/2022-09-13 Guillaume FMT r3/PrevalentSet_noclust1_",group, ".csv", sep = ''))%>% rename(c("OTU1ColorName"="OTU2ColorName", "OTU2ColorName"="OTU1ColorName"))) 
+
+bugColors <- setNames(c(scales::hue_pal()(length(unique(PrevalentSet$Order_OTU1)))), c(levels(as.factor(PrevalentSet$Order_OTU1))))
+
+#PrevalentSet[PrevalentSet == 'Neither'] <- 'Shared Taxa'
+#PrevalentSet[PrevalentSet == 'Envigo Specific'] <- 'Donor Taxa'
+#PrevalentSet[PrevalentSet == 'Jackson Specific'] <- 'Recipient Taxa'
+
+corplot_all <- ggplot(PrevalentSet, aes(OTU1ColorName,
+                                   OTU2ColorName,
+                                   fill=Zscore)) +
+  geom_tile() +
+  theme_clean() +
+  theme(
+    axis.text.x = ggtext::element_markdown(angle = 90, vjust = 0.35, hjust=1, size = 10),
+    axis.text.y = ggtext::element_markdown()) +
+    scale_fill_gradient2(low="navyblue", high="firebrick2",midpoint = 0) +
+  labs(fill = "Zscore")  +
+  xlab("OTU 1") +
+  ylab("OTU 2") +
+  geom_point(data=function(x){x[PrevalentSet$Significant == TRUE, ]},size=.75,alpha=.7,color="black",shape=8) #+
+  #facet_wrap(~Cluster,scales="free")
+
+corplot_all
+
+ggsave(paste("../figs/fig5/", group, "/MaPSSeq_Correlations_noclust1_", group, ".pdf",sep = ''), width = 20, height = 18)
+ggsave(paste("../figs/fig5/", group, "/MaPSSeq_Correlations_noclust1_", group, ".png",sep = ''), width = 20, height = 18)
+
+#Now get family values
+
+PrevalentSet %>%
+  ggplot(.,aes(OTU1, y=1,fill=Order_OTU1)) + geom_tile(color = 'black') + theme_clean()# +
+  scale_fill_manual(values = bugColors) +
+  theme(
+    axis.text.x = ggtext::element_markdown(angle = 90, vjust = 0.35, hjust=1, size = 10)) +
+  labs(fill = "Order", x = "OTU 1") 
+ # facet_wrap(~Cluster,scales="free")
+
+corplot_fam
+
+ggsave(paste("../figs/fig5/", group, "/MaPSSeq_order__noclust1_", group, ".pdf",sep = ''), width = 20, height = 18)
+
+}
+
+```
+
+
+```{r}
+
+set <- c('Env', 'Jax', 'Env2Jax')
+
+for (i in 1:length(set)) {
+     print(set[i])
+   group <- set[1]
+
+PrevalentSet <-
+  rbind(
+  read.csv(
+     paste("../experiments/2022-09-13 Guillaume FMT r3/PrevalentSet_noclust1_",group, ".csv", sep = '')) %>% select(OTU1ColorName, OTU2ColorName, Zscore, Significant, Class_OTU1) %>% distinct(),
+     read.csv(
+       paste("../experiments/2022-09-13 Guillaume FMT r3/PrevalentSet_noclust1_",group, ".csv", sep = '')) %>% select(OTU1ColorName, OTU2ColorName, Zscore, Significant, Class_OTU2) %>% distinct() %>%
+   dplyr::rename(c("OTU2ColorName"="OTU1ColorName", "OTU1ColorName"="OTU2ColorName", "Class_OTU1"="Class_OTU2"))) %>% na.omit()
+  
+
+PrevalentSet.cast <- PrevalentSet %>%
+  filter(OTU1ColorName != 'NA') %>% 
+  select(OTU1ColorName, OTU2ColorName, Zscore) %>% distinct() %>% 
+  reshape2::dcast(OTU1ColorName~OTU2ColorName)
+
+#clustering
+PrevalentSet.cast.matrix <- as.matrix(PrevalentSet.cast[, -c(1)])
+PrevalentSet.cast.matrix[is.infinite(PrevalentSet.cast.matrix)] <- max(PrevalentSet.cast.matrix[is.finite(PrevalentSet.cast.matrix)])
+
+rownames(PrevalentSet.cast.matrix) <- PrevalentSet.cast$OTU1ColorName
+PrevalentSet.cast.dendro <- as.dendrogram(hclust(d = dist(x = PrevalentSet.cast.matrix)))
+PrevalentSet.cast$order <- order.dendrogram(PrevalentSet.cast.dendro)
+  
+# Create dendro
+dendro.plot <- ggdendro::ggdendrogram(data = PrevalentSet.cast.dendro, 
+                            rotate=FALSE) + 
+                  coord_flip() + scale_y_reverse() + scale_x_reverse() + 
+                  theme(axis.line = element_blank(),
+                        axis.text = element_blank()) + theme_void()
+
+# Preview the plot
+print(dendro.plot)
+
+PrevalentSet.cast.long <- reshape2::melt(PrevalentSet.cast, id = c("OTU1ColorName", "order")) %>% distinct()
+
+#reorder
+#PrevalentSet.cast.order <- order.dendrogram(PrevalentSet.cast.dendro)
+PrevalentSet.cast.long$OTU1ColorName <- factor(x = PrevalentSet.cast.long$OTU1ColorName,
+                               levels = PrevalentSet.cast$OTU1ColorName[PrevalentSet.cast$order], 
+                               ordered = TRUE)
+
+temp <- PrevalentSet.cast.long %>% 
+          select(OTU1ColorName, OTU2ColorName=variable, Zscore = 'value') %>% 
+          left_join(., 
+            (PrevalentSet %>% 
+               select(OTU1ColorName, OTU2ColorName, Significant, 
+                      Class_OTU1)), 
+            by = c("OTU1ColorName", "OTU2ColorName")) 
+
+temp$Zscore[is.infinite(temp$Zscore)] <- max(temp$Zscore[is.finite(temp$Zscore)])+3
+
+clustr <- temp %>%
+                 ggplot(aes(x = OTU1ColorName, y = OTU2ColorName, fill = Zscore)) +
+geom_tile() +
+  scale_fill_gradient2(low="blue", high="darkred",midpoint = 0) + #,limits=c(-.5,.5)) +
+  theme_clean() +
+  scale_y_discrete(limits = rev(PrevalentSet.cast.long$OTU1ColorName[PrevalentSet.cast$order])) +
+  scale_x_discrete(limits = rev(PrevalentSet.cast.long$OTU1ColorName[PrevalentSet.cast$order])) +
+  theme(
+    axis.text.x = ggtext::element_markdown(angle = 90, vjust = 0.35, hjust=1, size = 4),
+    axis.text.y = ggtext::element_markdown(size = 6)) +
+  labs(fill = "Co-association Score")  +
+  xlab("OTU X") +
+  ylab("OTU Y") +
+  geom_point(data=function(x){x[temp$Significant == TRUE, ]},size=.75,alpha=.7,color="black",shape=8)
+
+corplot_fam <- PrevalentSet %>%  
+  ggplot(.,aes(OTU1ColorName, y = 1, fill = Class_OTU1)) +
+                 geom_tile(color = 'black') + theme_clean() +
+    scale_x_discrete(limits = rev(PrevalentSet.cast.long$OTU1[PrevalentSet.cast$order])) +
+  scale_fill_manual(values = bugColors) +
+  theme(
+    axis.text.x = ggtext::element_markdown(angle = 90, vjust = 0.35, hjust=1, size = 10)) +
+  labs(fill = "Class", x = "OTU 1") 
+
+corplot_fam
+
+
+
+cowplot::plot_grid(dendro.plot, clustr, corplot_fam, nrow = 1, rel_widths = c(.25, 1, 1))
+
+ggsave(paste("../figs/fig5/", group, "/MaPSSeq_order__noclust1_", group, ".pdf",sep = ''), width = 18, height = 6)
+
+
+}
+
+```
+
+
+
+
+Read in all PrevalentSets
+```{r}
+
+PrevalentSets <- rbind((read.csv("../experiments/2022-09-13 Guillaume FMT r3/PrevalentSet_noclust1_Env2Jax.csv") %>% 
+  mutate(MouseGroup = 'Env2Jax')),
+(read.csv("../experiments/2022-09-13 Guillaume FMT r3/PrevalentSet_noclust1_Jax.csv") %>% 
+  mutate(MouseGroup = 'Jax')),
+(read.csv("../experiments/2022-09-13 Guillaume FMT r3/PrevalentSet_noclust1_Env.csv") %>% 
+  mutate(MouseGroup = 'Env'))) %>% select(-X) %>%
+  mutate(MouseGroup = as.factor(MouseGroup))
+
+bugColors <- setNames(c(scales::hue_pal()(length(unique(PrevalentSets$Class_OTU1)))), c(levels(as.factor(PrevalentSets$Class_OTU1)))) 
+
+write.csv(bugColors,"../misc/bugColors_MapsSeq.csv", quote = F, row.names = T)
+
+```
+
+
+
+OTU composition of each cluster
+```{r}
+ 
+PrevalentSets %>% select(Cluster, OTU1ColorName, Order_OTU1, MouseGroup) %>% 
+  distinct() %>% 
+  ggplot(.,aes(x=Cluster, fill=Order_OTU1)) +
+  geom_bar(aes(fill=Order_OTU1)) +
+  theme_cowplot() +
+  scale_x_continuous(breaks = seq(0,max(PrevalentSets$Cluster),1)) +
+  scale_fill_manual(values = bugColors) +
+  #scale_fill_distiller(palette = "Paired") +
+  theme(
+    axis.text = element_text(size = 14),
+    strip.background = element_blank(),
+    strip.text = element_text(size = 14)) +
+  labs(fill = "Order", x = "Cluster", y = '# of OTUs') + 
+  facet_wrap(~factor(MouseGroup, levels = c('Pre FMT', 'Post FMT', 'Donor')), nrow = 3, scales = 'free_x', strip.position = 'right') 
+
+ggsave(paste("../figs/s6/TaxComposition_all.pdf",sep = ''), width = 7, height = 12)
+ggsave(paste("../figs/s6/TaxComposition_all.png",  sep = ''), width = 7, height = 12)
+
+```
+
+Number of counts per clusters
+```{r}
+
+PrevalentSets %>% select(Cluster, MouseGroup) %>% 
+  ggplot(.,aes(x=Cluster)) +
+  geom_bar(stat = 'count', fill = 'dodgerblue', color = 'black') +
+  theme_cowplot() +
+  scale_x_continuous(breaks = seq(0,max(PrevalentSets$Cluster),1)) +
+  theme(
+    axis.text = element_text(size = 14),
+    strip.background = element_blank(),
+    strip.text = element_text(size = 14)) +
+  labs(fill = "Order", x = "Cluster", y = '# of Particles') + 
+  facet_wrap(~factor(MouseGroup, levels = c('Pre FMT', 'Post FMT', 'Donor')), nrow = 3, scales = 'free_x', strip.position = 'right') 
+
+ggsave(paste("../figs/fig5/ClusterCounts_all.pdf",sep = ''), width = 4.5, height = 12)
+ggsave(paste("../figs/fig5/ClusterCounts_all.png",  sep = ''), width = 4.5, height = 12)
+
+```
+
+
+Interactions per cluster
+
+```{r}
+
+PrevalentSets %>% 
+      select(Cluster,OTU1,OTU2, Zscore, Significant, MouseGroup) %>%    
+      filter(Significant == TRUE) %>%
+      mutate(interaction_type = ifelse(Zscore > 0, '+', '-')) %>%
+      group_by(Cluster, MouseGroup, interaction_type) %>% 
+  mutate(num_interactions_cluster = n()/2) %>% ungroup %>%
+  select(Cluster, interaction_type, MouseGroup, num_interactions_cluster) %>% 
+  distinct() %>%
+      ggplot(., aes(x=as.factor(Cluster), y = num_interactions_cluster, fill = interaction_type)) + 
+        geom_bar(position = 'stack', stat='identity') + 
+        facet_wrap(~OTU1Type, nrow = 1) +
+        scale_fill_manual(values = c('dodgerblue', 'firebrick2')) +
+        labs(y = 'Number of Interactions', x = 'Cluster', fill = 'Interaction Type') +
+      #scale_y_continuous(breaks = seq(5,50, 5)) +
+      theme_cowplot() +
+      theme(axis.text = element_text(size=14,color = 'black'), 
+        axis.title.x.bottom = element_text(size = 14,color = 'black'),
+        axis.title.y.left = element_text(size = 14,color = 'black'),
+        strip.text = element_text(size = 14),
+        strip.background = element_blank(),
+        legend.text = element_text(size=12,color = 'black'),
+        legend.title = element_text(size = 14, hjust = .5,color = 'black'),
+        legend.position = 'right') + 
+      facet_wrap(~factor(MouseGroup, levels = c('Pre FMT', 'Post FMT', 'Donor')), 
+             nrow = 3, scales = 'free', strip.position = 'right') 
+
+ggsave("../figs/fig5/ClusterInteractions.png",  width = 6, height = 12)
+ggsave("../figs/fig5/ClusterInteractions.pdf",  width = 6, height = 12)
+
+```
+
+
+Cool cluster data! So what kind of interactions are happening now?
+
+Lets look at dominant OG cluster first
+```{r}
+library(ggraph)
+library(igraph)
+
+bugColors <- setNames(c(scales::hue_pal()(length(unique(PrevalentSets$Order_OTU1)))), c(levels(as.factor(PrevalentSets$Order_OTU1))))
+
+
+# Create data frame for edges
+
+#Pre FMT dominant cluster
+clustr <- 0
+sample <- 'Pre FMT'
+
+cluster_network <- PrevalentSets %>%
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  filter(MouseGroup == sample) %>%
+    filter(Cluster == clustr, Significant == TRUE) #only significant interactions
+    #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>% 
+    #filter(Significant == TRUE) %>% #to only show significant edges
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes <- cluster_network %>% 
+  select(OTU1, Order_OTU1, InstancesOTU1, Color) %>% distinct()
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+a<- ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('firebrick', 'navyblue')) +
+   # scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1*.8)) +
+    scale_size_continuous(range = c(0, 10)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(aes(size = InstancesOTU1*.5), color = 'white') +
+   # geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    geom_node_text(aes(label = name), nudge_y = .1) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste('Cluster', clustr, ";", sample, sep = ' ')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+clustr <- 0
+sample <- 'Post FMT'
+
+cluster_network <- PrevalentSets %>%
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  filter(MouseGroup == sample) %>%
+    filter(Cluster == clustr, Significant == TRUE) #only significant interactions
+    #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>% 
+    #filter(Significant == TRUE) %>% #to only show significant edges
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes <- cluster_network %>% 
+  select(OTU1, Order_OTU1, InstancesOTU1, Color) %>% distinct()
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+b<- ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('firebrick', 'navyblue')) +
+   # scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1*.8)) +
+    scale_size_continuous(range = c(0, 10)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(aes(size = InstancesOTU1*.5), color = 'white') +
+   # geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    geom_node_text(aes(label = name), nudge_y = .1) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste('Cluster', clustr, ";", sample, sep = ' ')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+plot_grid(a,b)
+
+```
+
+
+What about if we do cluster-independent?
+
+Lets look at dominant OG cluster first
+```{r}
+library(ggraph)
+library(igraph)
+
+bugColors <- setNames(c(scales::hue_pal()(length(unique(PrevalentSets$Order_OTU1)))), c(levels(as.factor(PrevalentSets$Order_OTU1))))
+
+
+# Create data frame for edges
+
+#Pre FMT dominant cluster
+sample <- 'Pre FMT'
+
+cluster_network <- PrevalentSets %>%
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  filter(MouseGroup == sample) %>% 
+    filter(Significant == TRUE) %>% #only significant interactions
+  group_by(OTU1, OTU2) %>% mutate(num_interacts = n(),
+                                  InstancesOTU1 = mean(InstancesOTU1)) %>% 
+  ungroup() %>% distinct()
+    #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>% 
+    #filter(Significant == TRUE) %>% #to only show significant edges
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes <- cluster_network %>% group_by(OTU1) %>% 
+  mutate(InstancesOTU1=mean(InstancesOTU1)) %>% ungroup() %>%
+  select(OTU1, Order_OTU1, InstancesOTU1, Color) %>% distinct()
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+a<- ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('firebrick', 'navyblue')) +
+   # scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1*.8)) +
+    scale_size_continuous(range = c(0, 10)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(aes(size = InstancesOTU1*.5), color = 'white') +
+    geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    geom_node_text(aes(label = name), nudge_y = .1) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste( sample, sep = ' ')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+sample <- 'Post FMT'
+
+cluster_network <- PrevalentSets %>%
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  filter(MouseGroup == sample) %>% 
+    filter(Significant == TRUE) %>% #only significant interactions
+  group_by(OTU1, OTU2) %>% mutate(num_interacts = n(),
+                                     mean_interaction = mean(Correlation)) %>% 
+  ungroup() %>% distinct()
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>% 
+    #filter(Significant == TRUE) %>% #to only show significant edges
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes <- cluster_network %>% group_by(OTU1) %>% 
+  mutate(InstancesOTU1=mean(InstancesOTU1)) %>% ungroup() %>%
+  select(OTU1, Order_OTU1, InstancesOTU1, Color) %>% distinct()
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+b<- ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('firebrick', 'navyblue')) +
+   # scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1*.8)) +
+    scale_size_continuous(range = c(0, 10)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(aes(size = InstancesOTU1*.5), color = 'white') +
+   geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    geom_node_text(aes(label = name), nudge_y = .1) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste(sample, sep = ' ')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+plot_grid(a,b)
+
+```
+
+
+
+
+
+

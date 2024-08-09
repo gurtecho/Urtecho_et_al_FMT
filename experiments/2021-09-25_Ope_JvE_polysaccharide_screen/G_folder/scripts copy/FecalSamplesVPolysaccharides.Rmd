@@ -1,0 +1,404 @@
+---
+title: "FecalSamplesVPolysaccharides"
+author: "Opeyemi Lekan"
+date: "10/15/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+library(pals)
+library(tidyverse)
+library(ggthemes)
+
+# Working directory for the experiment
+setwd("~/Desktop/WangLab_Research/Data_analysis_2/scripts/")
+knitr::opts_knit$set("~/Desktop/WangLab_Research/Data_analysis_2/scripts/")
+
+#  Load the metadata
+meta <- read_csv("../metadata/metadata.csv")
+
+#Load plate data processed with extract data.py
+#data processed using 
+#python extract_data.py -i ../data/20210815_FecalSamplesVPolysaccharides.txt -o ../data/20210815_FecalSamplesVPolysaccharides_formatted.txt
+
+data <- read_csv("../data/data.csv") %>% # Load the tidy OD600 data processed w/ python script
+  filter(well %in% meta$well) %>% # filter the data to those wells in the metadata
+  left_join(meta, by="well") # Add the metadata to each entry
+
+
+# Define Order I want to plot polysaccharides in, to be used as levels (i.e. plot order)
+polysacc.order <-c("Water", "MGAM", "Glucose", "Arabinan", "Inulin",
+                   "Cellobiose", "Mucin", "Arabino-galactan", "Pectin", "Amylopectin")
+
+```
+
+
+Normalize data [accounts for fluorescence in media]{density of media & culture}
+```{r}
+
+# Compute the bg growth from the OD600 of the water wells
+bg <- data %>%
+  filter(polysacc == "Water") %>%
+  group_by(time_mins, sample_type) %>%
+  summarise(bg = mean(OD600))
+
+
+# Add bg data to the actual data
+data <- data %>%
+  left_join(bg, by=c("time_mins", "sample_type")) %>%
+  mutate(norm_OD600 = OD600/bg,  # Compute OD600 normalized against water controls
+         corr_OD600 = OD600-bg, # Compute the OD600 corrected against water controls
+         #sample_type = factor(data$sample_type, levels = c("Jax", "Envigo", "J"))
+         sample_type = factor(data$sample_type, levels = c("Jax", "Envigo", "JaxVEnvigo")), # convert sample type to factor with levels ordered [would sepcify order here eg. jax, envigo, both]
+         polysacc = factor(data$polysacc, levels = polysacc.order), # convert polysaccharide to factor, levels in order I want to plot
+         replicate = factor(data$replicate, levels=as.character(unique(data$replicate)))) #Order replicates
+
+
+```
+
+
+MAKE PRETTY GRAPH
+```{r}
+# Plot raw data
+raw.viz<- data  %>%
+  
+  ggplot() +
+  geom_line(aes(x=time_mins, y=OD600, color=replicate)) + #defined type of graph and variables
+  #facet_grid(polysacc~sample_type) +
+  facet_wrap(polysacc~sample_type, nrow = 10, scales = "free") +
+  xlab("Time (mins)") +
+  labs(color="replicate") + #[labs --> more general function for label ]
+  theme_clean() +
+  theme( 
+    axis.title.x = element_text(size = 10),
+    axis.text.x = element_text(size=8),
+    axis.title.y = element_text(size = 10),
+    axis.text.y = element_text(size=8),
+    legend.title = element_text(size=10),
+    legend.text = element_text(size=10),
+    strip.text.x = element_text(size=8),
+    strip.text.y = element_text(size=8),
+    strip.text.y.right = element_text(angle = 0))
+
+raw.viz
+ggsave("../figures/raw_data_lineplot.svg", raw.viz)
+ggsave("../figures/raw_data_lineplot.pdf", raw.viz, width=8, height=10)
+  
+```
+
+```{r}
+# Plot corrected data
+corr.viz <- data  %>%
+  filter(polysacc != "Water") %>%
+  ggplot() +
+  geom_line(aes(x=time_mins, y=corr_OD600, color=replicate)) +
+  facet_grid(polysacc~sample_type) + 
+  #xlab("Time (mins)") +
+  #ylab("Correction OD600") +
+  labs(x="TIme (mins)", y="Correction OD600", color="Replicate") +
+  #ylim(0, 4) +
+    theme_clean() +
+  theme(
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size=12),
+    axis.title.y = element_text(size = 14),
+    axis.text.y = element_text(size=12),
+    legend.title = element_text(size=14),
+    legend.text = element_text(size=12),
+    strip.text.x = element_text(size=12),
+    strip.text.y = element_text(size=12),
+    strip.text.y.right = element_text(angle = 0))
+
+corr.viz
+ggsave("../figures/corr_data_lineplot.svg", corr.viz)
+ggsave("../figures/corr_data_lineplot.pdf", corr.viz, width=8, height=10)
+
+```
+
+```{r}
+
+# Plot normalized data
+norm.viz <- data  %>%
+  filter(polysacc != "Water", polysacc != "MGAM") %>%
+  group_by(polysacc) %>% mutate(Nmax = norm_OD600/max(norm_OD600)) %>%
+  ungroup() %>%
+  ggplot() +
+  geom_line(aes(x=time_mins, y=Nmax, color=sample_type)) +
+  #facet_grid(polysacc~sample_type) + 
+  facet_wrap(polysacc~sample_type, nrow = 10) +
+  #xlab("Time (mins)") +
+  #ylab("Correction OD600") +
+  labs(x="TIme (mins)", y="Correction OD600", color="Replicate") +
+  #ylim(0, 4) +
+    theme_clean() +
+  theme(
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size=12),
+    axis.title.y = element_text(size = 14),
+    axis.text.y = element_text(size=12),
+    legend.title = element_text(size=14),
+    legend.text = element_text(size=12),
+    strip.text.x = element_text(size=12),
+    strip.text.y = element_text(size=12),
+    strip.text.y.right = element_text(angle = 0))
+
+norm.viz
+ggsave("../figures/norm_data_lineplot.svg", corr.viz)
+ggsave("../figures/norm_data_lineplot.pdf", corr.viz, width=8, height=10)
+
+```
+
+```{r}
+# Create averaged out data
+avg.data <- data %>%
+  group_by(polysacc, sample_type, time_mins) %>%
+  summarise(OD600 = mean(OD600), bg= mean(bg))
+
+# Compute OD600 normalized against water controls
+avg.data$norm_OD600 <- avg.data$OD600 / avg.data$bg
+
+# Compute the OD600 corrected against water controls
+avg.data$corr_OD600 <- avg.data$OD600 - avg.data$bg
+  
+
+# Plot averaged out data
+avg.viz <- avg.data  %>%
+  
+  filter(polysacc != "Water", polysacc != "Mucin", polysacc != "Amylopectin", polysacc != "Pectin") %>%
+  group_by(polysacc) %>% mutate(Nmax = norm_OD600/max(norm_OD600)) %>%
+  ungroup() %>% 
+  ggplot() +
+  geom_line(aes(x=time_mins, y=Nmax, color=sample_type)) +
+  #facet_grid(~polysacc) +
+  facet_wrap(~polysacc, nrow = 10) + 
+  xlab("Time (mins)") +
+  labs(color="Sample_type") +
+  theme_clean() + 
+  # theme... used for the theme of the graph
+  theme(
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size=12),
+    axis.title.y = element_text(size = 14),
+    axis.text.y = element_text(size=12),
+    legend.title = element_text(size=14),
+    legend.text = element_text(size=14),
+    strip.text.x = element_text(size=12),
+    strip.text.y = element_text(size=12),
+    strip.text.y.right = element_text(angle = 0))
+
+avg.viz
+ggsave("../figures/avg_data_lineplot.svg", avg.viz)
+ggsave("../figures/avg_data_lineplot.pdf", avg.viz, width=8, height=10)
+
+```
+
+```{r}
+# Create averaged out data for just jax 
+avg.data <- data %>%
+  group_by(polysacc, sample_type, time_mins) %>%
+  summarise(OD600 = mean(OD600), bg= mean(bg))
+
+# Compute OD600 normalized against water controls
+avg.data$norm_OD600 <- avg.data$OD600 / avg.data$bg
+
+# Compute the OD600 corrected against water controls
+avg.data$corr_OD600 <- avg.data$OD600 - avg.data$bg
+  
+
+# Plot averaged out data
+avg.viz <- avg.data  %>%
+  
+  filter(polysacc != "Water", polysacc != "Mucin", polysacc != "Amylopectin", polysacc != "Pectin") %>%
+  filter(sample_type == "Jax") %>% 
+  group_by(polysacc) %>% mutate(Nmax = norm_OD600/max(norm_OD600)) %>%
+  ungroup() %>% 
+  ggplot() +
+  geom_line(aes(x=time_mins, y=Nmax, color=polysacc)) +
+  #facet_grid(~polysacc) +
+  facet_wrap(~polysacc, nrow = 10) + 
+  xlab("Time (mins)") +
+  labs(color = "Jax vs Polysacc", y = "Growth rate (OD600)") +
+  theme_clean() + 
+  # theme... used for the theme of the graph
+  theme(
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size=12),
+    axis.title.y = element_text(size = 14),
+    axis.text.y = element_text(size=12),
+    legend.title = element_text(size=14),
+    legend.text = element_text(size=14),
+    strip.text.x = element_text(size=12),
+    strip.text.y = element_text(size=12),
+    strip.text.y.right = element_text(angle = 0))
+
+avg.viz
+ggsave("../figures/avg_data_jax_lineplot.svg", avg.viz)
+ggsave("../figures/avg_data_jax_lineplot.pdf", avg.viz, width=8, height=10)
+
+```
+
+```{r}
+# Create averaged out data for just envigo 
+avg.data <- data %>%
+  group_by(polysacc, sample_type, time_mins) %>%
+  summarise(OD600 = mean(OD600), bg= mean(bg))
+
+# Compute OD600 normalized against water controls
+avg.data$norm_OD600 <- avg.data$OD600 / avg.data$bg
+
+# Compute the OD600 corrected against water controls
+avg.data$corr_OD600 <- avg.data$OD600 - avg.data$bg
+  
+
+# Plot averaged out data
+avg.viz <- avg.data  %>%
+  
+  
+  filter(polysacc != "Water", polysacc != "Mucin", polysacc != "Amylopectin", polysacc != "Pectin") %>%
+  filter(sample_type == "Envigo") %>% 
+  group_by(polysacc) %>% mutate(Nmax = norm_OD600/max(norm_OD600)) %>%
+  ungroup() %>% 
+  ggplot() +
+  geom_line(aes(x=time_mins, y=Nmax, color=polysacc)) +
+  #facet_grid(~polysacc) +
+  facet_wrap(~polysacc, nrow = 10) + 
+  xlab("Time (mins)") +
+  labs(color = "Envigo vs Polysacc", y = "Growth rate (OD600)") +
+  theme_clean() + 
+  # theme... used for the theme of the graph
+  theme(
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size=12),
+    axis.title.y = element_text(size = 14),
+    axis.text.y = element_text(size=12),
+    legend.title = element_text(size=14),
+    legend.text = element_text(size=14),
+    strip.text.x = element_text(size=12),
+    strip.text.y = element_text(size=12),
+    strip.text.y.right = element_text(angle = 0))
+
+avg.viz
+ggsave("../figures/avg_data_envigo_lineplot.svg", avg.viz)
+ggsave("../figures/avg_data_envigo_lineplot.pdf", avg.viz, width=8, height=10)
+
+```
+
+
+```{r}
+
+# plot out averaged normalized data
+# Plot normalized data
+avg.norm.viz <- avg.data  %>%
+  filter(polysacc != "Water") %>%
+  ggplot() +
+  geom_line(aes(x=time_mins, y=norm_OD600, color=polysacc)) +
+  facet_grid(polysacc~sample_type) + 
+  xlab("Time (mins)") +
+  ylab("Normalized OD600") +
+  labs(color="Replicate") +
+  ylim(0, 4) + 
+  theme(
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size=12),
+    axis.title.y = element_text(size = 14),
+    axis.text.y = element_text(size=12),
+    legend.title = element_text(size=14),
+    legend.text = element_text(size=12),
+    strip.text.x = element_text(size=12),
+    strip.text.y = element_text(size=12),
+    strip.text.y.right = element_text(angle = 0))
+
+avg.norm.viz
+ggsave("../figures/norm_data_lineplot.svg", avg.norm.viz)
+ggsave("../figures/norm_data_lineplot.pdf", avg.norm.viz, width=8, height=10)
+
+```
+
+```{r}
+avg.data
+
+# Plot out avg data w/ Jax vs. Envigo together
+grouped.avg.viz <- avg.data  %>%
+  ggplot() +
+  geom_line(aes(x=time_mins, y=OD600, color=sample_type)) +
+  facet_grid(polysacc~.) +
+  xlab("Time (mins)") +
+  labs(color="Mouse Type") +
+      theme_clean() +
+  theme(
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size=16),
+    axis.title.y = element_text(size = 18),
+    axis.text.y = element_text(size=16),
+    legend.title = element_text(size=18),
+    legend.text = element_text(size=16),
+    strip.text.x = element_text(size=12),
+    strip.text.y = element_text(size=12),
+    strip.text.y.right = element_text(angle = 0))
+
+grouped.avg.viz
+ggsave("../figures/grouped_avg_data_lineplot_splitCond.svg", grouped.avg.viz)
+ggsave("../figures/grouped_avg_data_lineplot_splitCond.pdf", grouped.avg.viz, width=8, height=10)
+
+
+```
+
+Plot Normalized average of jax with envigo
+```{r}
+norm_grouped.avg.viz <- avg.data  %>%
+    filter(polysacc != "Water") %>%
+  ggplot() +
+  geom_line(aes(x=time_mins, y=norm_OD600, color=sample_type)) +
+  facet_grid(polysacc~., scales = 'free_y') +
+  xlab("Time (mins)") +
+  labs(color="Mouse Type") +
+      theme_clean() +
+  theme(
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size=16),
+    axis.title.y = element_text(size = 18),
+    axis.text.y = element_text(size=16),
+    legend.title = element_text(size=18),
+    legend.text = element_text(size=16),
+    strip.text.x = element_text(size=12),
+    strip.text.y = element_text(size=12),
+    strip.text.y.right = element_text(angle = 0))
+
+norm_grouped.avg.viz
+ggsave("../figures/norm_grouped_avg_data_lineplot_splitCond.svg", grouped.avg.viz)
+ggsave("../figures/norm_grouped_avg_data_lineplot_splitCond.pdf", grouped.avg.viz, width=8, height=10)
+
+
+
+```
+
+```{r}
+
+#Plot all 
+allconditions.avg.viz <- avg.data  %>%
+  ggplot() +
+  geom_line(aes(x=time_mins, y=OD600, color=polysacc)) +
+  facet_grid(sample_type~.) +
+  xlab("Time (mins)") +
+  labs(color="Mouse Type") +
+      theme_clean() +
+  theme(
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size=16),
+    axis.title.y = element_text(size = 18),
+    axis.text.y = element_text(size=16),
+    legend.title = element_text(size=18),
+    legend.text = element_text(size=16),
+    strip.text.x = element_text(size=12),
+    strip.text.y = element_text(size=12),
+    strip.text.y.right = element_text(angle = 0))
+
+allconditions.avg.viz
+ggsave("../figures/grouped_avg_data_lineplot.svg", allconditions.avg.viz)
+ggsave("../figures/grouped_avg_data_lineplot.pdf", allconditions.avg.viz, width=8, height=10)
+
+
+```

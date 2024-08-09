@@ -1,0 +1,181 @@
+---
+title: "Fig1_FMT"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+setwd("~/Dropbox/fmt/experiments/20230516_FMT_MaPS-Seq2/scripts/")
+library(tidyverse)
+library(wesanderson)
+library(ggthemes)
+library(cowplot)
+#library(svglite)
+library('phyloseq')
+
+ven <- c('#FAAF40',"#1B75BB", "#37B34A","#F05A28")
+pal <- wes_palette("Zissou1", 100, type = "continuous")
+
+options(stringsAsFactors = F)
+options(scipen = 10000)
+
+```
+
+Load data
+
+```{r cars}
+
+zotu <- read_csv("../processed_data/zotu.csv") 
+tax <- read_csv("../ref/tax.csv")
+meta <- read_csv("../ref/metadata.csv")
+
+# Check read counts
+read.counts <- zotu %>%
+  rowwise(seqid) %>%
+  mutate(numreads = rowSums(across(where(is.numeric)))) %>%
+  ungroup() %>%
+  select(seqid, numreads)
+
+# Pull out samples w/ >10k reads
+samples.to.keep <- read.counts %>%
+  filter(numreads > 1000) %>%
+  select(seqid) %>%
+  as_vector()
+
+# Drop <10k read samples from zotu table
+zotu <- zotu %>%
+  filter(seqid %in% samples.to.keep)
+
+# make tidy data
+# Convert to relative abundance
+zotu <- zotu %>%
+  pivot_longer(!seqid, names_to="OTU", values_to="reads") %>%
+  group_by(seqid) %>%
+  mutate(relabd = (reads / sum(reads))) %>% ungroup
+#  mutate(relabd = (reads / sum(reads))*1000) %>% ungroup
+
+
+# calc log10 OTU abd
+zotu <- zotu %>%
+  mutate(log10relabd = if_else(relabd == 0, -6, log10(relabd)))
+
+
+
+# Join metadata to zotu table
+zotu <- zotu %>%
+  left_join(meta, ., by=c("sample"="seqid"))
+
+gtable <- tax %>%
+  select(OTU, genus, family)
+```
+
+filter out for only OTUs with sufficient abundance in any mouse type
+
+```{r}
+
+jax.otus.to.keep <- zotu %>%
+  filter(mouse_type == "Jax") %>%
+  group_by(OTU) %>%
+  summarise(avg_abd = mean(relabd)) %>%
+  filter(avg_abd > .003) %>%
+  select(OTU) %>%
+  as_vector()
+
+envigo.otus.to.keep <- zotu %>%
+  filter(mouse_type == "Env") %>%
+  group_by(OTU) %>%
+  summarise(avg_abd = mean(relabd)) %>%
+  filter(avg_abd > .003) %>%
+  select(OTU) %>%
+  as_vector()
+
+
+otus.to.keep <- unique(c(jax.otus.to.keep, envigo.otus.to.keep))
+
+# Drop OTUs not at least 1% abd
+zotu <- zotu %>%
+  filter(OTU %in% otus.to.keep)
+
+
+```
+
+
+Fig 1A - Showing different vendor
+
+```{r}
+
+library('ggdendro')
+library('grid')
+
+set.seed(123)
+
+vendor <- zotu %>% 
+  select(OTU, mouse, mouse_type, log10relabd) %>% reshape2::dcast(OTU~mouse)
+
+
+
+vendor.scaled <- vendor
+#vendor.scaled[, c(2:41)] <- (vendor.scaled[, 2:41]) #don't scale here actually
+
+#clustering
+vendor.matrix <- as.matrix(vendor.scaled[, -c(1)])
+rownames(vendor.matrix) <- vendor.scaled$OTU
+vendor.dendro <- as.dendrogram(hclust(d = dist(x = vendor.matrix)))
+
+# Create dendro
+dendro.plot <- ggdendrogram(data = vendor.dendro, rotate = TRUE)
+
+# Preview the plot
+print(dendro.plot)
+
+
+##Heatmap
+vendor.long <- reshape2::melt(vendor.scaled, id = c("OTU"))
+vendor.order <- order.dendrogram(vendor.dendro) #reorder
+vendor.long <- left_join(vendor.long, gtable) %>% #add family data
+    left_join(., (select(zotu, mouse, mouse_type, tx_group) %>% distinct()), by = c('variable'='mouse')) #add vendor data
+vendor.long$OTU <- factor(x = vendor.long$OTU,
+                               levels = vendor.scaled$OTU[vendor.order], 
+                               ordered = TRUE)
+
+#order vendors for plot
+vendor.long$tx_group <- factor(vendor.long$tx_group,      # Reordering group factor levels
+                         levels = c("J","E", "JE"))
+# Heatmap
+heatmap.plot <- ggplot(data = vendor.long, aes(x = variable, y = OTU)) +
+  geom_tile(aes(fill = value), color = 'white') +
+  scale_fill_gradient2(high = 'firebrick3', mid = 'white', low = '#1357a6', midpoint = -3) +
+  #scale_fill_gradientn(colours = pal) + 
+  labs(x='Mouse', fill ='Relative Abundance',
+       y = paste("OTU (N = ", length(otus.to.keep), ")", sep = '')) +
+  facet_wrap(~tx_group, scales = 'free_x', ncol = 4) +
+  theme(strip.text.y.right = element_text(angle = 0),
+        panel.background = element_rect(fill = "white"), 
+              axis.ticks = element_blank(), 
+              axis.text.y = element_blank(), 
+             # axis.text.x = element_blank(),
+              strip.text = element_text(size = 10),
+              panel.spacing = unit(0.05, "lines"),
+        legend.position = 'bottom',
+        strip.background = element_blank()) 
+
+fam <- ggplot(data = vendor.long, aes(x = '', y = OTU)) + 
+    geom_tile(aes(fill = family), color = 'white') +
+    labs(fill = 'Family') +
+    theme(strip.text.y.right = element_text(angle = 0),
+              panel.background = element_rect(fill = "white"), 
+              axis.ticks = element_blank(), 
+              axis.text.y = element_blank(),
+              axis.title.y = element_blank(),
+              axis.text.x = element_blank(), 
+              axis.title.x = element_blank(),
+              strip.text = element_blank(),
+              panel.spacing = unit(0.05, "lines"))
+
+heatmap.plot
+cowplot::plot_grid(heatmap.plot, fam, ncol =2, rel_widths = c(.6,.2))
+ggsave("../figs/day7.png",  width = 8, height = 5)
+ggsave("../figs/day7.pdf",  width = 8, height = 5)
+
+```

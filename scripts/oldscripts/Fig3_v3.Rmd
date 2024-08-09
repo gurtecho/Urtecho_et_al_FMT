@@ -1,0 +1,1935 @@
+---
+title: "Fig3.Rmd"
+output:
+  pdf_document: default
+  html_document: default
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+setwd("~/Dropbox/fmt/scripts/")
+library(tidyverse)
+library(wesanderson)
+library(ggthemes)
+library(reshape2)
+library(cowplot)
+library(DESeq2)
+
+ven <- c('#FAAF40',"#1B75BB","#37B34A", "#F05A28") #C,E,J,T
+pal <- wes_palette("Zissou1", 100, type = "continuous")
+
+
+options(stringsAsFactors = F)
+options(scipen = 10000)
+
+zotu <- read_csv("../seq/zotu.csv") 
+tax <- read_csv("../seq/tax.csv")
+meta <- read_csv("../experiments/2021-03-18_JxE_FMT03/metadata/samples.csv")
+
+```
+
+
+```{r}
+
+
+
+# Check read counts
+read.counts <- zotu %>%
+  rowwise(seqid) %>%
+  mutate(numreads = rowSums(across(where(is.numeric)))) %>%
+  ungroup() %>%
+  select(seqid, numreads)
+
+# Pull out samples w/ >10k reads
+samples.to.keep <- read.counts %>%
+  filter(numreads > 1000) %>%
+  select(seqid) %>%
+  as_vector()
+
+# Drop <10k read samples from zotu table
+zotu <- zotu %>%
+  filter(seqid %in% samples.to.keep)
+
+# make tidy data
+# Convert to relative abundance
+zotu <- zotu %>%
+  pivot_longer(!seqid, names_to="OTU", values_to="reads") %>%
+  group_by(seqid) %>%
+  mutate(relabd = reads / sum(reads))
+
+# Join metadata to zotu table
+zotu <- zotu %>%
+  left_join(meta, by="seqid")
+
+# Pull out OTUs at least 1% abd in either jax or envigo controls
+jax.otus.to.keep <- zotu %>%
+  filter(tx_group == "jax_control") %>%
+  group_by(OTU) %>%
+  summarise(avg_abd = mean(relabd)) %>%
+  filter(avg_abd > .003) %>%
+  select(OTU) %>%
+  as_vector()
+
+envigo.otus.to.keep <- zotu %>%
+  filter(tx_group == "envigo_control") %>%
+  group_by(OTU) %>%
+  summarise(avg_abd = mean(relabd)) %>%
+  filter(avg_abd > .003) %>%
+  select(OTU) %>%
+  as_vector()
+
+otus.to.keep <- unique(c(jax.otus.to.keep, envigo.otus.to.keep))
+
+# Drop OTUs not at least 1% abd
+zotu <- zotu %>%
+  filter(OTU %in% otus.to.keep)
+
+# calc log10 OTU abd
+zotu <- zotu %>%
+  mutate(log10relabd = if_else(relabd == 0, -6, log10(relabd)))
+
+
+
+otu.levels <- zotu %>%
+  filter(tx_group == "jax_control") %>%
+  filter(day == 0) %>%
+  arrange(desc(log10relabd)) %>%
+  group_by(OTU) %>%
+  summarise(mean_log10abd = median(log10relabd)) %>%
+  filter(OTU %in% jax.otus.to.keep) %>%
+  select(OTU) %>%
+  as_vector()
+
+otu.levels <- c(otu.levels, setdiff(envigo.otus.to.keep, otu.levels))
+
+zotu$OTU <- factor(zotu$OTU, levels = otu.levels)
+
+zotu$day <- factor(zotu$day, levels = unique(zotu$day))
+
+gtable <- tax %>%
+  select(OTU, genus, family)
+
+zotu <- zotu %>%
+  left_join(gtable, by="OTU") %>%
+  mutate(otu_genus = paste(OTU, genus, sep="_"))
+
+controls <- zotu %>%
+  filter(tx_group %in% c("jax_control", "envigo_control"))
+
+jax_tx <- zotu %>%
+  filter(tx_group == "jax_envigo_mix") %>%
+  filter(mouse_type == "jax")
+
+env_tx <- zotu %>%
+  filter(tx_group == "jax_envigo_mix") %>%
+  filter(mouse_type == "envigo") %>% mutate(tx_group = 'envigo_jax_mix')
+
+zotu <- bind_rows(controls, jax_tx, env_tx) #Lost envigo at this point
+
+zotu[zotu == "envigo_control"] <- "Envigo Control"
+zotu[zotu == "envigo_jax_mix"] <- "Envigo Cohoused"
+zotu[zotu == "jax_control"] <- "Jax Control"
+zotu[zotu == "jax_envigo_mix"] <- "Jax Cohoused"
+
+
+#Normalize to sporosarcina + weight
+
+normalizer <-  zotu %>% filter(OTU == 'Otu1') %>% select(seqid, 'sporo_abd' = relabd) 
+
+#get average to normalize everything
+med_sporo <- median(normalizer$sporo_abd) 
+med_poopoo <- median(na.omit(meta$pellet_weight))
+
+norm_zotu <- left_join(zotu, normalizer, by = 'seqid') %>% 
+        mutate(abs_reads = ifelse(relabd==0, 0, 
+                (((relabd/sporo_abd)*med_sporo)/pellet_weight)*med_poopoo)) %>% #divide by sporo abundance and multiply by med_sporo (scaling factor)
+      group_by(seqid) %>%
+      mutate(abs_rel_abundance = abs_reads/sum(abs_reads),
+             log10abs_rel_abundance = if_else(abs_rel_abundance == 0, -5, log10(abs_rel_abundance))) %>% ungroup() 
+
+#arrange day
+norm_zotu <- norm_zotu %>% mutate(day = as.numeric(as.character(day))) %>% arrange(day,abs_reads) %>% mutate(day = as.factor(day))
+
+
+```
+
+
+
+Hierarchical clustering
+
+Try ggdendro
+```{r}
+library('ggdendro')
+library('grid')
+
+set.seed(123)
+
+jax.cohoused <- norm_zotu %>% filter(tx_group == 'Jax Cohoused') %>%
+    group_by(day, OTU) %>% filter(OTU != 'Otu1') %>% 
+    summarise(mean_log10abs_rel_abundance = mean(log10abs_rel_abundance)) %>% 
+  select(OTU, day, mean_log10abs_rel_abundance) %>% distinct() %>% reshape2::dcast(OTU~day)
+
+
+jax.cohoused.scaled <- jax.cohoused
+
+jax.cohoused.scaled[, c(2:13)] <- (jax.cohoused.scaled[, 2:13]) #don't scale here actually
+
+#clustering
+jax.cohoused.matrix <- as.matrix(jax.cohoused.scaled[, -c(1)])
+rownames(jax.cohoused.matrix) <- jax.cohoused.scaled$OTU
+jax.cohoused.dendro <- as.dendrogram(hclust(d = dist(x = jax.cohoused.matrix)))
+
+# Create dendro
+dendro.plot <- ggdendrogram(data = jax.cohoused.dendro, rotate = TRUE)
+
+# Preview the plot
+print(dendro.plot)
+
+
+
+##Heatmap
+jax.cohoused.long <- reshape2::melt(jax.cohoused.scaled, id = c("OTU"))
+heatmap.plot <- ggplot(data = jax.cohoused.long, aes(x = variable, y = OTU)) +
+  geom_tile(aes(fill = value)) +
+  scale_fill_gradient2() +
+  theme(axis.text.y = element_text(size = 6))
+
+#print(heatmap.plot)
+
+#Add phylogenetic tree
+#grid.newpage()
+#print(heatmap.plot, vp = viewport(x = 0.4, y = 0.5, width = 0.8, height = 1.0))
+#print(dendro.plot, vp = viewport(x = 0.90, y = 0.445, width = 0.2, height = 1.0))
+
+#reorder
+jax.cohoused.order <- order.dendrogram(jax.cohoused.dendro)
+jax.cohoused.long <- left_join(jax.cohoused.long, gtable)
+jax.cohoused.long$OTU <- factor(x = jax.cohoused.long$OTU,
+                               levels = jax.cohoused.scaled$OTU[jax.cohoused.order], 
+                               ordered = TRUE)
+
+bugColors <- setNames(c(scales::hue_pal()(length(unique(jax.cohoused.long$family)))), c(levels(as.factor(jax.cohoused.long$family))))
+
+
+# Heatmap
+heatmap.plot <- ggplot(data = jax.cohoused.long, aes(x = variable, y = OTU)) +
+  geom_tile(aes(fill = value), color = 'white') +
+  #scale_fill_gradientn(colours = pal, limits = c(-5,-.5)) + 
+  scale_fill_gradient2(high = 'firebrick3', mid = 'white', low = '#1357a6', midpoint = -3) +
+  labs(x='Day', fill ='Relative Abundance') +
+  theme(strip.text.y.right = element_text(angle = 0),
+        panel.background = element_rect(fill = "white"), 
+              axis.ticks = element_blank(), 
+              axis.title.y = element_blank(),
+ #             axis.text.y = element_blank(), 
+              axis.text.x = element_text(size = 10),
+              strip.text = element_text(size = 10),
+              panel.spacing = unit(0.05, "lines"),
+        legend.position = 'bottom') 
+heatmap.plot
+
+fam <- ggplot(data = jax.cohoused.long, aes(x = '', y = OTU)) + 
+    geom_tile(aes(fill = family), color = 'white') +
+    labs(fill = 'Family') +
+    theme(strip.text.y.right = element_text(angle = 0),
+              panel.background = element_rect(fill = "white"), 
+              axis.ticks = element_blank(), 
+              axis.text.y = element_blank(),
+              axis.title.y = element_blank(),
+              axis.text.x = element_blank(), 
+              axis.title.x = element_blank(),
+              strip.text = element_blank(),
+              panel.spacing = unit(0.05, "lines"))
+
+#Now look at envigo D0
+
+envigo <- norm_zotu %>% filter(tx_group == 'Envigo Control' & day == 1) %>%
+    group_by(day, OTU) %>% filter(OTU %in% jax.cohoused.long$OTU) %>% 
+    summarise(mean_log10abs_rel_abundance = mean(log10abs_rel_abundance))
+
+envigo$OTU <- factor(x = envigo$OTU,
+                    levels = jax.cohoused.scaled$OTU[jax.cohoused.order], 
+                             ordered = TRUE)
+
+
+env <- ggplot(data = envigo, aes(x = '', y = OTU)) +
+  geom_tile(aes(fill = mean_log10abs_rel_abundance)) +
+  #scale_fill_gradientn(colours = pal, limits = c(-5,-.5)) + 
+scale_fill_gradient2(high = 'firebrick3', mid = 'white', low = '#1357a6', midpoint = -3) +
+  labs(x='Envigo', fill ='Relative Abundance') +
+    theme(strip.text.y.right = element_text(angle = 0),
+              panel.background = element_rect(fill = "white"), 
+              axis.ticks = element_blank(), 
+              axis.text.y = element_blank(),
+              #axis.title.y = element_blank(),
+              axis.text.x = element_blank(), 
+              #axis.title.x = element_blank(),
+              strip.text = element_blank(),
+              panel.spacing = unit(0.05, "lines"),
+        legend.position = 'none')
+
+
+#Also add early colonizer/late colonizer row
+# coltype <- full_join((jax.cohoused.long %>% filter(variable == '0') %>% mutate(d0_abd = 10^value) %>% select(OTU, d0_abd)),
+#   (jax.cohoused.long %>% filter(variable == '5') %>% mutate(d5_abd = 10^value) %>% select(OTU, d5_abd))) %>%
+#     full_join(., 
+#   (jax.cohoused.long %>% filter(variable == '32') %>% mutate(d32_abd = 10^value) %>% select(OTU, d32_abd))) %>% 
+#   mutate(colonizer_type = ifelse(d32_abd/d0_abd > 10, 2, 0),
+#          colonizer_type = ifelse(d5_abd/d0_abd > 10, 1, colonizer_type))%>%
+
+#get colonizer type from DEseq
+coltype <- left_join(jax.cohoused.long, read.csv("../tables/colonizer_order.txt")) %>% replace(is.na(.), 'Unstable') 
+coltype$OTU <- factor(x = coltype$OTU,
+                               levels = jax.cohoused.scaled$OTU[jax.cohoused.order], 
+                               ordered = TRUE)
+
+type_graph <- ggplot(coltype, aes(x = '', y = OTU)) +
+    geom_tile(aes(fill = as.factor(colonizer_type))) +
+    scale_fill_manual(values = c('#fbb03b', '#ff0000','#fcee21', 'black')) +
+    labs(fill = 'Colonizer Type') +
+    theme(strip.text.y.right = element_text(angle = 0),
+              panel.background = element_rect(fill = "white"), 
+              axis.ticks = element_blank(), 
+              axis.text.y = element_blank(),
+              axis.title.y = element_blank(),
+              axis.text.x = element_blank(), 
+              axis.title.x = element_blank(),
+              strip.text = element_blank(),
+              panel.spacing = unit(0.05, "lines"))
+
+type_graph
+
+cowplot::plot_grid(env, heatmap.plot, fam, type_graph, ncol =4, rel_widths = c(.1,.6,.2, .2))
+
+ggsave("../figs/fig3/Longitudinal_FMT.png",  width = 12, height = 5)
+ggsave("../figs/fig3/Longitudinal_FMT.pdf",  width = 12, height = 5)
+
+#Colonizer dataframe for later?
+#full_join((jax.cohoused.long %>% filter(variable == '0') %>% mutate(d0_abd = 10^value) %>% select(OTU, d0_abd)),
+#  (jax.cohoused.long %>% filter(variable == '5') %>% mutate(d5_abd = 10^value) %>% select(OTU, d5_abd))) %>%
+#    full_join(., 
+#  (jax.cohoused.long %>% filter(variable == '32') %>% mutate(d32_abd = 10^value) %>% select(OTU, d32_abd))) %>% 
+#  mutate(colonizer_type = ifelse(d32_abd/d0_abd > 10, "late", "non"),
+#         colonizer_type = ifelse(d5_abd/d0_abd > 10, "early", colonizer_type)) %>%
+#  select(OTU, colonizer_type) %>%
+#  write.csv(., "../tables/colonizer_order.txt", quote = F, row.names = F)
+  
+  
+
+```
+
+
+How correlated are Jax vs Env v Env2Jax
+```{r}
+
+compare <- norm_zotu %>% #filter(day == 0 | day == 30) %>%
+    filter(day == 5) %>% filter(tx_group != 'Envigo Cohoused') %>%
+    group_by(day, OTU,tx_group) %>% filter(OTU != 'Otu1') %>% 
+    summarise(mean_log10abs_rel_abundance = mean(log10abs_rel_abundance)) %>% 
+  select(OTU, day, mean_log10abs_rel_abundance, tx_group) %>% ungroup %>% distinct() %>% 
+  mutate(lab = paste(tx_group, '_', day, sep = ''))
+
+
+otu_compare <- data.frame(OTU = unique(compare$OTU))
+for (i in 1:length(unique(compare$lab))){
+
+  group = print(unique(compare$lab)[i])
+  print(group)
+  
+    temp <- compare %>% filter(lab == group) %>% select('OTU', 'mean_log10abs_rel_abundance')  
+    names(temp) <- c('OTU', group)
+    otu_compare <- left_join(otu_compare, temp)  
+  }
+
+otu_compare <- otu_compare %>% column_to_rownames('OTU')
+
+#pairs(otu_compare, panel = panel.smooth)
+
+a <- ggplot(otu_compare, aes(`Envigo Control_5`, `Jax Control_5`)) + 
+        geom_point() + geom_smooth(method = 'lm') + labs(x = 'Env', y = 'Jax') + theme_cowplot() +
+   annotate(geom = 'text', label = paste('R=',
+    signif(cor.test(otu_compare$`Envigo Control_5`, otu_compare$`Jax Control_5`, method = 'spearman')$estimate, 3)[[1]], 
+    sep = ''), x = -2.5, y = -1) +
+         ylim(-5,-.5) + xlim(-5,-.5)
+
+
+b <- ggplot(otu_compare, aes(`Jax Cohoused_5`,`Jax Control_5`)) + 
+        geom_point() + geom_smooth(method = 'lm') + 
+        labs(y = 'Jax', x = 'Env2Jax') +
+        theme_cowplot() +
+     annotate(geom = 'text', label = paste('R=',
+    signif(cor.test(otu_compare$`Jax Cohoused_5`, otu_compare$`Jax Control_5`, method = 'spearman')$estimate, 3)[[1]], 
+    sep = ''), x = -2.5, y = -1) +
+         ylim(-5,-.5) + xlim(-5,-.5)
+
+c <- ggplot(otu_compare, aes(`Envigo Control_5`, `Jax Cohoused_5`)) + 
+        geom_point() + geom_smooth(method = 'lm') + labs(x = 'Env', y = 'Env2Jax') +
+        theme_cowplot() +
+     annotate(geom = 'text', label = paste('R=',
+    signif(cor.test(otu_compare$`Envigo Control_5`, otu_compare$`Jax Cohoused_5`, method = 'spearman')$estimate, 3)[[1]], 
+    sep = ''), x = -2.5, y = -1) +
+         ylim(-5,-.5) + xlim(-5,-.5)
+
+
+plot_grid(c,NULL, a,b, nrow = 2)
+
+#ggsave('../figs/s3/pairwiseOTUcounts.png', width = 6, height = 6)
+
+```
+
+
+Do a real DESeq analysis for early vs late colonizers
+```{r}
+#Make count matrix
+cts <- norm_zotu %>% filter(day == 0 | day == 5 | day == 32) %>% 
+        filter(tx_group == 'Jax Cohoused' & mouse_type == 'jax') %>%
+        select(seqid, reads, OTU) %>% 
+        dcast(OTU~seqid, value.var = "reads", fun.aggregate = mean) %>% 
+        column_to_rownames("OTU")
+
+#add pseudocounts
+cts[is.na(cts)] <- 0
+cts <-(cts + 1)
+
+#Generate MetaData 
+coldata <- cts %>% t() %>% as.data.frame %>% rownames_to_column("seqid") %>% select(seqid) %>%
+           left_join(., select(norm_zotu, seqid, day) %>% 
+                  distinct()) %>% 
+       column_to_rownames("seqid") 
+
+#Make sure dfs are correct
+all(rownames(coldata) %in% colnames(cts))
+all(rownames(coldata) == colnames(cts))
+
+#Make DeSeq DataSet
+dds <- DESeqDataSetFromMatrix(countData = cts,
+                              colData = coldata,
+                              design = ~ day)
+
+#Differential 'expression' analysis
+dds <- DESeq(dds)
+
+#Build result table for pre FMT vs Post FMT
+res_d5d0 <- results(dds, contrast=c("day","5","0"), 
+                      pAdjustMethod = 'BH')
+
+#Build result tabe for donor vs Post FMT
+res_d32d0 <- results(dds, contrast=c("day","32","0"), 
+                     pAdjustMethod = 'BH')
+
+
+```
+
+Let's see those plots!!!
+```{r}
+
+
+## Obtain logical vector where TRUE values denote padj values < 0.05 and fold change > 2 in either direction
+res_d5d0 <- res_d5d0 %>% as.data.frame() %>%
+                  mutate(threshold = padj < 0.05 & abs(log2FoldChange) >= 1) %>% rownames_to_column('OTU') %>% left_join(., tax)
+                  
+## Volcano plot Pre FMT
+ggplot(res_d5d0) +
+    geom_point(aes(x = log2FoldChange, y = -log10(padj), shape = threshold, color = family)) +
+  scale_color_manual(values = bugColors) +
+  ggtitle("D0 vs D5") +
+    xlab("log2 fold change") + 
+    ylab("-log10 adjusted p-value") +
+    #scale_y_log10() +
+    #ylim(0,10) +
+    theme_cowplot() +
+    theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+          axis.title = element_text(size = rel(1.25)))          
+
+
+#Donor
+res_d32d0 <- res_d32d0 %>% as.data.frame() %>%
+                  mutate(threshold = padj < 0.05 & abs(log2FoldChange) >= 1) %>% rownames_to_column('OTU') %>% left_join(., tax)
+
+## Volcano plot Donor
+ggplot(res_d32d0) +
+    geom_point(aes(x = log2FoldChange, y = -log10(padj), shape = threshold, color = family)) +
+  scale_color_manual(values = bugColors) +
+    ggtitle("Day 32 vs Day 0") +
+    xlab("log2(fold change)") + 
+    ylab("-log10 adjusted p-value") +
+    #scale_y_log10() +
+    theme_cowplot() +
+    theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+          axis.title = element_text(size = rel(1.25)))   
+
+#write out early & late colonizers. If Early colonizer, don't say it's a late colonizer
+temp <- rbind(res_d5d0 %>% filter(threshold == T & log2FoldChange > 0) %>% mutate(colonizer_type = 1),
+      res_d32d0 %>% filter(threshold == T & log2FoldChange > 0) %>% mutate(colonizer_type = 2)) %>% 
+      select(OTU, colonizer_type, order, family) %>% 
+      group_by(OTU) %>% 
+      mutate(colonizer_type = sum(colonizer_type)) %>% ungroup %>% 
+      mutate(colonizer_type = ifelse(colonizer_type == 1, 'Unstable', colonizer_type), #if only enrivhe early, then unstable
+             colonizer_type = ifelse(colonizer_type == 3, 'Early', colonizer_type),  
+             colonizer_type = ifelse(colonizer_type == 2, 'Late', colonizer_type),) %>% distinct #%>%
+
+#ADD DISPLACED 
+
+disp <- rbind(res_d5d0 %>% filter(threshold == T & log2FoldChange < 0) %>% mutate(colonizer_type = 1),
+      res_d32d0 %>% filter(threshold == T & log2FoldChange < 0) %>% mutate(colonizer_type = 1)) %>% select(OTU, colonizer_type, order, family) %>% 
+  mutate(colonizer_type = sum(colonizer_type)) %>% ungroup %>% 
+      mutate(colonizer_type = ifelse(colonizer_type > 0, 'Unstable', colonizer_type)) %>%
+               filter(colonizer_type == 'Unstable') %>% distinct()
+
+
+#ADD SHARED <-
+
+shared <- inner_join(zotu %>% filter(OTU %in% envigo.otus.to.keep) %>% select(OTU, family),
+          zotu %>% filter(OTU %in% jax.otus.to.keep) %>% select(OTU, family)) %>% ungroup %>% select(-seqid) %>% distinct() %>% left_join(., tax %>% select(OTU, order)) %>% distinct() %>% 
+  mutate(colonizer_type = 'Shared')
+  #anti_join(., temp, by = 'OTU') %>% #get ones that weren't enriched
+  #anti_join(., disp, by = 'OTU') %>% mutate(colonizer_type = 'Shared') #get ones that weren't unstable
+
+
+
+otu_table <- rbind(temp, disp) %>% anti_join(., shared, by = 'OTU') %>% rbind(., shared)
+ 
+otu_table %>% write.csv("../tables/colonizer_order.txt", quote = F, row.names = F)
+
+
+
+```
+
+
+
+Fig 3d - How does absolute abundance of envigo/jax microbes change over time?
+
+```{r}
+#library(ggsignif)
+#Get bacteria that are unique & shared
+otus.jax.Specific <- setdiff(jax.otus.to.keep, envigo.otus.to.keep) %>%
+                  cbind('Recipient Specific') %>% as.data.frame() 
+
+names(otus.jax.Specific) <- c("OTU", "class")
+
+otus.envigo.Specific <- setdiff(envigo.otus.to.keep, jax.otus.to.keep) %>% 
+  cbind('Donor Specific') %>% as.data.frame() 
+
+names(otus.envigo.Specific) <- c("OTU", "class")
+
+
+otus.shared.Specific <- intersect(jax.otus.to.keep, envigo.otus.to.keep) %>%
+    cbind('Shared') %>% as.data.frame()
+
+names(otus.shared.Specific) <- c("OTU", "class")
+
+
+otu_labels <- rbind(otus.envigo.Specific, otus.jax.Specific, otus.shared.Specific)
+
+write.csv(otu_labels, "../tables/otu_origins.csv", quote = F, row.names=F)
+
+#calculate mean abd of each class/day
+
+temp <- norm_zotu %>% filter(tx_group == 'Jax Cohoused') %>%
+    group_by(day, OTU) %>% filter(OTU != 'Otu1') %>% 
+    summarise(mean_abs = mean(abs_reads)) %>% 
+  select(OTU, day, mean_abs) %>%
+  left_join(.,otu_labels) %>% group_by(class, day) %>% 
+        mutate(class_abd = sum(mean_abs)) %>%
+        ungroup() %>%
+        select(day, class, class_abd) %>% distinct()
+
+#normalize biomass to day 0
+norm_val <- sum((temp %>% filter(day == '0'))$class_abd)
+temp$class_abd <- temp$class_abd/norm_val
+
+#calculate sd per day
+error_table <- norm_zotu %>% filter(tx_group == 'Jax Cohoused') %>% 
+  group_by(mouse_num, day) %>% 
+  mutate(ttl_mass = sum(abs_reads)/norm_val)%>% select(mouse_num,day,ttl_mass) %>% 
+  distinct() %>% 
+  ungroup() %>%
+  group_by(day) %>% mutate(sd_day = sd(ttl_mass)) %>% ungroup() %>% 
+  select(day, sd_day) %>% distinct() %>% 
+  left_join(.,
+    temp %>% group_by(day) %>% mutate(ttl_mass = sum(class_abd)) %>% 
+    select(day, ttl_mass) %>% distinct())
+
+a<- temp %>% left_join(., error_table) %>% 
+  ggplot(., aes(x=day,
+                y=class_abd,
+                fill=factor(class, 
+                            levels = c('Donor Specific', 'Shared', 'Recipient Specific')))) +  
+  geom_errorbar(aes(ymax = ttl_mass+sd_day, ymin = ttl_mass-sd_day),  width = .1, color = '#808080') +
+  geom_bar(stat="identity", position = 'stack', width = .7) +
+  labs(x='Day', y = 'Relative Biomass', fill = 'Microbe Class') +
+  scale_fill_manual(values = c( '#29abe2','#fcee21', '#f7931e')) +
+    ylim(0,2.25) +
+  theme_clean() +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+              axis.text.y = element_text(size = 12),
+              axis.text.x = element_text(size = 12), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = 'top'
+          )
+#envigo only
+temp <- norm_zotu %>% filter(tx_group == 'Envigo Cohoused') %>%
+    group_by(day, OTU) %>% filter(OTU != 'Otu1') %>% 
+    summarise(mean_abs = mean(abs_reads)) %>% 
+  select(OTU, day, mean_abs) %>%
+  left_join(.,otu_labels) %>% group_by(class, day) %>% 
+        mutate(class_abd = sum(mean_abs)) %>%
+        ungroup() %>%
+        select(day, class, class_abd) %>% distinct()
+
+#normalize biomass to day 0
+norm_val <- sum((temp %>% filter(day == '0'))$class_abd)
+temp$class_abd <- temp$class_abd/norm_val
+
+#calculate sd per day
+error_table <- norm_zotu %>% filter(tx_group == 'Envigo Cohoused') %>% 
+  group_by(mouse_num, day) %>% 
+  mutate(ttl_mass = sum(abs_reads)/norm_val)%>% select(mouse_num,day,ttl_mass) %>% 
+  distinct() %>% 
+  ungroup() %>%
+  group_by(day) %>% mutate(sd_day = sd(ttl_mass)) %>% ungroup() %>% 
+  select(day, sd_day) %>% distinct() %>% 
+  left_join(.,
+    temp %>% group_by(day) %>% mutate(ttl_mass = sum(class_abd)) %>% 
+    select(day, ttl_mass) %>% distinct())
+
+
+b<- temp %>% left_join(., error_table) %>% 
+  ggplot(., aes(x=day,
+                y=class_abd,
+                fill=factor(class, levels = c('Donor Specific', 'Shared', 'Recipient Specific')))) +  
+  geom_errorbar(aes(ymax = ttl_mass+sd_day, ymin = ttl_mass-sd_day), width = .1, color = '#808080') +
+  geom_bar(stat="identity", position = 'stack', width = .7) +
+  labs(x='Day', y = 'Relative Biomass', fill = 'Microbe Class') +
+  scale_fill_manual(values = c( '#29abe2','#fcee21', '#f7931e')) +
+  ylim(0,2.25) +
+   # scale_fill_manual(values = c(ven[2], 'gray90', '#ffa500')) +
+  theme_clean() +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+              axis.text.y = element_text(size = 12),
+              axis.text.x = element_text(size = 12), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = 'top')
+
+plot_grid(a,b, nrow = 2)
+
+ggsave("../figs/fig3/3D_abundance.png",  width = 6, height = 5)
+ggsave("../figs/fig3/3D_abundance.pdf",  width = 6, height = 5)
+
+```
+
+Check if bottleneckings are significant
+```{r}
+
+#Cohoused significance?
+temp <- norm_zotu %>% filter(tx_group == 'Jax Cohoused') %>%
+    filter(day == 0 | day == 2 | day == 4) %>%
+    group_by(seqid) %>% filter(OTU != 'Otu1') %>% 
+    mutate(sum_abs = sum(abs_reads)) %>% ungroup() %>%
+    select(tx_group, day, sum_abs) %>% distinct()
+
+#day 0 vs day 2
+wilcox.test(filter(temp, day == 0)$sum_abs, filter(temp, day == 2)$sum_abs, alternative = 'greater')$p.value
+#p = 0.01429
+
+#day 2 vs day 4
+wilcox.test(filter(temp, day == 2)$sum_abs, filter(temp, day == 4)$sum_abs, alternative = 'less')$p.value
+#p = 0.01429
+
+#day  vs day 4
+wilcox.test(filter(temp, day == 0)$sum_abs, filter(temp, day == 4)$sum_abs, alternative = 'less')$p.value
+#p = 0.01429
+
+
+#Cohoused significance?
+temp <- norm_zotu %>% filter(tx_group == 'Envigo Cohoused') %>%
+    filter(day == 0 | day == 2 | day == 4) %>%
+    group_by(seqid) %>% filter(OTU != 'Otu1') %>% 
+    mutate(sum_abs = sum(abs_reads)) %>% ungroup() %>%
+    select(tx_group, day, sum_abs) %>% distinct()
+
+#day 0 vs day 2
+wilcox.test(filter(temp, day == 0)$sum_abs, filter(temp, day == 2)$sum_abs, alternative = 'greater')$p.value
+#p = 0.01429
+
+#day 2 vs day 4
+wilcox.test(filter(temp, day == 2)$sum_abs, filter(temp, day == 4)$sum_abs, alternative = 'less')$p.value
+#p = 0.01429
+
+#day  vs day 4
+wilcox.test(filter(temp, day == 0)$sum_abs, filter(temp, day == 4)$sum_abs, alternative = 'less')$p.value
+#p = 0.01429
+
+
+```
+
+3B number of species lost over time:
+
+Do a real DESeq analysis for early vs late colonizers
+```{r}
+#Make count matrix
+cts <- norm_zotu %>% 
+        filter(tx_group == 'Jax Cohoused' & mouse_type == 'jax') %>%
+        select(seqid, reads, OTU) %>% 
+        dcast(OTU~seqid, value.var = "reads", fun.aggregate = mean) %>% 
+        column_to_rownames("OTU")
+
+#add pseudocounts
+cts[is.na(cts)] <- 0
+cts <-(cts + 1)
+
+#Generate MetaData 
+coldata <- cts %>% t() %>% as.data.frame %>% rownames_to_column("seqid") %>% select(seqid) %>%
+           left_join(., select(norm_zotu, seqid, day) %>% 
+                  distinct()) %>% 
+       column_to_rownames("seqid") 
+
+#Make sure dfs are correct
+all(rownames(coldata) %in% colnames(cts))
+all(rownames(coldata) == colnames(cts))
+
+#Make DeSeq DataSet
+dds <- DESeqDataSetFromMatrix(countData = cts,
+                              colData = coldata,
+                              design = ~ day)
+
+#Differential 'expression' analysis
+dds <- DESeq(dds)
+
+
+change_df <- data.frame(day = as.character(1:30))
+
+for (i in unique(zotu$day)) {
+  
+  day_test <- as.character(i)
+  
+  test_ds <- results(dds, contrast=c("day",day_test,"0"), 
+                      pAdjustMethod = 'BH')
+  
+  gained <-  test_ds %>% as.data.frame() %>% 
+                  mutate(threshold = padj < 0.05 & (log2FoldChange) > 1) %>% 
+                rownames_to_column('OTU') %>% filter(threshold == T) 
+  
+  gain_data <- data.frame(num_added = nrow(gained), day = day_test )
+  
+  lost <- test_ds %>% as.data.frame() %>%
+                  mutate(threshold = padj < 0.05 & log2FoldChange < -1) %>% 
+        rownames_to_column('OTU') %>%
+        filter(threshold == T) 
+  
+      loss_data <- data.frame(num_lost = nrow(lost), day = day_test )
+
+  change_df<- left_join(change_df, left_join(gain_data, loss_data))
+}
+
+
+
+
+## Obtain logical vector where TRUE values denote padj values < 0.05 and fold change > 2 in either direction
+res_d5d0 <- res_d5d0 %>% as.data.frame() %>%
+                  mutate(threshold = padj < 0.05 & abs(log2FoldChange) >= 1) %>% rownames_to_column('OTU') %>% left_join(., tax)
+
+
+```
+
+
+
+3C number of species over time
+
+```{r}
+
+df<- data.frame('day'  = c(0:5, 15:17, 30:32),
+                'no FMT' = 0,
+                'Donor' = 0,
+                'FMT' = 0)
+
+for(i in c(0:5, 15:17, 30:32)) {                                   
+  
+  day = i
+  print(day)
+  
+  df$FMT[df$day == i] <- norm_zotu %>% 
+       filter(tx_group == 'Jax Cohoused', day == i) %>%
+       group_by(day, OTU) %>% filter(OTU != 'Otu1') %>%
+       mutate(day = as.numeric(as.character(day))) %>%
+       summarise(avg_abd = mean(relabd)) %>%
+       filter(avg_abd > .001) %>%
+       select(OTU) %>% distinct() %>% nrow()
+
+  df$`No FMT`[df$day == i] <- norm_zotu %>% 
+       filter(tx_group == 'Jax Control', day == i) %>%
+       group_by(day, OTU) %>% filter(OTU != 'Otu1') %>%
+       mutate(day = as.numeric(as.character(day))) %>%
+       summarise(avg_abd = mean(relabd)) %>%
+       filter(avg_abd > .001) %>%
+       select(OTU) %>% distinct() %>% nrow()
+
+  df$Donor[df$day == i] <- norm_zotu %>% 
+       filter(tx_group == 'Envigo Control', day == i) %>%
+       group_by(day, OTU) %>% filter(OTU != 'Otu1') %>%
+       mutate(day = as.numeric(as.character(day))) %>%
+       summarise(avg_abd = mean(relabd)) %>%
+       filter(avg_abd > .001) %>%
+       select(OTU) %>% distinct() %>% nrow()
+     
+}
+
+df_sd<- data.frame('variable' = c('Donor', 'FMT', 'No FMT'),
+                   'tx_group' = c('Envigo Control', 'Jax Cohoused', 'Jax Control'))
+
+df_sd <- norm_zotu %>% filter(relabd > .001) %>% 
+  select(OTU, mouse_num, day, tx_group) %>% 
+  group_by(mouse_num, day) %>% distinct() %>% 
+  mutate(num_species = n()) %>% ungroup() %>% 
+  select(tx_group, num_species, day, mouse_num) %>% distinct() %>% 
+  group_by(day, tx_group) %>% 
+  mutate(sd_num = sd(num_species)) %>% ungroup() %>% 
+  select(-mouse_num, -num_species) %>% distinct() %>% 
+  left_join(.,df_sd, by = c('tx_group')) %>% select(-tx_group) %>% na.omit()
+
+
+#Continuous X axis
+df %>% melt(id.var = 'day') %>% filter(value > 0) %>%
+  ggplot(., aes(x = as.factor(day), y = value, color=variable)) +
+  geom_line() +
+  geom_point() +
+    labs(x='Day', y = '# OTUs Present', fill = 'Mouse Type') +
+  #scale_fill_manual(values = c(ven[2], 'gray80', ven[3])) +
+  scale_fill_manual(values = c( '#29abe2','#fcee21', '#f7931e')) +
+  #scale_color_manual(values = c('#1e90ff','#00ba38','#ffa500')) +
+  theme_clean() +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+              axis.text.y = element_text(size = 12),
+              axis.text.x = element_text(size = 12), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = 'bottom'
+          )
+
+#discrete X axis
+df %>% melt(id.var = 'day') %>% filter(value > 0) %>%
+  mutate(day = as.factor(day)) %>% 
+  left_join(., df_sd, by = c('day', 'variable')) %>%
+  ggplot(., aes(x = as.factor(day), y = value, fill=variable)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  geom_errorbar(aes(ymin=value-sd_num, ymax=value+sd_num), width=.2,
+                 position=position_dodge(.9)) +
+  #geom_point() +
+    labs(x='Day', y = '# OTUs Present', fill = 'Mouse Type') +
+  #scale_fill_manual(values = c(ven[2], 'gray80', ven[3])) +
+  scale_fill_manual(values = c( '#29abe2','#fcee21', '#f7931e')) +
+#  scale_fill_manual(values = c('#1e90ff','#00ba38','#ffa500')) +
+  theme_clean() +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+              axis.text.y = element_text(size = 12),
+              axis.text.x = element_text(size = 12), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = 'bottom')
+
+
+
+ggsave("../figs/fig3/3C_SpeciesRichness.png",  width = 6, height = 2.5)
+ggsave("../figs/fig3/3C_SpeciesRichness.pdf",  width = 6, height = 2.5)
+
+#significant on last day?
+temp <-norm_zotu %>% filter(relabd > .001) %>% 
+  select(OTU, mouse_num, day, tx_group) %>% 
+  group_by(mouse_num, day) %>% distinct() %>% 
+  mutate(num_species = n()) %>% ungroup() %>% 
+  select(tx_group, num_species, day, mouse_num) %>% distinct()
+
+wilcox.test(filter(temp, tx_group == 'Jax Cohoused' & day == 32)$num_species, 
+  filter(temp, tx_group == 'Jax Control' & day == 32)$num_species, alternative = 'greater', exact = FALSE )$p.value
+
+```
+
+
+3B - OTU biomass transferred
+
+```{r}
+
+df <- norm_zotu %>% filter(tx_group == 'Jax Cohoused') %>%
+    group_by(day, OTU) %>% filter(OTU != 'Otu1') %>%
+     mutate(day = as.numeric(as.character(day)),
+            mean_abs_rel_abundance = mean(abs_rel_abundance)) %>%
+  select(OTU, day, mean_abs_rel_abundance) %>% distinct() 
+
+base <- df %>% filter(day == 0) %>% 
+  group_by(day) %>% mutate(day_total_biomass = sum(mean_abs_rel_abundance)) %>%
+  ungroup() %>%
+  mutate(d0_otu_biomass = mean_abs_rel_abundance,
+         d0_total_biomass = day_total_biomass,
+         d0_scaled_biomass = d0_otu_biomass/d0_total_biomass) %>% 
+      select(OTU, d0_otu_biomass, d0_total_biomass, d0_scaled_biomass) %>% replace(is.na(.), 0)
+
+early <- df %>% filter(day == 5) %>% 
+  group_by(day) %>% mutate(day_total_biomass = sum(mean_abs_rel_abundance)) %>%
+  ungroup() %>%
+  group_by(OTU) %>% 
+  mutate(early_otu_biomass = mean(mean_abs_rel_abundance),
+         early_total_biomass= mean(day_total_biomass),
+         early_scaled_biomass = early_otu_biomass/early_total_biomass) %>% #calculate mean abundance of all days
+  select(OTU, early_otu_biomass, early_total_biomass, early_scaled_biomass) %>% ungroup() %>% distinct()
+
+late <- df %>% filter(day == 32) %>% 
+  group_by(day) %>% 
+  mutate(day_total_biomass = sum(mean_abs_rel_abundance)) %>%
+  ungroup() %>%
+  group_by(OTU) %>% 
+  mutate(late_otu_biomass = mean(mean_abs_rel_abundance),
+         late_total_biomass= mean(day_total_biomass),
+         late_scaled_biomass = late_otu_biomass/late_total_biomass) %>% #calculate mean abundance of all days
+  select(OTU, late_otu_biomass, late_total_biomass, late_scaled_biomass) %>% ungroup() %>% distinct()
+
+
+colonizers_delta <- base %>% 
+  left_join(., early) %>% left_join(.,late) %>% 
+  mutate(early_delta = (early_otu_biomass-d0_otu_biomass),
+         late_delta = (late_otu_biomass-early_otu_biomass),
+         early_type = ifelse(early_delta > 0, "Gained", "Displaced"),
+         late_type = ifelse(late_delta > 0, "Gained", "Displaced")) %>%
+         left_join(., gtable)
+
+
+#What are amounts of biomass gained?
+a <- colonizers_delta %>% select(early_type, early_delta, family) %>% 
+  group_by(family) %>% mutate(early_delta = sum(early_delta)) %>% ungroup() %>% distinct() %>%
+  ggplot(., aes(x = early_type, y = abs(early_delta), fill = family)) + 
+      scale_fill_manual(values = bugColors) +
+  geom_bar(stat="identity", position = 'stack', color = 'black') +
+  labs(x='', y = ' delta Rel. Biomass', fill = 'Family', title = "Day 0 : Day 5") +
+  theme_clean() +
+  ylim(0,.5) +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+          axis.text.y = element_text(size = 12),
+          axis.text.x = element_text(size = 12), 
+          strip.text = element_text(size = 6),
+          panel.spacing = unit(0.05, "lines"),
+          legend.position = 'none',
+          plot.title = element_text(hjust = 0.5)
+          )
+
+b <- colonizers_delta %>% select(late_type, late_delta, family) %>% 
+  group_by(family) %>% mutate(late_delta = sum(late_delta)) %>% ungroup() %>% distinct() %>%
+  ggplot(., aes(x = late_type, y = abs(late_delta), fill = family)) + 
+      scale_fill_manual(values = bugColors) +
+  geom_bar(stat="identity", position = 'stack', color = 'black') +
+  labs(x='', y = ' delta Rel. Biomass', fill = 'Family', title = "Day 5 : Day 32") +
+  theme_clean() +
+  ylim(0,.5) +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+          axis.text.y = element_text(size = 12),
+          axis.text.x = element_text(size = 12), 
+          strip.text = element_text(size = 6),
+          panel.spacing = unit(0.05, "lines"),
+          legend.position = 'none',
+          plot.title = element_text(hjust = 0.5)
+          )
+
+cowplot::plot_grid(a,b, ncol = 2)
+
+#write out table
+write.csv(colonizers_delta, "../tables/colonizer_order_3B.csv", quote = F, row.names = F)
+
+
+ggsave("../figs/fig3/3B_fam.png",  width = 5, height = 4)
+ggsave("../figs/fig3/3B_fam.pdf",  width = 5, height = 4)
+
+```
+
+
+
+
+Supplementary FIgure X - PCA before/after cohousing
+```{r}
+
+library(Seurat)
+
+endpoints <- norm_zotu %>%
+  group_by(day, tx_group, genus, OTU) %>%
+  ungroup() %>%
+  filter(day == 0 | day == 30) %>% 
+  mutate(mus_label = paste(mouse_num, "_", day, sep = ''),
+         grp_label = paste(tx_group, "_", day, sep = '')) %>% 
+  ungroup() %>%
+  select(OTU, mus_label, grp_label, log10abs_rel_abundance) %>% dcast(., mus_label + grp_label ~ OTU)
+
+
+endpoints <- norm_zotu %>%
+  filter(day == 0 | day == 30) %>%
+  mutate(mus_label = paste(mouse_num, "_", day, sep = ''), 
+         grp_label = paste(tx_group, "_", day, sep = '')) %>% 
+  select(OTU, mus_label, grp_label, log10abs_rel_abundance) %>% 
+  dcast(., mus_label + grp_label ~ OTU)
+
+
+
+endpoints[is.na(endpoints)] <- 0
+
+grp_key <- endpoints[,1:2]
+
+#create such that samples as columns, rows as features
+tSNE_header <- (endpoints %>% select(-mus_label) %>% t() %>% as.data.frame())[1,]
+
+tSNE_header[tSNE_header == "Envigo Control_0"] <- "Env Day 0"
+tSNE_header[tSNE_header == "Envigo Control_30"] <- "Env Day 30"
+tSNE_header[tSNE_header == "Envigo Cohoused_0"] <- "Jax2Env Day 0"
+tSNE_header[tSNE_header == "Envigo Cohoused_30"] <- "Jax2Env Day 30"
+tSNE_header[tSNE_header == "Jax Control_0"] <- "Jax Day 0"
+tSNE_header[tSNE_header == "Jax Control_30"] <- "Jax Day 30"
+tSNE_header[tSNE_header == "Jax Cohoused_0"] <- "Env2Jax Day 0"
+tSNE_header[tSNE_header == "Jax Cohoused_30"] <- "Env2Jax Day 30"
+
+tSNE_input <- (endpoints %>% select(-mus_label) %>% t() %>% as.data.frame())[-1,] %>% 
+              mutate_all(., function(x) as.numeric(as.character(x))) 
+
+names(tSNE_input) <- tSNE_header[1,]
+
+s3a <- M3C::pca(tSNE_input, labels = as.factor(names(tSNE_input)),
+    controlscale = T, scale = 3, dotsize = 3,  axistextsize = 12, 
+    colvec = c('lightblue', 'blue', 'green', 'darkgreen', 'yellow', 'gold', 'orchid', 'purple'),
+    legendtextsize = 10)
+
+s3a
+
+ggsave("../figs/s3/S3A_cohouse_PCA.png", width = 6, height = 3.5)
+ggsave("../figs/s3/S3A_cohouse_PCA.pdf", width = 6, height = 3.5)
+
+```
+
+
+
+
+Supplementary Fig X - Shannon Diversity of 16S seqs before/after cohousing
+
+
+Shannon entropy
+```{r}
+
+library(vegan)
+library(ggsignif)
+
+samp_labels <- norm_zotu %>%
+  group_by(day, tx_group, genus, OTU) %>%
+  ungroup() %>%
+  filter(day == 0 | day == 30) %>% 
+  mutate(mus_label = paste(mouse_num, "_", day, sep = ''),
+         grp_label = paste(tx_group, "_", day, sep = '')) %>% 
+  ungroup() %>%
+  select(seqid,mus_label, grp_label) %>% distinct
+
+samp_labels[samp_labels == "Envigo Control_0"] <- "Env Day 0"
+samp_labels[samp_labels == "Envigo Control_30"] <- "Env Day 30"
+samp_labels[samp_labels == "Envigo Cohoused_0"] <- "Jax2Env Day 0"
+samp_labels[samp_labels == "Envigo Cohoused_30"] <- "Jax2Env Day 30"
+samp_labels[samp_labels == "Jax Control_0"] <- "Jax Day 0"
+samp_labels[samp_labels == "Jax Control_30"] <- "Jax Day 30"
+samp_labels[samp_labels == "Jax Cohoused_0"] <- "Env2Jax Day 0"
+samp_labels[samp_labels == "Jax Cohoused_30"] <- "Env2Jax Day 30"
+
+
+vendor <- zotu %>% filter(day == 0 | day == 30) %>% filter(OTU != 'Otu1') %>% #Look @ D0 samples, remove sporo spike-in
+  select(OTU, seqid,mouse_type, relabd) %>% filter( relabd > .005) %>%#mutate(relabd=log10(relabd)) %>%
+  reshape2::dcast(., mouse_type + seqid ~ OTU) 
+
+vendor[is.na(vendor)] <- 0
+
+grp_key <- vendor[,1:2]
+
+#create such that samples as columns, rows as features
+tSNE_header <- (vendor %>% select(seqid) %>% t() %>% as.data.frame())[1,]
+
+
+tSNE_input <- (vendor %>% select(-seqid) %>% t() %>% as.data.frame())[-1,] %>% 
+              mutate_all(., function(x) as.numeric(as.character(x))) 
+
+names(tSNE_input) <- tSNE_header[1,]
+
+
+sd_df<- tSNE_input %>% t() %>% vegan::diversity(index = "shannon")
+
+sd_lab <- tSNE_header %>% t()
+
+shannonD <- sd_df %>% as.data.frame() %>% cbind(., sd_lab) %>% select(shannD = '.', seqid) %>% left_join(., samp_labels)
+
+#normalize by log(k) where k is number of species over 0.05
+numk <- zotu %>%  filter(day == 0 | day == 30) %>% filter(OTU != 'Otu1') %>%
+  select(OTU, seqid, relabd) %>% 
+  melt(id.vars = c('seqid', 'OTU')) %>% 
+  filter(value > .005) %>% 
+  select(-value) %>% distinct() %>% 
+  group_by(seqid) %>% mutate(kval = log2(n())) %>%
+  ungroup() %>% select(seqid, kval) %>% distinct() %>% na.omit()
+
+shannonD <- left_join(shannonD, numk) %>% mutate(shann_entropy = shannD/kval) %>% left_join(.,grp_key)
+
+pval <- wilcox.test(filter(shannonD, grp_label == 'Jax Day 30')$shannD,
+                    filter(shannonD, grp_label == 'Env2Jax Day 30')$shannD, 
+                    alternative = 'less')$p.value
+
+#all side by side
+a<- ggplot(shannonD, aes(grp_label, shann_entropy, fill = grp_label)) +
+  geom_boxplot(outlier.shape = NA) + geom_jitter(size = 2) +
+  scale_x_discrete(limits = c('Env Day 0', 'Jax2Env Day 0',
+                              'Jax Day 0', 'Env2Jax Day 0')) + 
+  scale_fill_manual(values = c('lightblue', 'blue', 'green', 'darkgreen', 'yellow', 'gold', 'orchid', 'purple')) +
+  labs(y = 'Normalized entropy', x = '', title = 'Day 0') +
+  theme_cowplot() +
+    ylim(.5,.67) +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1), 
+  axis.text.y = element_text(size = 12),
+axis.title.x.bottom = element_text(size = 12),
+legend.position = 'none')
+
+b <- ggplot(shannonD, aes(grp_label, shann_entropy, fill = grp_label)) + 
+  geom_boxplot(outlier.shape = NA) + geom_jitter(size = 2) +
+  scale_x_discrete(limits = c('Env Day 30', 'Jax2Env Day 30',
+                              'Jax Day 30', 'Env2Jax Day 30')) +
+  labs(y = '', x = '', title = 'Day 30') +
+  scale_fill_manual(values = c('lightblue', 'blue', 'green', 'darkgreen', 'yellow', 'gold', 'orchid', 'purple')) +
+  annotate('text', x = 'Jax Day 30', y = .665, hjust = -.01, label = paste('p =', signif(pval, 3), sep = ' ')) +
+  geom_segment(x = 'Jax Day 30', xend = 'Env2Jax Day 30', y = .66, yend =.66) +
+  theme_cowplot() +
+  ylim(.5,.67) +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1), 
+axis.title.x.bottom = element_text(size = 12),
+axis.title.y.left = element_text(size = 12),
+#axis.text.y = element_blank(),
+legend.position = 'none')
+
+s3b <- cowplot::plot_grid(a,b)
+
+s3b
+
+ggsave("../figs/s3/S3B_cohouse_ShannonDiversity.png", width = 6, height = 3.5)
+ggsave("../figs/s3/S3B_cohouse_ShannonDiversity.pdf", width = 6, height = 3.5)
+
+```
+
+
+Supplementary Figure X - Temporal dynamics of controls
+```{r}
+jax.cohoused.long <- norm_zotu %>% mutate(OTU = as.factor(OTU)) %>% 
+    filter(tx_group != 'Jax Cohoused') %>%
+    group_by(day, OTU, tx_group) %>% filter(OTU != 'Otu1') %>% 
+    summarise(mean_log10abs_rel_abundance = mean(log10abs_rel_abundance))  
+
+jax.cohoused.long <- left_join(jax.cohoused.long, gtable)
+jax.cohoused.long$OTU <- factor(x = jax.cohoused.long$OTU,
+                               levels = jax.cohoused.scaled$OTU[jax.cohoused.order], 
+                               ordered = TRUE)
+
+#bugColors <- setNames(c(scales::hue_pal()(length(unique(jax.cohoused.long$family)))), c(levels(as.factor(jax.cohoused.long$family))))
+
+
+# Heatmap
+s3c <- ggplot(data = jax.cohoused.long, aes(x = day, y = OTU)) +
+  geom_tile(aes(fill = mean_log10abs_rel_abundance), color = 'white') +
+  facet_wrap(~tx_group) +#
+  scale_fill_gradient2(high = 'firebrick3', mid = 'white', low = '#1357a6', midpoint = -3) +
+  #scale_fill_gradientn(colours = pal, limits = c(-5,-.5)) + 
+  labs(x='Day', fill ='Relative Abundance') +
+  theme(strip.text.y.right = element_text(angle = 0),
+        panel.background = element_rect(fill = "white"), 
+              axis.ticks = element_blank(), 
+              axis.title.y = element_blank(),
+              axis.text.y = element_blank(), 
+              axis.text.x = element_text(size = 10),
+              strip.text = element_text(size = 10),
+              panel.spacing = unit(0.05, "lines"),
+              strip.background = element_blank(),
+              strip.text.x = element_text(size = 14),
+        legend.position = 'right') 
+
+s3c
+
+ggsave("../figs/s3/S3C_control_relabd.png", width = 7.5, height = 3.5)
+ggsave("../figs/s3/S3C_control_relabd.pdf", width = 7.5, height = 3.5)
+
+fam <- ggplot(data = jax.cohoused.long, aes(x = '', y = OTU)) + 
+    geom_tile(aes(fill = family), color = 'white') +
+    scale_fill_manual(values = bugColors) +
+    labs(fill = 'Family') +
+    theme(strip.text.y.right = element_text(angle = 0),
+              panel.background = element_rect(fill = "white"), 
+              axis.ticks = element_blank(), 
+              axis.text.y = element_blank(),
+              axis.title.y = element_blank(),
+              axis.text.x = element_blank(), 
+              axis.title.x = element_blank(),
+              strip.text = element_blank(),
+              panel.spacing = unit(0.05, "lines"))
+
+fam
+
+ggsave("../figs/s3/S3C_fam.pdf", width = 6, height = 3.5)
+
+```
+
+
+Look at OTUs gained and Displaced when not cohoused JAX
+```{r}
+
+df <- norm_zotu %>% filter(tx_group == 'Jax Control') %>%
+    group_by(day, OTU) %>% filter(OTU != 'Otu1') %>%
+  mutate(day = as.numeric(as.character(day))) %>%
+    summarise(mean_log10abs_rel_abundance = mean(log10abs_rel_abundance)) %>% 
+  select(OTU, day, mean_log10abs_rel_abundance) %>% distinct() 
+
+base <- df %>% filter(day < 1)
+
+early <- df %>% filter(day > 0 & day <=5) %>% group_by(OTU) %>% 
+  mutate(early_abd = mean(mean_log10abs_rel_abundance)) %>% 
+  select(OTU, early_abd) %>% ungroup() %>% distinct()
+
+late <- df %>% filter(day > 5) %>% group_by(OTU) %>% 
+  mutate(late_abd = mean(mean_log10abs_rel_abundance)) %>% 
+  select(OTU, late_abd) %>% ungroup() %>% distinct()
+
+colonizing_order <- base %>% 
+  left_join(., early) %>% left_join(.,late) %>% 
+  mutate(early_delta = early_abd-mean_log10abs_rel_abundance,
+         late_delta = late_abd-mean_log10abs_rel_abundance,
+         colonizer_type = ifelse(early_delta > 1, "Early\n(Days 1-5)", ifelse(late_delta > 1, "Late\n(Day 15+)", "non_colonizer"))) %>%
+         left_join(., gtable)
+
+a <- colonizing_order %>% filter(colonizer_type != 'non_colonizer') %>% 
+  ggplot(., aes(x = colonizer_type, fill = family)) + 
+      scale_fill_manual(values = bugColors) +
+  ylim(0,10) +
+  geom_bar(stat="count", position = 'stack') +
+  labs(x='', y = 'Count', fill = 'Family', title = "Gained OTUs\n (Jackson Control)") +
+  theme_cowplot() +
+    theme(
+      #plot.background = element_blank(),
+          strip.background = element_blank(),
+          title = element_text(size = 14),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+              axis.text.y = element_text(size = 12),
+              axis.text.x = element_text(size = 12), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = 'none', 
+          )
+
+#Look at Displaced taxa now
+colonizing_order <- base %>% 
+  left_join(., early) %>% left_join(.,late) %>% 
+  mutate(early_delta = early_abd-mean_log10abs_rel_abundance,
+         late_delta = late_abd-mean_log10abs_rel_abundance,
+         colonizer_type = ifelse(early_delta < -1, "Early\n(Days 1-5)", ifelse(late_delta < -1, "Late\n(Day 15+)", "non_colonizer"))) %>%
+         left_join(., gtable)
+
+b<- colonizing_order %>% filter(colonizer_type != 'non_colonizer') %>% 
+  ggplot(., aes(x = colonizer_type, fill = family)) + 
+  ylim(0,10) +
+      scale_fill_manual(values = bugColors) +
+  geom_bar(stat="count", position = 'stack') +
+  labs(x='', y = 'Count', fill = 'Family', title = 'Displaced OTUs\n (Jackson Control)') +
+  theme_cowplot() +
+    theme(
+      #plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          title = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+              axis.text.y = element_text(size = 12),
+              axis.text.x = element_text(size = 12), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = 'none'
+          )
+
+s3d <- cowplot::plot_grid(a,b, ncol = 2)
+
+s3d
+
+ggsave("../figs/s3/3D_jax_ctrl_colonizers.png",  width = 5, height = 4)
+ggsave("../figs/s3/3D_jax_ctrl_colonizers.pdf",  width = 5, height = 4)
+
+
+```
+
+
+Look at OTUs gained and Displaced when not cohoused Envigo
+```{r}
+
+df <- norm_zotu %>% filter(tx_group == 'Envigo Control') %>%
+    group_by(day, OTU) %>% filter(OTU != 'Otu1') %>%
+  mutate(day = as.numeric(as.character(day))) %>%
+    summarise(mean_log10abs_rel_abundance = mean(log10abs_rel_abundance)) %>% 
+  select(OTU, day, mean_log10abs_rel_abundance) %>% distinct() 
+
+base <- df %>% filter(day < 1)
+
+early <- df %>% filter(day > 0 & day <=5) %>% group_by(OTU) %>% 
+  mutate(early_abd = mean(mean_log10abs_rel_abundance)) %>% 
+  select(OTU, early_abd) %>% ungroup() %>% distinct()
+
+late <- df %>% filter(day > 5) %>% group_by(OTU) %>% 
+  mutate(late_abd = mean(mean_log10abs_rel_abundance)) %>% 
+  select(OTU, late_abd) %>% ungroup() %>% distinct()
+
+colonizing_order <- base %>% 
+  left_join(., early) %>% left_join(.,late) %>% 
+  mutate(early_delta = early_abd-mean_log10abs_rel_abundance,
+         late_delta = late_abd-mean_log10abs_rel_abundance,
+         colonizer_type = ifelse(early_delta > 1, "Early\n(Days 1-5)", ifelse(late_delta > 1, "Late\n(Day 15+)", "non_colonizer"))) %>%
+         left_join(., gtable)
+
+a <- colonizing_order %>% filter(colonizer_type != 'non_colonizer') %>% 
+  ggplot(., aes(x = colonizer_type, fill = family)) + 
+      scale_fill_manual(values = bugColors) +
+  ylim(0,10) +
+  geom_bar(stat="count", position = 'stack') +
+  labs(x='', y = 'Count', fill = 'Family', title = "Gained OTUs\n (Envigo Control)") +
+  theme_cowplot() +
+    theme(
+      #plot.background = element_blank(),
+          strip.background = element_blank(),
+          title = element_text(size = 14),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+              axis.text.y = element_text(size = 12),
+              axis.text.x = element_text(size = 12), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = 'none', 
+          )
+
+#Look at Displaced taxa now
+colonizing_order <- base %>% 
+  left_join(., early) %>% left_join(.,late) %>% 
+  mutate(early_delta = early_abd-mean_log10abs_rel_abundance,
+         late_delta = late_abd-mean_log10abs_rel_abundance,
+         colonizer_type = ifelse(early_delta < -1, "Early\n(Days 1-5)", 
+                          ifelse(late_delta < -1, "Late\n(Day 15+)", "non_colonizer"))) %>%
+         left_join(., gtable)
+
+b<- colonizing_order %>% filter(colonizer_type != 'non_colonizer') %>% 
+  ggplot(., aes(x = colonizer_type, fill = family)) + 
+  ylim(0,10) +
+      scale_fill_manual(values = bugColors) +
+  geom_bar(stat="count", position = 'stack') +
+  labs(x='', y = 'Count', fill = 'Family', title = 'Displaced OTUs\n (Envigo Control)') +
+  theme_cowplot() +
+    theme(
+          #plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+          title = element_text(size = 14),
+              axis.text.y = element_text(size = 12),
+              axis.text.x = element_text(size = 12), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = 'none'
+          )
+
+s3e <- cowplot::plot_grid(a,b, ncol = 2)
+s3e
+
+ggsave("../figs/s3/3E_env_ctrl_colonizers.png",  width = 5, height = 4)
+ggsave("../figs/s3/3E_env_ctrl_colonizers.pdf",  width = 5, height = 4)
+
+
+```
+
+Figure S3E - biomass of controls over time
+
+```{r}
+#library(ggsignif)
+#Get bacteria that are unique & shared
+otus.jax.Specific <- setdiff(jax.otus.to.keep, envigo.otus.to.keep) %>%
+                  cbind('Jax Specific') %>% as.data.frame() 
+
+names(otus.jax.Specific) <- c("OTU", "class")
+
+otus.envigo.Specific <- setdiff(envigo.otus.to.keep, jax.otus.to.keep) %>% 
+  cbind('Env Specific') %>% as.data.frame() 
+
+names(otus.envigo.Specific) <- c("OTU", "class")
+
+
+otus.shared.Specific <- intersect(jax.otus.to.keep, envigo.otus.to.keep) %>%
+    cbind('Shared') %>% as.data.frame()
+
+names(otus.shared.Specific) <- c("OTU", "class")
+
+
+otu_labels <- rbind(otus.envigo.Specific, otus.jax.Specific, otus.shared.Specific)
+
+#calculate mean abd of each class/day
+
+temp <- norm_zotu %>% filter(tx_group == 'Jax Control') %>%
+    group_by(day, OTU) %>% filter(OTU != 'Otu1') %>% 
+    summarise(mean_abs = mean(abs_reads)) %>% 
+  select(OTU, day, mean_abs) %>%
+  left_join(.,otu_labels) %>% group_by(class, day) %>% 
+        mutate(class_abd = sum(mean_abs)) %>%
+        ungroup() %>%
+        select(day, class, class_abd) %>% distinct()
+
+#normalize biomass to day 0
+norm_val <- sum((temp %>% filter(day == '0'))$class_abd)
+temp$class_abd <- temp$class_abd/norm_val
+
+#calculate sd per day
+error_table <- norm_zotu %>% filter(tx_group == 'Jax Control') %>% 
+  group_by(mouse_num, day) %>% 
+  mutate(ttl_mass = sum(abs_reads)/norm_val)%>% select(mouse_num,day,ttl_mass) %>% 
+  distinct() %>% 
+  ungroup() %>%
+  group_by(day) %>% mutate(sd_day = sd(ttl_mass)) %>% ungroup() %>% 
+  select(day, sd_day) %>% distinct() %>% 
+  left_join(.,
+    temp %>% group_by(day) %>% mutate(ttl_mass = sum(class_abd)) %>% 
+    select(day, ttl_mass) %>% distinct())
+
+a<- temp %>% left_join(., error_table) %>% 
+  ggplot(., aes(x=day,
+                y=class_abd,
+                fill=factor(class, 
+                            levels = c('Env Specific', 'Shared', 'Jax Specific')))) +  
+  geom_bar(stat="identity", position = 'stack') +
+  labs(x='Day', y = 'Relative Biomass', fill = 'Microbe Class') +
+  geom_errorbar(aes(ymax = ttl_mass+sd_day, ymin = ttl_mass-sd_day), width = .2) +
+  scale_fill_manual(values = c( ven[3],'gray80', ven[2])) +
+  theme_clean() +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+              axis.text.y = element_text(size = 12),
+              axis.text.x = element_text(size = 12), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = 'top'
+          )
+#envigo only
+temp <- norm_zotu %>% filter(tx_group == 'Envigo Control') %>%
+    group_by(day, OTU) %>% filter(OTU != 'Otu1') %>% 
+    summarise(mean_abs = mean(abs_reads)) %>% 
+  select(OTU, day, mean_abs) %>%
+  left_join(.,otu_labels) %>% group_by(class, day) %>% 
+        mutate(class_abd = sum(mean_abs)) %>%
+        ungroup() %>%
+        select(day, class, class_abd) %>% distinct()
+
+#normalize biomass to day 0
+norm_val <- sum((temp %>% filter(day == '0'))$class_abd)
+temp$class_abd <- temp$class_abd/norm_val
+
+#calculate sd per day
+error_table <- norm_zotu %>% filter(tx_group == 'Envigo Control') %>% 
+  group_by(mouse_num, day) %>% 
+  mutate(ttl_mass = sum(abs_reads)/norm_val)%>% select(mouse_num,day,ttl_mass) %>% 
+  distinct() %>% 
+  ungroup() %>%
+  group_by(day) %>% mutate(sd_day = sd(ttl_mass)) %>% ungroup() %>% 
+  select(day, sd_day) %>% distinct() %>% 
+  left_join(.,
+    temp %>% group_by(day) %>% mutate(ttl_mass = sum(class_abd)) %>% 
+    select(day, ttl_mass) %>% distinct())
+
+
+b<- temp %>% left_join(., error_table) %>% 
+  ggplot(., aes(x=day,
+                y=class_abd,
+                fill=factor(class, levels = c('Env Specific', 'Shared', 'Jax Specific')))) +  
+  geom_bar(stat="identity", position = 'stack') +
+  labs(x='Day', y = 'Relative Biomass', fill = 'Microbe Class') +
+  geom_errorbar(aes(ymax = ttl_mass+sd_day, ymin = ttl_mass-sd_day), width = .2) +
+  scale_fill_manual(values = c( ven[3],'gray80', ven[2])) +
+   # scale_fill_manual(values = c(ven[2], 'gray90', '#ffa500')) +
+  theme_clean() +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+              axis.text.y = element_text(size = 12),
+              axis.text.x = element_text(size = 12), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = 'top')
+
+s3f<- plot_grid(a,b, nrow = 2)
+s3f
+ggsave("../figs/s3/S3E_abundance.png",  width = 6, height = 5)
+ggsave("../figs/s3/S3E_abundance.pdf",  width = 6, height = 5)
+
+```
+
+
+Plot all Supplements together
+```{r}
+
+cowplot::plot_grid(plot_grid(s3a, s3b, labels = c("A", "B")), 
+                   plot_grid(s3c, labels = c("C")), 
+                   plot_grid(s3d, s3e, labels = c("D", "E")),
+                   s3f, labels = c('','','', "F"),
+                   nrow = 4, 
+                   rel_heights = c(1,2,1,1.6))
+
+ggsave("../figs/s3/figS3_longitudinal.png",  width = 10, height = 14)
+ggsave("../figs/s3/figS3_longitudinal.pdf",  width = 10, height = 14)
+
+
+```
+
+##############    THE LOST FIGURES BELOW    #####################
+##############    THE LOST FIGURES BELOW    #####################
+##############    THE LOST FIGURES BELOW    #####################
+
+
+Look at pellet weight over time, lol looks like crap
+```{}
+norm_zotu %>% select(tx_group, day, pellet_weight) %>% distinct() %>% group_by(tx_group, day) %>% mutate(tx_pw = mean(pellet_weight)) %>% ungroup %>% select(-pellet_weight) %>% 
+  distinct() %>% filter(tx_group != 'Envigo Cohoused') %>%
+  ggplot(., aes(as.numeric(as.character(day)), tx_pw, fill = tx_group, color = tx_group)) + 
+    geom_line(stat = 'identity') + geom_point() + 
+  labs(x = 'Day', y = 'Pellet Weight') + facet_wrap(~tx_group) + theme_clean() +
+  theme(axis.text.x = element_text(size = 12, angle = 45, hjust = 1), 
+  axis.text.y = element_text(size = 12),
+axis.title.x.bottom = element_text(size = 12),
+axis.title.y.left = element_text(size = 12),
+legend.position = 'none')
+
+```
+
+
+```{}
+
+#GENUS CLUSTERING
+norm_zotu %>% 
+  group_by(day, tx_group, genus, OTU) %>% filter(OTU != 'Otu1') %>%
+  summarise(mean_log10abs_rel_abundance = mean(log10abs_rel_abundance)) %>% 
+  ggplot() +
+  geom_tile(aes(x=day, y=OTU, fill=(mean_log10abs_rel_abundance))) +
+  scale_fill_gradientn(colours = pal) + 
+  facet_grid(genus~factor(tx_group, levels=c("Jax Control","Jax Cohoused","Envigo Control","Envigo Cohoused")), 
+             scales="free_y", space="free_y") +
+  theme(strip.text.y.right = element_text(angle = 0),
+        panel.background = element_rect(fill = "gray20"), 
+              axis.ticks = element_blank(), 
+              axis.text.y = element_text(size = 6), 
+              axis.text.x = element_text(size = 6), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"))
+
+
+
+#FAMILY CLUSTERING
+norm_zotu %>%
+  group_by(day, tx_group, family, OTU) %>% filter(OTU != 'Otu1') %>%
+  summarise(mean_log10abs_rel_abundance = mean(log10abs_rel_abundance)) %>% 
+  ggplot() +
+  geom_tile(aes(x=day, y=OTU, fill=(mean_log10abs_rel_abundance))) +
+  scale_fill_gradientn(colours = pal) + 
+  facet_grid(family~factor(tx_group, levels=c("Jax Control","Jax Cohoused","Envigo Control","Envigo Cohoused")), 
+             scales="free_y", space="free_y") +
+  theme(strip.text.y.right = element_text(angle = 0),
+        panel.background = element_rect(fill = "gray20"), 
+              axis.ticks = element_blank(), 
+              axis.text.y = element_text(size = 6), 
+              axis.text.x = element_text(size = 6), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"))
+
+```
+
+
+
+
+s3lementary Fig X - Cluster Jax cohoused
+
+```{}
+
+temp <- norm_zotu %>%
+  group_by(day, tx_group, family, OTU) %>% filter(family != "Planococcaceae") %>%
+  summarise(mean_log10absadb = log10(mean(abs_abd))) %>% ungroup() %>% filter(tx_group == 'Jax Cohoused') %>% select(OTU, day, mean_log10absadb) %>% distinct() %>% filter(mean_log10absadb > -100 & mean_log10absadb < 100) %>% dcast(day ~ OTU)
+
+row.names(temp) <- temp$day
+data <- temp %>% select(-day) %>% as.matrix
+data <- scale(t(data))
+ord <- hclust( dist(data, method = "euclidean"), method = "ward.D" )$order
+
+test <- temp %>% melt() 
+test$variable <- factor(test$variable, levels = colnames(data), labels = seq_along( colnames(data) ) )
+
+ test %>%
+  ggplot() +
+  geom_tile(aes(x=day, y=variable, fill=value)) +
+  scale_fill_gradientn(colours = pal) + 
+  theme(strip.text.y.right = element_text(angle = 0),
+        panel.background = element_rect(fill = "gray20"), 
+              axis.ticks = element_blank(), 
+              axis.text.y = element_text(size = 6), 
+              axis.text.x = element_text(size = 6), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"))
+
+
+```
+
+
+
+
+```{}
+
+temp <- norm_zotu %>% filter(tx_group == 'Jax Cohoused') %>%
+    group_by(day, OTU) %>% filter(OTU != 'Otu1') %>% 
+    summarise(mean_log10abs_rel_abundance = mean(log10abs_rel_abundance)) %>% 
+  select(OTU, day, mean_log10abs_rel_abundance) %>% distinct() %>% reshape2::dcast(OTU~day)
+
+row.names(temp) <- temp$OTU
+clust <- temp %>% select(-OTU) %>% na.omit() %>% as.matrix %>% scale() %>% dist() %>% hclust(method = 'ward.D')
+        #vegan::vegdist(.) #%>% hclust(.) #calculate euclidean distance 
+plot(clust)
+
+clust$order
+  
+levels <- (cbind(clust$order, clust$labels)) %>% as.data.frame() %>% 
+  mutate(order = as.numeric(as.character(V1)) %>% arrange(order))
+
+temp <- norm_zotu %>% filter(tx_group == 'Jax Cohoused') %>%
+    group_by(day, OTU) %>% filter(OTU != 'Otu1') %>%
+  summarise(mean_log10abs_rel_abundance = mean(log10abs_rel_abundance)) 
+temp$OTU <- factor(temp$OTU, levels = temp[clust$order])
+
+
+temp %>%  ggplot() +
+  geom_tile(aes(x=day, y=as.factor(OTU), fill=(mean_log10abs_rel_abundance))) +
+#    scale_y_discrete(limits = colnames(temp[-1,])[clust$order]) +
+ # scale_y_discrete(limits = levels) +
+  scale_fill_gradientn(colours = pal) + 
+  theme(strip.text.y.right = element_text(angle = 0),
+        panel.background = element_rect(fill = "gray20"), 
+              axis.ticks = element_blank(), 
+              axis.text.y = element_text(size = 6), 
+              axis.text.x = element_text(size = 6), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines")) 
+ 
+
+```
+
+Look at total biomass for different mosue cohorts
+```{}
+temp <- norm_zotu %>% filter(tx_group == 'Envigo Cohoused') %>%
+  #  group_by(day, OTU) %>%
+    filter(OTU != 'Otu1') %>% 
+    #summarise(mean_abs = mean(abs_reads)) %>% 
+  select(OTU, day, abs_reads, mouse_num) %>% distinct() %>%
+  #left_join(.,otu_labels) %>% 
+  group_by( day, mouse_num) %>% 
+        mutate(class_abd = sum(abs_reads)) %>%
+        ungroup() %>%
+        select(day,mouse_num, class_abd) %>% distinct()
+
+ggplot(temp, aes(x=day,
+                y=class_abd,
+               # fill = mouse_num
+       #         fill=factor(class, levels = c('Donor Specific', 'Shared', 'Recipient Specific'))
+       )) +  
+  geom_boxplot(outlier.shape = NA) +
+    geom_jitter(aes(color = mouse_num)) +
+  labs(x='Day', y = 'Relative Biomass', fill = 'Microbe Class') +
+  #scale_fill_manual(values = c(ven[2], 'gray80', ven[3])) +
+  theme_clean() +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+              axis.text.y = element_text(size = 12),
+              axis.text.x = element_text(size = 12), 
+              strip.text = element_text(size = 6),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = 'bottom'
+          )
+
+```
+
+```{}
+temp %>% select(-OTU) %>% na.omit() %>% as.matrix %>% gplots::heatmap.2(., 
+        key=T, keysize=1.0,
+        margins = c(5,10),
+        trace="none",
+        labRow = NULL,
+        dendrogram='row',
+        cexCol = .5,
+        cexRow=.5,
+        distfun=function(x) dist(x, method="euclidean"), #Cluster based on euclidean distance using ward's linkage
+        hclustfun=function(x) hclust(x, method="ward.D2"),
+        main = 'CAZyme counts by MAG',
+        xlab="Day",
+        ylab='OTU')
+```
+
+
+OLD 3B
+
+
+3B - OTU biomass transferred
+
+```{}
+
+df <- norm_zotu %>% filter(tx_group == 'Jax Cohoused') %>%
+    group_by(day, OTU) %>% filter(OTU != 'Otu1') %>%
+     mutate(day = as.numeric(as.character(day)),
+            mean_abs_rel_abundance = mean(abs_rel_abundance)) %>%
+   # summarise(mean_log10abs_rel_abundance = mean(log10abs_rel_abundance)) %>% 
+  select(OTU, day, mean_abs_rel_abundance) %>% distinct() 
+
+base <- df %>% filter(day == 0) %>% 
+  group_by(day) %>% mutate(day_total_biomass = sum(mean_abs_rel_abundance)) %>%
+  ungroup() %>%
+  mutate(d0_otu_biomass = mean_abs_rel_abundance,
+         d0_total_biomass = day_total_biomass,
+         d0_scaled_biomass = d0_otu_biomass/d0_total_biomass) %>% 
+      select(OTU, d0_otu_biomass, d0_total_biomass, d0_scaled_biomass) %>% replace(is.na(.), 0)
+
+early <- df %>% filter(day == 5) %>% 
+  group_by(day) %>% mutate(day_total_biomass = sum(mean_abs_rel_abundance)) %>%
+  ungroup() %>%
+  #mutate(early_total_biomass = sum(mean_log10abs_rel_abundance)) %>% #calculate early total biomass
+  group_by(OTU) %>% 
+  mutate(early_otu_biomass = mean(mean_abs_rel_abundance),
+         early_total_biomass= mean(day_total_biomass),
+         early_scaled_biomass = early_otu_biomass/early_total_biomass) %>% #calculate mean abundance of all days
+  select(OTU, early_otu_biomass, early_total_biomass, early_scaled_biomass) %>% ungroup() %>% distinct()
+
+late <- df %>% filter(day == 32) %>% 
+  group_by(day) %>% 
+  mutate(day_total_biomass = sum(mean_abs_rel_abundance)) %>%
+  ungroup() %>%
+  #mutate(early_total_biomass = sum(mean_log10abs_rel_abundance)) %>% #calculate early total biomass
+  group_by(OTU) %>% 
+  mutate(late_otu_biomass = mean(mean_abs_rel_abundance),
+         late_total_biomass= mean(day_total_biomass),
+         late_scaled_biomass = late_otu_biomass/late_total_biomass) %>% #calculate mean abundance of all days
+  select(OTU, late_otu_biomass, late_total_biomass, late_scaled_biomass) %>% ungroup() %>% distinct()
+
+early_colonizers <- base %>% 
+  left_join(., early) %>% left_join(.,late) %>% 
+  mutate(early_delta = (early_otu_biomass-d0_otu_biomass),
+         late_delta = (late_otu_biomass-early_otu_biomass),
+         early_type = ifelse(early_delta > 0, "Gained", "Lost"),
+         late_type = ifelse(late_delta > 0, "Gained", "Lost")) %>%
+        #ifelse(late_delta > .01, "Late\n(Day 15+)", "non_colonizer"))) %>%
+         #colonizer_type = ifelse(early_delta > .01, "Early\n(Days 1-5)", 
+        #                  ifelse(late_delta > .01, "Late\n(Day 15+)", "non_colonizer"))) %>%
+         left_join(., gtable)
+
+
+#What are amounts of biomass gained?
+a <- early_colonizers %>% 
+  #filter(colonizer_type != 'non_colonizer') %>% 
+  ggplot(., aes(x = early_type, y = abs(early_delta), fill = family)) + 
+      scale_fill_manual(values = bugColors) +
+  geom_bar(stat="identity", position = 'stack') +
+  labs(x='', y = ' delta Rel. Biomass', fill = 'Family', title = "Gained") +
+  theme_clean() +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+          axis.text.y = element_text(size = 12),
+          axis.text.x = element_text(size = 12), 
+          strip.text = element_text(size = 6),
+          panel.spacing = unit(0.05, "lines"),
+          #legend.position = 'none',
+          plot.title = element_text(hjust = 0.5)
+          )
+
+#plotly::ggplotly(a)
+
+b <- early_colonizers %>% 
+  #filter(colonizer_type != 'non_colonizer') %>% 
+  ggplot(., aes(x = late_type, y = abs(late_delta), fill = family)) + 
+      scale_fill_manual(values = bugColors) +
+  geom_bar(stat="identity", position = 'stack') +
+  labs(x='', y = ' delta Rel. Biomass', fill = 'Family', title = "Gained") +
+  theme_clean() +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+          axis.text.y = element_text(size = 12),
+          axis.text.x = element_text(size = 12), 
+          strip.text = element_text(size = 6),
+          panel.spacing = unit(0.05, "lines"),
+          #legend.position = 'none',
+          plot.title = element_text(hjust = 0.5)
+          )
+
+
+#write out table
+write.table(colonizing_order, "../tables/colonizer_order_3B.txt", quote = F, row.names = F)
+
+#Look at Lost taxa now
+# colonizing_order <- base %>% 
+#   left_join(., early) %>% left_join(.,late) %>% 
+#   mutate(early_delta = early_abd-mean_log10abs_rel_abundance,
+#          late_delta = late_abd-mean_log10abs_rel_abundance,
+#          colonizer_type = ifelse(early_delta < -1, "Early\n(Days 1-5)", 
+#                                  ifelse(late_delta < -1, "Late\n(Day 15+)", "non_colonizer"))) %>%
+#          left_join(., gtable)
+
+#write out colonizer table
+# base %>% 
+#  left_join(., early) %>% left_join(.,late) %>% 
+#  mutate(early_delta = early_abd-mean_log10abs_rel_abundance,
+#         late_delta = late_abd-mean_log10abs_rel_abundance,
+#         colonizer_type = ifelse(early_delta < -1, "Early", 
+#                                 ifelse(late_delta < -1, "Late", "non_colonizer"))) %>% 
+#   write.table("../tables/colonizer_order_3B.txt", quote = F, row.names = F)
+
+lost_colonizers <- base %>% 
+  left_join(., early) %>% left_join(.,late) %>% 
+  mutate(early_delta = (d0_scaled_biomass-early_scaled_biomass),
+         late_delta = (d0_scaled_biomass-late_scaled_biomass),
+         colonizer_type = ifelse(early_delta > .01, "Early\n(Days 1-5)", 
+                          ifelse(late_delta > .01, "Late\n(Day 15+)", "non_colonizer"))) %>%
+         left_join(., gtable)
+
+
+b <- lost_colonizers %>% filter(colonizer_type != 'non_colonizer') %>% 
+  ggplot(., aes(x = colonizer_type, y = late_delta, fill = family)) + 
+  #ylim(0,50) +
+  scale_fill_manual(values = bugColors) +
+  geom_bar(stat="identity", position = 'stack') +
+  labs(x='', y = '', fill = 'Family', title = 'Lost') +
+  theme_clean() +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+          axis.text.y = element_text(size = 12),
+          axis.text.x = element_text(size = 12), 
+          strip.text = element_text(size = 6),            
+          panel.spacing = unit(0.05, "lines"),
+          legend.position = 'none',
+          plot.title = element_text(hjust = 0.5)
+          )
+
+cowplot::plot_grid(a,b, ncol = 2)
+
+ggsave("../figs/fig3/3B_fam.png",  width = 5, height = 4)
+ggsave("../figs/fig3/3B_fam.pdf",  width = 5, height = 4)
+
+```
+
+
+oldest 3b
+
+
+OLD 3B, showing number of species transferred
+
+Look at early vs Late colonizers -- Calculate abs abundance for d0, d1-5, d15-32 and identify OTUs that have abundance in each
+```{}
+
+df <- norm_zotu %>% filter(tx_group == 'Jax Cohoused') %>%
+    group_by(day, OTU) %>% filter(OTU != 'Otu1') %>%
+  mutate(day = as.numeric(as.character(day))) %>%
+    summarise(mean_log10abs_rel_abundance = mean(log10abs_rel_abundance)) %>% 
+  select(OTU, day, mean_log10abs_rel_abundance) %>% distinct() 
+
+base <- df %>% filter(day < 1)
+
+early <- df %>% filter(day > 0 & day <=5) %>% group_by(OTU) %>% 
+  mutate(early_abd = mean(mean_log10abs_rel_abundance)) %>% 
+  select(OTU, early_abd) %>% ungroup() %>% distinct()
+
+late <- df %>% filter(day > 5) %>% group_by(OTU) %>% 
+  mutate(late_abd = mean(mean_log10abs_rel_abundance)) %>% 
+  select(OTU, late_abd) %>% ungroup() %>% distinct()
+
+colonizing_order <- base %>% 
+  left_join(., early) %>% left_join(.,late) %>% 
+  mutate(early_delta = early_abd-mean_log10abs_rel_abundance,
+         late_delta = late_abd-mean_log10abs_rel_abundance,
+         colonizer_type = ifelse(early_delta > 1, "Early\n(Days 1-5)", ifelse(late_delta > 1, "Late\n(Day 15+)", "non_colonizer"))) %>%
+         left_join(., gtable)
+
+a <- colonizing_order %>% filter(colonizer_type != 'non_colonizer') %>% 
+  ggplot(., aes(x = colonizer_type, fill = family)) + 
+      scale_fill_manual(values = bugColors) +
+  ylim(0,20) +
+  geom_bar(stat="count", position = 'stack') +
+  labs(x='', y = 'Count', fill = 'Family', title = "Gained OTUs") +
+  theme_clean() +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+          axis.text.y = element_text(size = 12),
+          axis.text.x = element_text(size = 12), 
+          strip.text = element_text(size = 6),
+          panel.spacing = unit(0.05, "lines"),
+          legend.position = 'none'
+          )
+
+#Look at Lost taxa now
+colonizing_order <- base %>% 
+  left_join(., early) %>% left_join(.,late) %>% 
+  mutate(early_delta = early_abd-mean_log10abs_rel_abundance,
+         late_delta = late_abd-mean_log10abs_rel_abundance,
+         colonizer_type = ifelse(early_delta < -1, "Early\n(Days 1-5)", ifelse(late_delta < -1, "Late\n(Day 15+)", "non_colonizer"))) %>%
+         left_join(., gtable)
+
+#write out colonizer table
+ base %>% 
+  left_join(., early) %>% left_join(.,late) %>% 
+  mutate(early_delta = early_abd-mean_log10abs_rel_abundance,
+         late_delta = late_abd-mean_log10abs_rel_abundance,
+         colonizer_type = ifelse(early_delta < -1, "Early", ifelse(late_delta < -1, "Late", "non_colonizer"))) %>% write.table("../tables/colonizer_order_3B.txt", quote = F, row.names = F)
+
+b <- colonizing_order %>% filter(colonizer_type != 'non_colonizer') %>% 
+  ggplot(., aes(x = colonizer_type, fill = family)) + 
+  ylim(0,20) +
+      scale_fill_manual(values = bugColors) +
+  geom_bar(stat="count", position = 'stack') +
+  labs(x='', y = 'Count', fill = 'Family', title = 'Lost OTUs') +
+  theme_clean() +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          axis.title.x = element_text(size = 14),
+          axis.text.y = element_text(size = 12),
+          axis.text.x = element_text(size = 12), 
+          strip.text = element_text(size = 6),            
+          panel.spacing = unit(0.05, "lines"),
+          legend.position = 'none'
+          )
+
+cowplot::plot_grid(a,b, ncol = 2)
+
+ggsave("../figs/fig3/3D_fam.png",  width = 5, height = 4)
+ggsave("../figs/fig3/3D_fam.pdf",  width = 5, height = 4)
+
+```

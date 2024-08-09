@@ -1,0 +1,129 @@
+bins	total_length	num_contigs	N50	GC_content	percent_completion	percent_redundancy	t_domain	t_phylum	t_class	t_order	t_family	t_genus	t_species
+DA_MAG_00001	2692771	119	37495	39.02767834832407	95.77464788732394	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Massilioclostridium	Massilioclostridium coli
+DA_MAG_00002	4343443	112	54749	50.75454715998675	100.0	1.408450704225352	Bacteria	Proteobacteria	Gammaproteobacteria	Enterobacterales	Enterobacteriaceae		
+DA_MAG_00003	2252763	38	90293	54.7201565298162	95.77464788732394	1.408450704225352	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae		
+DA_MAG_00004	2080315	41	84629	32.76321292398405	100.0	2.816901408450704	Bacteria	Firmicutes	Clostridia	Lachnospirales	CAG-274	UMGS1441	UMGS1441 sp900551755
+DA_MAG_00005	2252732	32	129643	51.38792622164542	94.36619718309859	1.408450704225352	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Negativibacillus	Negativibacillus sp000435195
+DA_MAG_00006	2896621	67	101382	48.734447358027865	95.77464788732394	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	Anaeromassilibacillus	Anaeromassilibacillus sp001305115
+DA_MAG_00007	2090558	37	101649	47.30086198936447	98.59154929577464	0.0	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Anaerovoracaceae	UBA1191	UBA1191 sp900549125
+DA_MAG_00008	4442355	77	104940	64.9287222592935	98.59154929577464	0.0	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Sphingomonadaceae	Sphingomonas	Sphingomonas sp000251145
+DA_MAG_00009	2542706	60	96939	36.72006726626229	100.0	0.0	Bacteria	Firmicutes	Clostridia	Monoglobales	Monoglobaceae	Monoglobus	Monoglobus pectinilyticus
+DA_MAG_00010	2288101	44	86041	58.49849927758598	100.0	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Evtepia	Evtepia sp004556345
+DA_MAG_00011	1904722	26	114353	60.48593728005493	98.59154929577464	1.408450704225352	Bacteria	Actinobacteriota	Actinomycetia	Actinomycetales	Bifidobacteriaceae	Bifidobacterium	Bifidobacterium animalis
+DA_MAG_00012	2828779	79	66780	63.19270704004033	94.36619718309859	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Bittarella	Bittarella massiliensis
+DA_MAG_00013	2645555	52	78236	42.85833668263088	98.59154929577464	0.0	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Anaerovoracaceae	UBA1191	
+DA_MAG_00014	2176972	54	70863	47.20958974225953	94.36619718309859	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Anaerotignaceae	Anaerotignum	Anaerotignum sp000436415
+DA_MAG_00015	2352990	67	80223	52.76578167216102	98.59154929577464	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	Ruminococcus	Ruminococcus sp003531055
+DA_MAG_00016	2161275	61	51894	58.51114924974091	100.0	1.408450704225352	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	UMGS1766	UMGS1766 sp900554855
+DA_MAG_00017	1430833	24	83108	36.82000440532964	97.1830985915493	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UBA4285	UBA4285 sp900545225
+DA_MAG_00018	2174015	43	111680	59.194966587050715	98.59154929577464	2.816901408450704	Bacteria	Actinobacteriota	Actinomycetia	Actinomycetales	Bifidobacteriaceae	Bifidobacterium	
+DA_MAG_00019	3158530	129	39074	45.784184150090255	98.59154929577464	4.225352112676056	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Prevotella	
+DA_MAG_00020	3030036	129	33173	49.2482286738672	95.77464788732394	1.408450704225352	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	Clostridium	Clostridium leptum
+DA_MAG_00021	2090881	62	48588	49.42255997697886	98.59154929577464	1.408450704225352	Bacteria	Proteobacteria	Gammaproteobacteria	Burkholderiales	Burkholderiaceae	Sutterella	
+DA_MAG_00022	2373355	113	29619	30.866077753578562	97.1830985915493	0.0	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelatoclostridiaceae	Massiliomicrobiota	Massiliomicrobiota sp002160865
+DA_MAG_00023	2140414	116	26958	35.181172548512684	98.59154929577464	0.0	Bacteria	Firmicutes	Bacilli	Lactobacillales	Streptococcaceae	Lactococcus	Lactococcus lactis
+DA_MAG_00024	1720379	75	54918	46.10129031482839	98.59154929577464	1.408450704225352	Bacteria	Firmicutes	Negativicutes	Veillonellales	Dialisteraceae	Dialister	Dialister invisus
+DA_MAG_00025	2345053	137	26994	43.105642627451964	98.59154929577464	4.225352112676056	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Ruminococcus	
+DA_MAG_00026	2081597	70	61306	40.18475628498342	92.95774647887323	1.408450704225352	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	Ruminococcus	Ruminococcus bromii
+DA_MAG_00027	2526838	142	32780	38.020532765946626	100.0	0.0	Bacteria	Firmicutes	Clostridia	Monoglobales	UBA1381	CAG-41	CAG-41 sp900066215
+DA_MAG_00028	2780140	117	40598	41.29822840843604	100.0	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	TF01-11	TF01-11 sp003529475
+DA_MAG_00029	3218884	142	37407	36.29794521459073	100.0	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae		
+DA_MAG_00030	2795608	65	85362	52.78780398750747	98.59154929577464	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CAG-81	CAG-81 sp000435795
+DA_MAG_00031	1873648	192	14091	29.116203452447298	92.95774647887323	0.0	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelatoclostridiaceae	Erysipelatoclostridium	
+DA_MAG_00032	2241875	199	14664	50.146104039257935	98.59154929577464	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae		
+DA_MAG_00033	2308349	105	32725	60.52710432723817	95.77464788732394	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	CAG-110	CAG-110 sp003525905
+DA_MAG_00034	2881094	135	36453	44.68005469850737	98.59154929577464	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Ruminococcus	
+DA_MAG_00035	2704468	57	87160	51.66006819409723	98.59154929577464	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae		
+DA_MAG_00036	3320096	116	40072	48.12634257452865	97.1830985915493	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CHKCI001	CHKCI001 sp900045905
+DA_MAG_00037	2899470	222	17832	41.717552467440974	98.59154929577464	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	COE1	COE1 sp001916965
+DA_MAG_00038	2520805	69	65098	36.23490652389433	100.0	9.859154929577464	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnospira	Lachnospira sp900316325
+DA_MAG_00039	2793697	85	57582	43.23646760243986	100.0	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Agathobacter	
+DA_MAG_00040	3018086	89	54792	59.92606192316979	95.77464788732394	2.816901408450704	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Oscillibacter	Oscillibacter welbionis
+DA_MAG_00041	2435422	165	24171	41.72027398015408	98.59154929577464	7.042253521126761	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Agathobacter	
+DA_MAG_00042	1674193	73	37606	54.1752527370766	95.77464788732394	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	CAG-217	CAG-217 sp000436335
+DA_MAG_00043	2867306	100	51184	39.68178343918562	100.0	2.816901408450704	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium	Eubacterium sp003491505
+DA_MAG_00044	2631992	58	78595	41.26296242708741	98.59154929577464	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CAG-45	
+DA_MAG_00045	1926166	80	44135	38.73316056584108	92.95774647887323	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Anaerotignaceae	UMGS1670	UMGS1670 sp900548595
+DA_MAG_00046	2831714	74	61325	45.865741953383385	92.95774647887323	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Schaedlerella	Schaedlerella glycyrrhizinilyticum
+DA_MAG_00047	2549882	42	112714	41.28303408627119	98.59154929577464	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Coprococcus	
+DA_MAG_00048	2658236	206	16729	57.6248737034115	91.54929577464789	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Butyricicoccaceae	Agathobaculum	Agathobaculum sp900291975
+DA_MAG_00049	2490165	269	12047	59.54051743023957	91.54929577464789	1.408450704225352	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Ruthenibacterium	Ruthenibacterium lactatiformans
+DA_MAG_00050	1723885	63	53530	29.625975907745055	90.14084507042253	2.816901408450704	Bacteria	Firmicutes	Clostridia	TANB77	CAG-508	CAG-273	CAG-273 sp003507395
+DA_MAG_00051	1508856	200	10047	58.46894729438705	97.1830985915493	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Oscillibacter	Oscillibacter sp001916835
+DA_MAG_00052	1658856	199	10923	60.23416873003594	98.59154929577464	1.408450704225352	Bacteria	Actinobacteriota	Actinomycetia	Actinomycetales	Bifidobacteriaceae	Bifidobacterium	
+DA_MAG_00053	2200274	75	56019	41.32062503252553	100.0	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UBA11774	UBA11774 sp003507655
+DA_MAG_00054	2524386	132	31345	42.153684961627704	97.1830985915493	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnospira	Lachnospira sp000437735
+DA_MAG_00055	3611646	273	18662	44.247112348683906	97.1830985915493	1.408450704225352	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelotrichaceae	Longicatena	
+DA_MAG_00056	2541987	301	10514	52.499520449388335	90.14084507042253	4.225352112676056	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	CAG-115	CAG-115 sp003531585
+DA_MAG_00057	2834481	97	54844	58.78066962404913	92.95774647887323	7.042253521126761	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	
+DA_MAG_00058	1053695	34	52055	24.27469356730215	87.32394366197182	2.816901408450704	Bacteria	Firmicutes	Bacilli	RF39	CAG-611	CAG-611	CAG-611 sp000434175
+DA_MAG_00059	1688689	56	44032	34.624656454054495	92.95774647887323	0.0	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelotrichaceae	Faecalitalea	Faecalitalea cylindroides
+DA_MAG_00060	7293933	170	69488	46.848641779999326	100.0	2.816901408450704	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eisenbergiella	Eisenbergiella tayi
+DA_MAG_00061	3243871	66	68739	51.16769751198746	95.77464788732394	0.0	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelotrichaceae	Holdemania	
+DA_MAG_00062	2912566	133	31119	49.62062657983914	94.36619718309859	7.042253521126761	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Roseburia	Roseburia hominis
+DA_MAG_00063	1703467	157	15327	36.72274123431825	88.73239436619718	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	Eubacterium	Eubacterium sp000434995
+DA_MAG_00064	2803316	259	15965	48.608843339540506	95.77464788732394	2.816901408450704	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CAG-81	
+DA_MAG_00065	2738280	52	86245	45.86259985077594	97.1830985915493	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Sellimonas	Sellimonas intestinalis
+DA_MAG_00066	2963722	309	12399	60.72721005798118	91.54929577464789	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Lawsonibacter	Lawsonibacter asaccharolyticus
+DA_MAG_00067	2502187	166	21372	46.843989813125745	97.1830985915493	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CAG-45	CAG-45 sp000438375
+DA_MAG_00068	3025935	92	61355	44.280793055509726	95.77464788732394	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Dorea	Dorea sp900066765
+DA_MAG_00069	2075174	196	13176	51.820781342672774	94.36619718309859	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Ruminococcus	Ruminococcus callidus
+DA_MAG_00070	2380756	69	84401	34.07340501691844	92.95774647887323	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium	
+DA_MAG_00071	2941828	119	39213	37.74354672436292	92.95774647887323	1.408450704225352	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelotrichaceae	Longicatena	Longicatena caecimuris
+DA_MAG_00072	2787663	130	48193	55.948793065281066	100.0	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	ER4	ER4 sp000765235
+DA_MAG_00073	2534317	276	11921	27.425723484036446	94.36619718309859	2.816901408450704	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Peptostreptococcaceae	Terrisporobacter	Terrisporobacter othiniensis
+DA_MAG_00074	1941738	76	42402	60.23763778159235	81.69014084507042	1.408450704225352	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	CAG-83	CAG-83 sp000431575
+DA_MAG_00075	2169706	81	46035	60.9936968172757	92.95774647887323	2.816901408450704	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	CAG-83	CAG-83 sp900552475
+DA_MAG_00076	1885703	98	34541	27.910582942285107	88.73239436619718	5.633802816901408	Bacteria	Firmicutes	Clostridia	TANB77	CAG-508	CAG-269	CAG-269 sp000431335
+DA_MAG_00077	3225551	48	106791	65.3369007772215	97.1830985915493	0.0	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Eggerthellaceae		
+DA_MAG_00078	2356473	36	100607	43.72762848019845	84.50704225352112	1.408450704225352	Bacteria	Firmicutes	Negativicutes	Acidaminococcales	Acidaminococcaceae	Phascolarctobacterium	
+DA_MAG_00079	2067529	123	26762	59.96485705071566	83.09859154929578	2.816901408450704	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	CAG-83	
+DA_MAG_00080	5198379	165	46666	43.39602751839564	88.73239436619718	5.633802816901408	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Bacteroides	Bacteroides fragilis
+DA_MAG_00081	2755768	185	20985	49.4489042329748	91.54929577464789	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UBA9502	
+DA_MAG_00082	2647445	252	15238	43.52936268224824	91.54929577464789	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Coprococcus	
+DA_MAG_00083	2629650	206	16087	58.792793184536905	90.14084507042253	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	UBA9475	UBA9475 sp900549885
+DA_MAG_00084	1594026	45	64249	26.837644112953683	87.32394366197182	5.633802816901408	Bacteria	Firmicutes	Clostridia	TANB77	CAG-508	CAG-354	CAG-354 sp900552655
+DA_MAG_00085	2633496	290	11646	49.54821851037092	88.73239436619718	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UBA7160	UBA7160 sp002491565
+DA_MAG_00086	2609642	161	24426	43.240689957611394	85.91549295774648	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Ruminococcus	Ruminococcus gnavus
+DA_MAG_00087	1205905	42	39619	26.993552626273114	84.50704225352112	5.633802816901408	Bacteria	Firmicutes	Bacilli	RF39	CAG-1000	CAG-776	CAG-776 sp900549285
+DA_MAG_00088	2397940	104	35970	49.346555466953426	94.36619718309859	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Clostridium	Clostridium sp003024715
+DA_MAG_00089	1246301	143	10794	26.542359680155116	83.09859154929578	2.816901408450704	Bacteria	Firmicutes	Clostridia	TANB77	CAG-508	CAG-269	
+DA_MAG_00090	2584937	298	10615	59.637608358481145	81.69014084507042	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Neobitarella	Neobitarella massiliensis
+DA_MAG_00091	1788702	86	33434	53.38741939743823	85.91549295774648	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	F23-B02	F23-B02 sp001916715
+DA_MAG_00092	2349951	86	37177	41.67255248920276	83.09859154929578	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Mediterraneibacter	Mediterraneibacter torques
+DA_MAG_00093	1716875	254	8543	43.445077983114174	95.77464788732394	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Bariatricus	Bariatricus comes
+DA_MAG_00094	1434347	64	38906	27.438013036337704	88.73239436619718	0.0	Bacteria	Firmicutes	Bacilli	RF39	CAG-1000	CAG-628	CAG-628 sp000438415
+DA_MAG_00095	2082311	64	54792	33.1231831690085	77.46478873239437	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium	Eubacterium sp000435815
+DA_MAG_00096	2333834	80	41975	43.171872467473236	83.09859154929578	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Dorea	Dorea sp900066555
+DA_MAG_00097	1321630	42	49847	30.073555002696402	88.73239436619718	0.0	Bacteria	Firmicutes	Clostridia	TANB77	CAG-508	CAG-245	CAG-245 sp000435175
+DA_MAG_00098	2782635	282	16227	63.96227966607469	85.91549295774648	0.0	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Eggerthellaceae	Eggerthella	Eggerthella lenta
+DA_MAG_00099	2206610	142	24969	42.85794357773388	81.69014084507042	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Mediterraneibacter	Mediterraneibacter lactaris
+DA_MAG_00100	2342219	267	10571	28.132102330048397	85.91549295774648	1.408450704225352	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelatoclostridiaceae	Erysipelatoclostridium	Erysipelatoclostridium spiroforme
+DA_MAG_00101	2555835	146	25304	40.73512587176021	94.36619718309859	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CAG-303	CAG-303 sp000437755
+DA_MAG_00102	1529892	56	34762	28.31117136854242	80.28169014084507	8.450704225352112	Bacteria	Firmicutes	Clostridia	TANB77	CAG-508	CAG-269	CAG-269 sp900555615
+DA_MAG_00103	723828	21	56561	43.22986505620891	81.69014084507042	4.225352112676056	Bacteria	Patescibacteria	Saccharimonadia	Saccharimonadales	Saccharimonadaceae	TM7x	
+DA_MAG_00104	3229397	240	19536	30.860705862065185	80.28169014084507	5.633802816901408	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelatoclostridiaceae	Coprobacillus	Coprobacillus cateniformis
+DA_MAG_00105	3702473	311	18026	40.60297214101431	87.32394366197182	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae		
+DA_MAG_00106	2179653	260	10617	34.11365307662635	73.2394366197183	1.408450704225352	Bacteria	Firmicutes	Bacilli	Haloplasmatales	Turicibacteraceae	Turicibacter	Turicibacter sp001543345
+DA_MAG_00107	1151945	180	7803	26.89683826194205	87.32394366197182	4.225352112676056	Bacteria	Firmicutes	Bacilli	RF39	CAG-1000	CAG-460	CAG-460 sp900544625
+DA_MAG_00108	2657085	270	14324	39.45775688556253	87.32394366197182	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Faecalimonas	Faecalimonas nexilis
+DA_MAG_00109	1475184	247	6977	38.784169432963886	78.87323943661971	1.408450704225352	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	Ruminococcus	Ruminococcus sp003526955
+DA_MAG_00110	2897717	198	22588	57.92269966421024	84.50704225352112	2.816901408450704	Bacteria	Verrucomicrobiota	Verrucomicrobiae	Verrucomicrobiales	Akkermansiaceae	Akkermansia	Akkermansia muciniphila
+DA_MAG_00111	2290785	183	17917	40.849247842284996	70.4225352112676	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Mediterraneibacter	Mediterraneibacter faecis
+DA_MAG_00112	2523450	313	10633	43.04899891326877	88.73239436619718	7.042253521126761	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Roseburia	
+DA_MAG_00113	1286266	268	5075	55.77400254730286	80.28169014084507	1.408450704225352	Bacteria	Firmicutes	Clostridia	Oscillospirales	Butyricicoccaceae	Agathobaculum	Agathobaculum butyriciproducens
+DA_MAG_00114	1314011	233	6011	37.70602330259987	63.38028169014085	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnospira	
+DA_MAG_00115	1652325	292	6093	28.58750371937634	71.83098591549296	4.225352112676056	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Peptostreptococcaceae	Intestinibacter	
+DA_MAG_00116	2091517	68	50801	43.48041161916703	63.38028169014085	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Dorea	Dorea sp900240315
+DA_MAG_00117	2476040	216	15800	43.47258892180917	63.38028169014085	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	
+DA_MAG_00118	1814140	276	7516	46.024594834694476	84.50704225352112	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UBA7182	UBA7182 sp003480725
+DA_MAG_00119	2540321	393	7934	62.447762690168375	83.09859154929578	1.408450704225352	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Flavonifractor	
+DA_MAG_00120	2761891	110	35639	58.718131000707395	64.78873239436619	1.408450704225352	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	Alistipes finegoldii
+DA_MAG_00121	1537973	29	80203	47.816117315839094	84.50704225352112	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae		
+DA_MAG_00122	4762359	169	49807	42.132059481734196	69.01408450704226	5.633802816901408	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Phocaeicola	
+DA_MAG_00123	1599518	288	6117	60.616461567237124	76.05633802816901	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	SFJ001	SFJ001 sp004555865
+DA_MAG_00124	2293431	198	16639	64.86783209883532	76.05633802816901	8.450704225352112	Bacteria	Actinobacteriota	Actinomycetia	Actinomycetales	Actinomycetaceae	Pauljensenia	
+DA_MAG_00125	2985376	267	16332	27.88858311275499	61.971830985915496	1.408450704225352	Bacteria	Firmicutes	Clostridia	Clostridiales	Clostridiaceae	Clostridium	Clostridium saudiense
+DA_MAG_00126	2684337	137	28253	34.07597191533618	57.74647887323944	1.408450704225352	Bacteria	Firmicutes	Bacilli	Haloplasmatales	Turicibacteraceae	Turicibacter	Turicibacter sanguinis
+DA_MAG_00127	2629149	154	28491	35.35057867076236	57.74647887323944	8.450704225352112	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnospira	Lachnospira sp000436475
+DA_MAG_00128	1227977	45	44376	61.555444033401784	61.971830985915496	4.225352112676056	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	CAG-83	

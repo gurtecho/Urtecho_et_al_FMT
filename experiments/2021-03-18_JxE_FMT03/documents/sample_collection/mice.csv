@@ -1,0 +1,17 @@
+﻿mouse_type,mouse_num,mark,norm_cage,tx_cage
+jax,J1,none,J1,JC1
+jax,J2,black,J1,JC1
+jax,J3,red,J1,JC2
+jax,J4,green,J1,JC2
+jax,J5,none,J2,JE1
+jax,J6,black,J2,JE2
+jax,J7,red,J2,JE3
+jax,J8,green,J2,JE4
+envigo,E1,none,E1,EC1
+envigo,E2,black,E1,EC1
+envigo,E3,red,E1,EC2
+envigo,E4,green,E1,EC2
+envigo,E5,none,E2,JE1
+envigo,E6,black,E2,JE2
+envigo,E7,red,E2,JE3
+envigo,E8,green,E2,JE4

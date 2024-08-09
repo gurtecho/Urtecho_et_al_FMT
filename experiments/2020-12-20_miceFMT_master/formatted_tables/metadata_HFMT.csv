@@ -1,0 +1,10 @@
+﻿mouse_num,humanized_type,group,join_hack,species
+c1m1,H1,H1_H3,A,mouse
+c1m2,H1,H1_H5,A,mouse
+c1m3,H1,H1_CTRL,A,mouse
+c3m1,H3,H1_H3,A,mouse
+c3m2,H3,H3_H5,A,mouse
+c3m3,H3,H3_CTRL,A,mouse
+c5m1,H5,H1_H5,A,mouse
+c5m2,H5,H3_H5,A,mouse
+c5m3,H5,H5_CTRL,A,mouse

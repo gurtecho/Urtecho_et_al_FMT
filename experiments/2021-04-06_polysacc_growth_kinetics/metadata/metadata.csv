@@ -1,0 +1,61 @@
+﻿well,polysacc,sample,sample_type,sample_day,sample_dilution
+B02,water,jxe.067,jax_control,2,1
+B03,arabinogalactan,jxe.067,jax_control,2,1
+B04,pectin,jxe.067,jax_control,2,1
+B05,pectic galactan,jxe.067,jax_control,2,1
+B06,cellobiose,jxe.067,jax_control,2,1
+B07,arabinan,jxe.067,jax_control,2,1
+B08,inulin,jxe.067,jax_control,2,1
+B09,dextran,jxe.067,jax_control,2,1
+B10,arabinose,jxe.067,jax_control,2,1
+B11,mcf,jxe.067,jax_control,2,1
+C02,water,jxe.067,jax_control,2,0.1
+C03,arabinogalactan,jxe.067,jax_control,2,0.1
+C04,pectin,jxe.067,jax_control,2,0.1
+C05,pectic galactan,jxe.067,jax_control,2,0.1
+C06,cellobiose,jxe.067,jax_control,2,0.1
+C07,arabinan,jxe.067,jax_control,2,0.1
+C08,inulin,jxe.067,jax_control,2,0.1
+C09,dextran,jxe.067,jax_control,2,0.1
+C10,arabinose,jxe.067,jax_control,2,0.1
+C11,mcf,jxe.067,jax_control,2,0.1
+D02,water,jxe.067,jax_control,2,0.01
+D03,arabinogalactan,jxe.067,jax_control,2,0.01
+D04,pectin,jxe.067,jax_control,2,0.01
+D05,pectic galactan,jxe.067,jax_control,2,0.01
+D06,cellobiose,jxe.067,jax_control,2,0.01
+D07,arabinan,jxe.067,jax_control,2,0.01
+D08,inulin,jxe.067,jax_control,2,0.01
+D09,dextran,jxe.067,jax_control,2,0.01
+D10,arabinose,jxe.067,jax_control,2,0.01
+D11,mcf,jxe.067,jax_control,2,0.01
+E02,water,jxe.070,envigo_control,2,1
+E03,arabinogalactan,jxe.070,envigo_control,2,1
+E04,pectin,jxe.070,envigo_control,2,1
+E05,pectic galactan,jxe.070,envigo_control,2,1
+E06,cellobiose,jxe.070,envigo_control,2,1
+E07,arabinan,jxe.070,envigo_control,2,1
+E08,inulin,jxe.070,envigo_control,2,1
+E09,dextran,jxe.070,envigo_control,2,1
+E10,arabinose,jxe.070,envigo_control,2,1
+E11,mcf,jxe.070,envigo_control,2,1
+F02,water,jxe.070,envigo_control,2,0.1
+F03,arabinogalactan,jxe.070,envigo_control,2,0.1
+F04,pectin,jxe.070,envigo_control,2,0.1
+F05,pectic galactan,jxe.070,envigo_control,2,0.1
+F06,cellobiose,jxe.070,envigo_control,2,0.1
+F07,arabinan,jxe.070,envigo_control,2,0.1
+F08,inulin,jxe.070,envigo_control,2,0.1
+F09,dextran,jxe.070,envigo_control,2,0.1
+F10,arabinose,jxe.070,envigo_control,2,0.1
+F11,mcf,jxe.070,envigo_control,2,0.1
+G02,water,jxe.070,envigo_control,2,0.01
+G03,arabinogalactan,jxe.070,envigo_control,2,0.01
+G04,pectin,jxe.070,envigo_control,2,0.01
+G05,pectic galactan,jxe.070,envigo_control,2,0.01
+G06,cellobiose,jxe.070,envigo_control,2,0.01
+G07,arabinan,jxe.070,envigo_control,2,0.01
+G08,inulin,jxe.070,envigo_control,2,0.01
+G09,dextran,jxe.070,envigo_control,2,0.01
+G10,arabinose,jxe.070,envigo_control,2,0.01
+G11,mcf,jxe.070,envigo_control,2,0.01

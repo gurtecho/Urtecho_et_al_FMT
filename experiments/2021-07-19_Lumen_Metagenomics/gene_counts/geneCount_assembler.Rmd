@@ -1,0 +1,169 @@
+---
+title: "ReadCount_Processing"
+output: html_document
+date: "2023-01-25"
+---
+
+```{r setup, include=FALSE}
+setwd("~/Dropbox/fmt/experiments/2021-07-19_Lumen_Metagenomics/gene_counts/")
+library(tidyverse)
+  Sys.setenv('R_MAX_VSIZE'=32000000000)
+```
+
+
+
+#Pre-fmt processing
+```{r, include = FALSE, warning=FALSE}
+# read in barcode count files
+filelist = list.files(path = 'pre_counts',
+                      pattern = '*',
+                      full.names = F)
+
+sample_names <- filelist %>% as.data.frame %>% 
+  mutate(sample_names = gsub('pre_counts/', '',.)) %>%
+  separate(., sample_names, into = c('sample_names', 'fat'), sep = '_S') %>% select(sample_names)
+
+
+#Read in dataframes
+for(i in seq(1:length(filelist))) {
+    sample_name <- sample_names$sample_names[i]
+    x <- read.csv(filelist[i], col.names=c('gene', sample_name), header = F)
+    #x <- subset(x, x[,1] > 1)   #Filter out barcodes with only one read in sample, already done in barcode_counts
+    names(x) <- c(sample_name, "gene")
+    assign(sample_name, x)
+    names(sample_name)
+}
+
+
+```
+
+
+
+```{r}
+#List all dataframes
+count_list <- lapply(ls(pattern=".csv"), function(x) get(x))
+
+
+```
+
+
+
+
+Merge Dataframes
+```{r}
+
+
+#List all dataframes
+count_list <- lapply(ls(pattern="A"), function(x) get(x))
+
+temp <- count_list[1] %>% as.data.frame()
+
+for (i in (2:5)) {
+  print(paste('DF #' , i))
+     merge_df <- count_list[i] %>% as.data.frame()
+     temp <- full_join(temp, merge_df)
+}
+A_counts <- temp
+
+(`F1-S38.csv`)
+
+#Merge dataframes
+A_counts <-  count_list %>% 
+          purrr::reduce(full_join, by = "gene") %>% 
+          do.call(data.frame, .) 
+
+#List all dataframes
+count_list <- lapply(ls(pattern="B"), function(x) get(x))
+
+#Merge dataframes
+B_counts <-  count_list %>% 
+          purrr::reduce(full_join, by = "gene") %>% 
+          do.call(data.frame, .) 
+
+#List all dataframes
+count_list <- lapply(ls(pattern="C"), function(x) get(x))
+
+#Merge dataframes
+C_counts <-  count_list %>% 
+          purrr::reduce(full_join, by = "gene") %>% 
+          do.call(data.frame, .) 
+
+
+#List all dataframes
+count_list <- lapply(ls(pattern="D"), function(x) get(x))
+
+#Merge dataframes
+D_counts <-  count_list %>% 
+          purrr::reduce(full_join, by = "gene") %>% 
+          do.call(data.frame, .) 
+
+#List all dataframes
+count_list <- lapply(ls(pattern="E"), function(x) get(x))
+
+#Merge dataframes
+E_counts <-  count_list %>% 
+          purrr::reduce(full_join, by = "gene") %>% 
+          do.call(data.frame, .) 
+
+#List all dataframes
+count_list <- lapply(ls(pattern="F"), function(x) get(x))
+
+#Merge dataframes
+F_counts <-  count_list %>% 
+          purrr::reduce(full_join, by = "gene") %>% 
+          do.call(data.frame, .) 
+
+#List all dataframes
+count_list <- lapply(ls(pattern="G"), function(x) get(x))
+
+#Merge dataframes
+G_counts <-  count_list %>% 
+          purrr::reduce(full_join, by = "gene") %>% 
+          do.call(data.frame, .) 
+
+#List all dataframes
+count_list <- lapply(ls(pattern="H"), function(x) get(x))
+
+#Merge dataframes
+H_counts <-  count_list %>% 
+          purrr::reduce(full_join, by = "gene") %>% 
+          do.call(data.frame, .) 
+
+
+
+
+
+#correct name
+names(all_counts) <- gsub(x = names(all_counts), pattern = "\\.", replacement = "_")  
+
+
+#correct name
+names(all_counts) <- gsub(x = names(all_counts), pattern = "\\.", replacement = "_")  
+
+
+
+
+
+
+print(paste("Number of unique sequenced barcodes, all replicates in DNA and RNA:", nrow(all_counts)))
+
+# remove individual sample files
+rm(list = sample_names$sample_names)
+rm(count_list)
+
+all_counts <- all_counts %>% replace(is.na(.), 0)
+ 
+
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

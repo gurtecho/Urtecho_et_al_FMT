@@ -1,0 +1,291 @@
+---
+title: "PlayWithClustering_mapsseq"
+output: html_document
+date: "2023-08-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#install.packages(c("cluster", "gplots", "factoextra"))
+library(tidyverse)
+library(ggplot2)
+library(cluster) # for pam and clara
+library(factoextra)
+library(reshape2)
+library(viridis)
+
+#Function to Convert to a pseudo log scale to wherein negative values may be "logged" i.e. log2(-8) = -3:
+
+log2_signed <- function(x) {
+  sign(x) * log2(abs(x))  # adding 1 to handle zero values, remove it if not needed
+}
+
+CorrectedData <- data.table::fread("~/Dropbox/fmt/experiments/20230516_FMT_MaPS-Seq2/20230823_MaPSFMT_redo_ProcessingScripts/ProcessedResults/20230823_CorrectedDataFrame.csv") %>% 
+                separate(col = Sample,     #split into column
+                       into = c('date', 'MouseGroup', 'Mouse_num', 'replicate'),
+                       sep = '-', remove = F) %>% 
+                select(-date)  #remove unnecessary date file
+
+```
+Find OTUs to keep
+```{r}
+
+# Assuming J, E, JEE, JEJ are vectors/lists you want to iterate over. 
+groups <- c("J", "E", "JEE", "JEJ")
+
+# Create a list to hold the results for each group
+otus_to_keep_list <- list()
+
+for (group_name in groups) {
+  temp <- CorrectedData %>% 
+    filter(MouseGroup == group_name) %>%
+    select(OTU, Count) %>%
+    group_by(OTU) %>%
+    mutate(OTU_Count = sum(Count)) %>%
+    ungroup() %>%
+    select(-Count) %>%
+    distinct() %>%
+    mutate(OTU_relabd = (OTU_Count / sum(OTU_Count)) * 100) %>%
+    filter(OTU_relabd > 0.2) %>%
+    select(OTU) %>%
+    distinct()
+
+  print(paste("# OTUs in", group_name, ":", nrow(temp)))
+  
+  otus_to_keep_list[[group_name]] <- unique(temp$OTU)
+}
+
+# If you want to access the result for a particular group, say 'E':
+result_for_E <- otus_to_keep_list[["E"]]
+
+```
+
+Load in data
+```{r}
+
+samples <- c('J','E','JEJ', 'JEE')
+
+group <- samples[1]
+
+PrevalentSet <-
+  rbind(
+  read.csv(
+     paste("../experiments/20230516_FMT_MaPS-Seq2/processed_data/PrevalentSet_noclust1_",group, ".csv", sep = '')) %>%
+        filter(OTU1 %in% otus_to_keep_list[[group]] & OTU2 %in% otus_to_keep_list[[group]]) %>%
+    #filter(Order_OTU1 == 'Bacteroidia' | Order_OTU1 == 'Clostridia') %>%
+    select(OTU1ColorName, OTU2ColorName, Zscore, Significant, Class_OTU1, Order_OTU1) %>% distinct(),
+     read.csv(
+       paste("../experiments/20230516_FMT_MaPS-Seq2/processed_data/PrevalentSet_noclust1_",group, ".csv", sep = '')) %>%
+            filter(OTU1 %in% otus_to_keep_list[[group]] & OTU2 %in% otus_to_keep_list[[group]]) %>%
+    #filter(Order_OTU2 == 'Bacteroidia'  | Order_OTU2 == 'Clostridia') %>%
+    select(OTU1ColorName, OTU2ColorName, Zscore, Significant, Class_OTU2, Order_OTU2) %>% distinct() %>%
+   rename(c("OTU1ColorName"="OTU2ColorName", "OTU2ColorName"="OTU1ColorName", "Class_OTU1"="Class_OTU2", "Order_OTU1"="Order_OTU2"))) %>%
+  mutate(Zscore = ifelse(is.infinite(Zscore), max(Zscore[!is.infinite(Zscore)], na.rm = TRUE), Zscore)) %>% ungroup() %>% mutate(Zscore = log2_signed(Zscore))
+
+
+temp <- read.csv("../misc/bugColors_MapsSeq.csv")
+bugColors<- setNames(c(scales::hue_pal()(length(unique(temp$X)))), c(levels(as.factor(temp$X)))) 
+
+PrevalentSet.cast <- PrevalentSet %>%
+  filter(OTU1ColorName != 'NA') %>% 
+  select(OTU1ColorName, OTU2ColorName, Zscore) %>% distinct() %>% 
+  reshape2::dcast(OTU1ColorName~OTU2ColorName)
+
+#clustering
+data <- as.matrix(PrevalentSet.cast[, -c(1)])
+data[is.na(data) | is.nan(data) | is.infinite(data)] <- 0
+
+
+```
+
+
+use chat gtp code
+
+This script uses ggplot2 to generate the heatmaps, and the data is manipulated using tidyverse functions for ease of use. The data is first converted to a tibble, then for each clustering method and number of clusters, the data rows are rearranged based on cluster assignments. The data is then transformed into a long format suitable for ggplot2. The generated heatmap is saved for each combination of clustering method and cluster number.
+
+```{r}
+
+
+# Define a function to reorder matrix rows and columns based on clustering
+reorder_matrix <- function(data, method){
+  if(method == "ward.D2"){
+    order <- cutree(hclust(dist(data), method="ward.D2"), h=0.5*max(hclust(dist(data), method="ward.D2")$height))
+  } else if(method == "kmeans"){
+    order <- kmeans(data, centers=4, nstart=10)$cluster
+  } else if(method == "pam"){
+    order <- pam(dist(data), k=4)$clustering
+  } else if(method == "clara"){
+    order <- clara(data, k=4)$clustering
+  } 
+  return(order)
+}
+
+# Define the methods to test
+methods <- c("ward.D2", "kmeans", "pam", "clara")
+
+# Loop through the methods
+for (method_name in methods) {
+  
+  # Get reordered matrix
+  order <- reorder_matrix(data, method_name)
+  reordered_data <- data[order, order]
+  
+  # Convert the reordered data to long format for ggplot2 heatmap
+  long_data <- melt(reordered_data)
+  
+  # Plot heatmap
+  plot <- ggplot(long_data, aes(x=Var2, y=Var1, fill=value)) + 
+    geom_tile() +
+    scale_fill_gradient2(low="blue", high="darkred",midpoint = 0) +
+    labs(title=paste0("Heatmap using ", method_name)) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  # Save the plot
+  ggsave(filename=paste0('../figs/fig5/clusterTests/', method_name, "_heatmap.png"), plot=plot, width=10, height=8)
+}
+
+
+
+print("Heatmap generation done!")
+
+```
+
+
+2nd attempt
+```{r}
+
+# Define a function to reorder matrix rows and columns based on dendrogram order
+reorder_matrix <- function(data, method){
+  
+  # Compute hierarchical clustering
+  hc <- hclust(dist(data), method=method)
+  
+  # Return order of observations from the dendrogram
+  return(hc$order)
+}
+
+# Define the methods to test
+methods <- c("ward.D2", "average", "single", "complete")
+
+# Loop through the methods
+for (method_name in methods) {
+  
+  # Get reordered matrix
+  order <- reorder_matrix(data, method_name)
+  reordered_data <- data[order, order]
+  
+  # Convert the reordered data to long format for ggplot2 heatmap
+  long_data <- melt(reordered_data)
+  
+  # Plot heatmap
+  plot <- ggplot(long_data, aes(x=Var2, y=Var1, fill=value)) + 
+    geom_tile() +
+    scale_fill_viridis_c(midpoint = 0) +
+    labs(title=paste0("Heatmap using ", method_name, " linkage")) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  # Save the plot
+  ggsave(filename=paste0('../figs/fig5/clusterTests/', method_name, "_heatmap.png"), plot=plot, width=10, height=8)
+}
+    
+
+```
+
+
+
+The miles way
+```{r}
+
+PrevalentSet.cast.matrix <- data
+  disttest <- dist(sqrt(2*(1-as.matrix(cor(PrevalentSet.cast.matrix)))))
+  # cluster
+  clustres <- hclust(disttest,"ward.D2")
+
+PrevalentSet.cast$order <- clustres$order
+
+PrevalentSet.cast.long <- reshape2::melt(PrevalentSet.cast, id = c("OTU1ColorName", "order")) %>% distinct()
+
+#reorder
+#PrevalentSet.cast.order <- order.dendrogram(PrevalentSet.cast.dendro)
+PrevalentSet.cast.long$OTU1ColorName <- factor(x = PrevalentSet.cast.long$OTU1ColorName,
+                               levels = PrevalentSet.cast$OTU1ColorName[PrevalentSet.cast$order], 
+                               ordered = TRUE)
+
+temp <- PrevalentSet.cast.long %>% 
+          select(OTU1ColorName, OTU2ColorName=variable, Zscore = 'value') %>% 
+          left_join(., 
+            (PrevalentSet %>% 
+               select(OTU1ColorName, OTU2ColorName, Significant, 
+                      Order_OTU1)), 
+            by = c("OTU1ColorName", "OTU2ColorName")) %>% 
+          left_join(., select(PrevalentSets, OTU1, OTU1ColorName)) %>% distinct() %>%
+          left_join(., select(otumapping, OTU1=OTU, log2FoldChange, emergence)) %>% distinct() %>%
+    mutate(Zscore = replace_na(Zscore, 0))
+
+ordered_OTU1_names <- rownames(PrevalentSet.cast.matrix)[PrevalentSet.cast$order]
+print(ordered_OTU1_names)
+
+# Assuming ordered_otu1_names is a list of vectors
+#extracted_list <- lapply(ordered_OTU1_names, function(x) str_extract(x, "(?<=>)[^<]+"))
+
+# Convert the list to a data frame
+#df <- data.frame(OTU = unlist(extracted_list))
+
+# Add the 'group' column. Assuming the group variable is already defined.
+#df$MouseGroup <- group
+
+# Write to CSV
+#write.csv(df, paste("../tables/dendrogram_order_", group, ".csv", sep = ''), row.names = FALSE)
+
+
+
+y_min <- round(min(temp$Zscore, na.rm = T),digits = -1)
+y_max <- round(max(temp$Zscore, na.rm = T),digits = -1)
+
+clustr <- temp %>% 
+                 ggplot(aes(x = OTU1ColorName, y = OTU2ColorName, fill = Zscore)) +
+  geom_tile(color = 'white') +
+  scale_fill_gradient2(low="blue", high="darkred",midpoint = 0, breaks = seq(y_min, y_max, by = (y_max-y_min)/5)) + #,limits=c(-.5,.5)) +
+  theme_cowplot() +
+  scale_y_discrete(limits = rev(PrevalentSet.cast.long$OTU1ColorName[PrevalentSet.cast$order])) +
+  scale_x_discrete(limits = rev(PrevalentSet.cast.long$OTU1ColorName[PrevalentSet.cast$order])) +
+  theme(
+    axis.text.x = ggtext::element_markdown(angle = 90, vjust = 0.35, hjust=1, size = 10),
+    axis.text.y = ggtext::element_markdown()) +
+  labs(fill = "Co-Assoc.\nScore")  +
+  xlab("OTU X") +
+  ylab("OTU Y") +
+  geom_point(data=function(x){x[temp$Significant == TRUE, ]},size=.3,color="black", fill = 'black')
+    #geom_point(data=function(x){x[temp$Significant == TRUE & temp$Zscore > 0, ]},
+    #           size=.6,color="black", fill = 'black', shape = 16) +
+    #geom_point(data=function(x){x[temp$Significant == TRUE & temp$Zscore < 0, ]},
+    #           size=.6,color="black", fill = 'black', shape = 17)
+
+  
+```
+
+
+```{r}
+
+
+library(dendextend)
+
+data <- disttest 
+
+hc <- hclust(data, method = "ward.D2")
+
+# Convert the hierarchical clustering result to a dendrogram
+dend <- as.dendrogram(hc)
+
+# Cut the dendrogram into 4 clusters
+clusters <- cutree(hc, k = 4)
+
+# Color branches by cluster assignment
+dend_colored <- color_branches(dend)
+
+# Plot the colored dendrogram
+plot(dend_colored)
+```

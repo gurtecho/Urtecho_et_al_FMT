@@ -1,0 +1,73 @@
+---
+title: "Absolute Abundance Barplot"
+author: "Thomas Moody"
+date: "1/11/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "~/Dropbox/projects/fmt/experiments/2021-12-22_JvEPolysaccharideScreen")
+```
+
+```{r}
+library(tidyverse)
+library(RColorBrewer)
+```
+
+```{r}
+rm(list = ls())
+tidy.zotu <- read_csv("data/tidy_zotu.csv")
+```
+
+```{r}
+tidy.zotu %>%
+  filter(rel_ab >= .01) %>%
+  group_by(seqid, order, mouse_type, polysacc) %>%
+  summarise(abs_ab = sum(abs_ab)) %>%
+  group_by(order, mouse_type, polysacc) %>%
+  summarise(mean_abs_ab = mean(abs_ab)) %>%
+  ggplot() +
+    geom_bar(aes(x = mouse_type, y = mean_abs_ab, fill = order), stat = "identity") +
+    facet_grid(.~polysacc, space = "free", scale = "free_x")
+  
+```
+
+
+
+```{r}
+tidy.zotu %>%
+  filter(rel_ab >= .01) %>%
+  filter(order == "Bacteroidales") %>%
+  group_by(seqid, family, mouse_type, polysacc) %>%
+  summarise(abs_ab = sum(abs_ab)) %>%
+  group_by(family, mouse_type, polysacc) %>%
+  summarise(mean_abs_ab = mean(abs_ab)) %>%
+  ggplot() +
+    geom_bar(aes(x = mouse_type, y = mean_abs_ab, fill = family), stat = "identity") +
+    facet_grid(.~polysacc, space = "free", scale = "free_x")
+```
+
+
+```{r}
+tidy.zotu %>%
+  filter(rel_ab >= .01) %>%
+  filter(family == "Bacteroidaceae") %>%
+  group_by(seqid, genus, mouse_type, polysacc) %>%
+  summarise(abs_ab = sum(abs_ab)) %>%
+  group_by(genus, mouse_type, polysacc) %>%
+  summarise(mean_abs_ab = mean(abs_ab)) %>%
+  ggplot() +
+    geom_bar(aes(x = mouse_type, y = mean_abs_ab, fill = genus), stat = "identity") +
+    facet_grid(.~polysacc, space = "free", scale = "free_x")
+```
+```{r}
+tidy.zotu %>%
+  filter(rel_ab >= .01) %>%
+  #filter(family == "Bacteroidaceae") %>%
+  group_by(seqid, polysacc) %>%
+  summarise(num_zotus = n()) %>%
+  ggplot() +
+  geom_histogram(aes(x = num_zotus), binwidth = 1)
+  
+```

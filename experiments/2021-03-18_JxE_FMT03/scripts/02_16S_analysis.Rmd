@@ -1,0 +1,19 @@
+---
+title: "Untitled"
+author: "Thomas Moody"
+date: "5/10/2021"
+output: html_document
+---
+
+## Loading Libraries
+```{r, message=FALSE}
+library(tidyverse)
+```
+
+
+## Loading Data
+```{r}
+tax <- read_csv("../data/tax.csv")
+```
+
+

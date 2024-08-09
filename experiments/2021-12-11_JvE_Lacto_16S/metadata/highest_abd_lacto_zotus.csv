@@ -1,0 +1,12 @@
+seqid,ZOTU,rel_ab,mouse_type,blast_hit
+lac.001,Otu46,0.93331588,EC,Lactobacillus apodemi
+lac.002,Otu10,0.98855537,EC,Lactobacillus gasseri
+lac.003,Otu3,0.831361199,EC,Lactobacillus gasseri
+lac.004,Otu3,0.832925253,EC,Lactobacillus apodemi
+lac.005,Otu3,0.023828435,EC,Lactobacillus apodemi
+lac.005,Otu46,0.700555997,EC,Lactobacillus apodemi
+lac.006,Otu3,0.744589672,EC,Lactobacillus apodemi
+lac.007,Otu3,0.727558505,EC,Lactobacillus reuteri
+lac.008,Otu46,0.974607305,EC,Lactobacillus reuteri
+lac.009,Otu10,0.956263757,JC,Lactobacillus reuteri
+lac.010,Otu10,0.961598339,JC,Lactobacillus reuteri

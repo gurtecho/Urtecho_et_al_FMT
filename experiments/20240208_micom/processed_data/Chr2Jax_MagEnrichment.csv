@@ -1,0 +1,19 @@
+assembly,mouse,d0_abundance,d5_abundance,log2fold_change,shift,domain,phylum,class,order,family,genus,species
+AZC9C_25,J1.2,0.0013237215601191,0.00172870947042992,0.385095739257273,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,UBA7173,GCA_002491305.1
+AZC9C_32,J1.2,0.0000806983612696184,0.000100790657803742,0.320750640611056,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Bacteroidaceae,Bacteroides,Bacteroides stercorirosoris
+AZC9C_40,J1.2,0.000785173244785477,0.00100481300339195,0.355844121413687,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,CAG-873,NA
+AZC9C_46,J1.2,0.0000236558605800753,0.0000289398918446387,0.290861884358081,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,CAG-1031,NA
+AZC9C_68,J1.2,0.00258050206795842,0.00353266265965589,0.453104203481211,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,Homeothermus,GCA_002358615.1
+AZC9C_6,J1.2,0.00195370564861685,0.00244881381370893,0.325869965467148,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,Homeothermus,GCA_002492595.1
+AZC9C_75,J1.2,0.0000498283020729245,0.0000914101411368587,0.875388814038119,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Bacteroidaceae,Bacteroides,Bacteroides congonensis
+AZC9C_7,J1.2,0.0131058500775442,0.017943730870981,0.453268954003706,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,CAG-485,CAG-485 sp1
+AZC9C_88,J1.2,0.000796749516984237,0.000996729792221556,0.323076211811816,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,CAG-873,NA
+AZC9C_25,J2.4,0.00152928990695555,0.00182669782129728,0.256376074253025,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,UBA7173,GCA_002491305.1
+AZC9C_32,J2.4,0.0000736694735984743,0.000467546754675468,2.66597180264923,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Bacteroidaceae,Bacteroides,Bacteroides stercorirosoris
+AZC9C_40,J2.4,0.00100246192431196,0.00161751023587207,0.690227400839459,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,CAG-873,NA
+AZC9C_46,J2.4,0.0000262213380604739,0.0000541720838750542,1.04680828165197,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,CAG-1031,NA
+AZC9C_68,J2.4,0.00345074729852984,0.00321289704728049,-0.103034075289092,depleted,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,Homeothermus,GCA_002358615.1
+AZC9C_6,J2.4,0.0023231337130721,0.0311195513490743,3.74367716198685,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,Homeothermus,GCA_002492595.1
+AZC9C_75,J2.4,0.0000586858518496321,0.00209210314970891,5.15579743792905,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Bacteroidaceae,Bacteroides,Bacteroides congonensis
+AZC9C_7,J2.4,0.0192431964752375,0.0102036718823397,-0.915260051866395,depleted,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,CAG-485,CAG-485 sp1
+AZC9C_88,J2.4,0.000880671973173938,0.00144105319622871,0.710446934454075,enriched,Bacteria,Bacteroidota,Bacteroidia,Bacteroidales,Muribaculaceae,CAG-873,NA

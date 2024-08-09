@@ -1,0 +1,41 @@
+﻿seqid,sample,day,mouse,mouse_type,cage,tx_type,tx_group,sample_type,sample_type_order
+jxe01.001,J1d0,0,J1,Jackson,C1,control,J_cntrl,feces,4
+jxe01.002,J2d0,0,J2,Jackson,C1,control,J_cntrl,feces,4
+jxe01.003,E1d0,0,E1,Envigo,C2,control,E_cntrl,feces,4
+jxe01.004,E2d0,0,E2,Envigo,C2,control,E_cntrl,feces,4
+jxe01.005,J3d0,0,J3,Jackson,C3,2mix,JxE,feces,4
+jxe01.006,J4d0,0,J4,Jackson,C3,2mix,JxE,feces,4
+jxe01.007,E3d0,0,E3,Envigo,C3,2mix,JxE,feces,4
+jxe01.008,E4d0,0,E4,Envigo,C3,2mix,JxE,feces,4
+jxe01.009,J1si6,5,J1,Jackson,C1,control,J_cntrl,si6,1
+jxe01.010,J2si6,5,J2,Jackson,C1,control,J_cntrl,si6,1
+jxe01.011,J1cecum,5,J1,Jackson,C1,control,J_cntrl,cecum,2
+jxe01.012,J2cecum,5,J2,Jackson,C1,control,J_cntrl,cecum,2
+jxe01.013,J1distco,5,J1,Jackson,C1,control,J_cntrl,distal colon (co2),3
+jxe01.014,J2distco,5,J2,Jackson,C1,control,J_cntrl,distal colon (co2),3
+jxe01.015,J1feces,5,J1,Jackson,C1,control,J_cntrl,feces,4
+jxe01.016,J2feces,5,J2,Jackson,C1,control,J_cntrl,feces,4
+jxe01.017,E1si6,5,E1,Envigo,C2,control,E_cntrl,si6,1
+jxe01.018,E2si6,5,E2,Envigo,C2,control,E_cntrl,si6,1
+jxe01.019,E1cecum,5,E1,Envigo,C2,control,E_cntrl,cecum,2
+jxe01.020,E2cecum,5,E2,Envigo,C2,control,E_cntrl,cecum,2
+jxe01.021,E1distco,5,E1,Envigo,C2,control,E_cntrl,distal colon (co2),3
+jxe01.022,E2distco,5,E2,Envigo,C2,control,E_cntrl,distal colon (co2),3
+jxe01.023,E1feces,5,E1,Envigo,C2,control,E_cntrl,feces,4
+jxe01.024,E2feces,5,E2,Envigo,C2,control,E_cntrl,feces,4
+jxe01.025,J3si6,5,J3,Jackson,C3,2mix,JxE,si6,1
+jxe01.026,J4si6,5,J4,Jackson,C3,2mix,JxE,si6,1
+jxe01.027,E3si6,5,E3,Envigo,C3,2mix,JxE,si6,1
+jxe01.028,E4si6,5,E4,Envigo,C3,2mix,JxE,si6,1
+jxe01.029,J3cecum,5,J3,Jackson,C3,2mix,JxE,cecum,2
+jxe01.030,J4cecum,5,J4,Jackson,C3,2mix,JxE,cecum,2
+jxe01.031,E3cecum,5,E3,Envigo,C3,2mix,JxE,cecum,2
+jxe01.032,E4cecum,5,E4,Envigo,C3,2mix,JxE,cecum,2
+jxe01.033,J3distco,5,J3,Jackson,C3,2mix,JxE,distal colon (co2),3
+jxe01.034,J4distco,5,J4,Jackson,C3,2mix,JxE,distal colon (co2),3
+jxe01.035,E3distco,5,E3,Envigo,C3,2mix,JxE,distal colon (co2),3
+jxe01.036,E4distco,5,E4,Envigo,C3,2mix,JxE,distal colon (co2),3
+jxe01.037,J3feces,5,J3,Jackson,C3,2mix,JxE,feces,4
+jxe01.038,J4feces,5,J4,Jackson,C3,2mix,JxE,feces,4
+jxe01.039,E3feces,5,E3,Envigo,C3,2mix,JxE,feces,4
+jxe01.040,E4feces,5,E4,Envigo,C3,2mix,JxE,feces,4

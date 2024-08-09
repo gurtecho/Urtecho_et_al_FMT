@@ -1,0 +1,175 @@
+---
+title: "20240405_Anvio_CAZyme"
+output: html_document
+date: "2024-04-05"
+---
+
+```{r setup, include=FALSE}
+
+setwd("/Users/guillaumeurtecho/Dropbox/fmt/experiments/CAZyme_Eren/scripts")
+
+library(tidyverse)
+library(cowplot)
+library(reshape2)
+
+cazymes <- read.csv("../datasets/combined_cazymes_MAGs.csv")
+DonorA <- read.table("../datasets/colonized-DA.txt", header = T, sep = '\t') %>% mutate(outcome = 'colonized') %>% rbind(.,
+          read.table("../datasets/did-not-colonize-DA.txt", header = T) %>% mutate(outcome = 'nonColonized')) %>% distinct()
+
+tax <- read.table("../ref/bins_summary.txt", sep = '\t', header = T) %>% select(MAG=bins, t_family)
+
+```
+
+
+
+```{r}
+
+cz_count <- cazymes %>%  
+  filter(grepl('GH', function.)) %>% #add to filter by GH only
+group_by(MAG) %>% mutate(num_hits = n()) %>% ungroup %>%
+  select(MAG, num_hits, function.) %>% distinct() %>% group_by(MAG) %>% mutate(num_hits_unique = n()) %>% 
+  ungroup %>% select(MAG,num_hits, num_hits_unique) %>% distinct()
+  
+  
+temp <- DonorA %>% select(-recipient) %>% group_by(MAG) %>% mutate(num_records = n()) %>% ungroup %>%
+  group_by(MAG, outcome) %>% mutate(num_outcomes = n()) %>% ungroup() %>% 
+  mutate(num_success = ifelse(outcome == "colonized", num_outcomes, 0),
+         num_fails = ifelse(outcome == 'nonColonized', num_outcomes, 0)) %>%
+  select(MAG, num_records, num_success, num_fails) %>% distinct() %>%
+  group_by(MAG, num_records) %>% 
+  mutate(num_success = sum(num_success),
+         num_fails = sum(num_fails)) %>% distinct() %>% left_join(., cz_count) %>% mutate(prop_success = num_success/num_records) %>% ungroup
+
+#Find correlation
+df_subset <- temp[, c("num_records", "num_success", "num_fails", "num_hits", "num_hits_unique", "prop_success")]
+
+# Calculate correlation matrix
+cor_matrix <- cor(df_subset, use = "complete.obs") 
+
+# View the correlation matrix
+print(cor_matrix)
+
+
+# For a detailed correlation plot with corrplot package
+library(corrplot)
+# Enhanced correlation plot
+corrplot(cor_matrix, method = "color",
+         type = "upper", # Display only the upper triangle of the matrix
+         order = "hclust", # Cluster variables using hierarchical clustering
+         addCoef.col = "black", # Add correlation coefficients in black color
+         tl.col = "black", # Text label color
+         tl.srt = 45, # Text label rotation in degrees
+         # Customize color scale
+         col = colorRampPalette(c("#6D9EC1", "white", "#E46726"))(200),
+         title = "Correlation Matrix", # Add a title
+         cl.lim = c(-1, 1), # Set limits for the color scale
+         # Add a color legend
+         cl.cex = 0.75, # Size of the color legend
+         cl.ratio = 0.1, # Ratio of the color legend size
+         addrect = 2 # Add rectangles around clusters
+)
+```
+
+
+```{r}
+
+#plot different metrics
+plot <- temp %>% ggplot(., aes(as.factor(num_success), num_hits)) +
+  stat_boxplot(geom = 'errorbar', width = .15) +
+  geom_boxplot(outlier.shape = NA, width = .35) +
+  geom_jitter() + 
+  theme_cowplot() + 
+    theme(axis.text = element_text(size = 14),
+          axis.title = element_text(size = 14), legend.title = element_blank()) +
+  labs(x = '# Successful Engraftments', y = '# of Glycoside Hydrolase Genes')
+
+plot
+ggsave("../figs/GH_hitsVSEngraftmentSuccess_boxplot.pdf", width = 6, height = 3.5)
+
+
+
+
+#Check correlations
+cor.test(temp$num_success, temp$num_hits, method = "spearman")
+#p-value = 0.2624; rho -0.16
+
+#conclusion: the number of successful transfer events is not correlated with the number of CAZymes in the genome.
+pval <- cor.test(temp$prop_success, temp$num_hits, method = "pearson")$p.value
+rho <- cor.test(temp$prop_success, temp$num_hits, method = "spearman")$estimate
+
+temp %>% left_join(tax) %>% ggplot(., aes(prop_success, num_hits)) +
+  geom_point(aes(color = t_family)) + geom_smooth(method = 'lm') +
+    theme_cowplot() + 
+    theme(axis.text = element_text(size = 14),
+          axis.title = element_text(size = 14), legend.title = element_blank()) +
+  annotate(geom = 'text', x = .15, y = 90, label = paste("r = ", signif(rho, 2), "; p = ", signif(pval, 2), sep = ''), size = 5) +
+  labs(x = 'Proportion of Successful Engraftments', y = '# of Glycoside Hydrolase Genes')
+  
+ggsave("../figs/GH_hitsVSEngraftmentSuccess_scatter.pdf", width = 6, height = 3.5)
+
+  
+  
+
+
+
+
+```
+
+GTP stuff
+```{r}
+library(vegan)
+
+matrix <- cazymes %>% 
+    filter(grepl('GH', function.)) %>% #add to filter by GH only
+  select(MAG, function.,) %>% group_by(MAG, function.) %>% mutate(num_hits = n()) %>% ungroup %>%
+  dcast(MAG~function., value.var = 'num_hits') %>% column_to_rownames('MAG')
+
+# Diversity Analysis
+# Calculating Shannon diversity index for each MAG
+shannon_diversity <- diversity(matrix, index = "shannon")
+shannon_diversity_df <- data.frame(MAG = rownames(matrix), Shannon_Diversity = shannon_diversity)
+
+
+#Look at how quantitatively it matches up
+temp %>% left_join(shannon_diversity_df) %>% ggplot(., aes(as.factor(num_success), Shannon_Diversity)) + 
+  stat_boxplot(geom = 'errorbar', width = .15) +
+  geom_boxplot(outlier.shape = NA, width = .35) +
+  geom_jitter() + 
+  theme_cowplot() + 
+    theme(axis.text = element_text(size = 14),
+          axis.title = element_text(size = 14), legend.title = element_blank())
+
+ggsave("../figs/GH_DiversityVSEngraftmentSuccess_boxplots.pdf", width = 6, height = 3.5)
+
+
+#or correlations
+temp %>% left_join(tax) %>%
+  left_join(shannon_diversity_df) %>% ggplot(., aes(prop_success, Shannon_Diversity)) +
+  geom_point(aes(color = t_family)) + geom_smooth(method = 'lm') +
+    theme_cowplot() + 
+    theme(axis.text = element_text(size = 14),
+          axis.title = element_text(size = 14), legend.title = element_blank()) +
+  #annotate(geom = 'text', x = .15, y = 90, label = paste("r = ", signif(rho, 2), "; p = ", signif(pval, 2), sep = ''), size = 5) +
+  labs(x = 'Proportion of successful engraftments', y = 'Glycoside Hydrolase Diversity')
+  
+ggsave("../figs/GH_DiversityVSEngraftmentSuccess.pdf", width = 6, height = 3.5)
+
+
+
+# PCA Analysis
+# Running PCA on the count data
+pca_result <- rda(matrix)
+# Getting scores for plotting
+pca_scores <- scores(pca_result, display = "sites")
+
+pca_df <- as.data.frame(pca_scores) 
+pca_df$MAG <- rownames(pca_scores)
+
+pca_df %>% left_join(., temp, by = 'MAG') %>%
+ggplot(., aes(x = PC1, y = PC2, color = num_success)) +
+  geom_point() +
+  xlab("PCA1") + ylab("PCA2") +
+  ggtitle("PCA of CAZymes Across MAGs") + theme_cowplot()
+
+
+```

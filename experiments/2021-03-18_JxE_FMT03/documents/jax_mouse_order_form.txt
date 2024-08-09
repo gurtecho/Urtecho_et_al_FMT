@@ -1,0 +1,30 @@
+Thank you for your response. We will get back to you shortly.
+Response from Animal Purchase Form.
+PI Information:
+PI: Harris Wang
+Project: GG012231
+Activity: 1
+Segment: HW2429
+Initiative:
+Protocol: AC-AABD4551
+Contact Information:
+Department: Systems Biology
+Email: gu2144@cumc.columbia.edu
+Upon Arrival, Contact: Guillaume Urtecho
+Phone Number: 5599366440
+Acct Manager for Invoice:
+Animal Information:
+Vendor: The Jackson Laboratories
+Quantity: 8
+Sex: Female
+Species: mouse
+Strain: C57BL/6J
+Age/Weight: 6 weeks
+Delivery Information:
+Date of Arrival2021-03-12
+Housing: Irving Cancer
+Preferred Room #:
+Stock Number: 000664
+Animal Use: 
+Comments:
+same vivarium source please!

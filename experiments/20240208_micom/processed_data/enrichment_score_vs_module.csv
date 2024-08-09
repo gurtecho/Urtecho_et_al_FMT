@@ -1,0 +1,2017 @@
+index,score,group,family,module_category,module,percentage
+0,23.45,AZC3J,Bacteroidaceae,Amino acid metabolism,M00022,0.014209591474245116
+1,23.45,AZC3J,Bacteroidaceae,Lipid metabolism,M00082,0.020959147424511545
+2,23.45,AZC3J,Bacteroidaceae,Metabolism of cofactors and vitamins,M00120,0.030905861456483125
+3,23.45,AZC3J,Bacteroidaceae,Energy metabolism,M00166,0.035879218472468916
+4,23.45,AZC3J,Bacteroidaceae,Metabolism of cofactors and vitamins,M00899,0.04049733570159858
+5,23.45,AZC3J,Bacteroidaceae,Energy metabolism,M00345,0.045115452930728245
+6,23.45,AZC3J,Bacteroidaceae,Nucleotide metabolism,M00051,0.06465364120781528
+7,23.45,AZC3J,Bacteroidaceae,Carbohydrate metabolism,M00003,0.07708703374777975
+8,23.45,AZC3J,Bacteroidaceae,Nucleotide metabolism,M00048,0.10230905861456484
+9,23.45,AZC3J,Bacteroidaceae,Carbohydrate metabolism,M00549,0.10905861456483126
+10,23.45,AZC3J,Bacteroidaceae,Carbohydrate metabolism,M00855,0.11616341030195382
+11,23.45,AZC3J,Bacteroidaceae,Energy metabolism,M00173,0.14813499111900533
+12,23.45,AZC3J,Bacteroidaceae,Energy metabolism,M00169,0.15062166962699822
+13,23.45,AZC3J,Bacteroidaceae,Amino acid metabolism,M00621,0.15950266429840143
+14,23.45,AZC3J,Bacteroidaceae,Metabolism of cofactors and vitamins,M00115,0.16873889875666073
+15,23.45,AZC3J,Bacteroidaceae,Nucleotide metabolism,M00052,0.17406749555950266
+16,23.45,AZC3J,Bacteroidaceae,Biosynthesis of terpenoids and polyketides,M00793,0.1847246891651865
+17,23.45,AZC3J,Bacteroidaceae,Gene set,M00627,0.1936056838365897
+18,23.45,AZC3J,Bacteroidaceae,Metabolism of cofactors and vitamins,M00123,0.20461811722912968
+19,23.45,AZC3J,Bacteroidaceae,Metabolism of cofactors and vitamins,M00577,0.20461811722912968
+20,23.45,AZC3J,Bacteroidaceae,Carbohydrate metabolism,M00741,0.21314387211367672
+21,23.45,AZC3J,Bacteroidaceae,Metabolism of cofactors and vitamins,M00119,0.22095914742451153
+22,23.45,AZC3J,Bacteroidaceae,Carbohydrate metabolism,M00011,0.22095914742451153
+23,23.45,AZC3J,Bacteroidaceae,Glycan metabolism,M00063,0.230550621669627
+24,23.45,AZC3J,Bacteroidaceae,Energy metabolism,M00167,0.2344582593250444
+25,23.45,AZC3J,Bacteroidaceae,Metabolism of cofactors and vitamins,M00950,0.2344582593250444
+26,23.45,AZC3J,Bacteroidaceae,Metabolism of cofactors and vitamins,M00124,0.24014209591474245
+27,23.45,AZC3J,Bacteroidaceae,Carbohydrate metabolism,M00552,0.24014209591474245
+28,21.22,AZC3J,Muribaculaceae,Amino acid metabolism,M00022,0.014209591474245116
+29,21.22,AZC3J,Muribaculaceae,Lipid metabolism,M00082,0.020959147424511545
+30,21.22,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.030905861456483125
+31,21.22,AZC3J,Muribaculaceae,Energy metabolism,M00166,0.035879218472468916
+32,21.22,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.04049733570159858
+33,21.22,AZC3J,Muribaculaceae,Energy metabolism,M00345,0.045115452930728245
+34,21.22,AZC3J,Muribaculaceae,Nucleotide metabolism,M00051,0.06465364120781528
+35,21.22,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00003,0.07708703374777975
+36,21.22,AZC3J,Muribaculaceae,Nucleotide metabolism,M00048,0.10230905861456484
+37,21.22,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00549,0.10905861456483126
+38,21.22,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00855,0.11616341030195382
+39,21.22,AZC3J,Muribaculaceae,Energy metabolism,M00173,0.14813499111900533
+40,21.22,AZC3J,Muribaculaceae,Energy metabolism,M00169,0.15062166962699822
+41,21.22,AZC3J,Muribaculaceae,Amino acid metabolism,M00621,0.15950266429840143
+42,21.22,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.16873889875666073
+43,21.22,AZC3J,Muribaculaceae,Nucleotide metabolism,M00052,0.17406749555950266
+44,21.22,AZC3J,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.1847246891651865
+45,21.22,AZC3J,Muribaculaceae,Gene set,M00627,0.1936056838365897
+46,21.22,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.20461811722912968
+47,21.22,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.20461811722912968
+48,21.22,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00741,0.21314387211367672
+49,21.22,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.22095914742451153
+50,21.22,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00011,0.22095914742451153
+51,21.22,AZC3J,Muribaculaceae,Glycan metabolism,M00063,0.230550621669627
+52,21.22,AZC3J,Muribaculaceae,Energy metabolism,M00167,0.2344582593250444
+53,21.22,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.2344582593250444
+54,21.22,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.24014209591474245
+55,21.22,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00552,0.24014209591474245
+56,22.18,AZC3J,Muribaculaceae,Amino acid metabolism,M00022,0.014209591474245116
+57,22.18,AZC3J,Muribaculaceae,Lipid metabolism,M00082,0.020959147424511545
+58,22.18,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.030905861456483125
+59,22.18,AZC3J,Muribaculaceae,Energy metabolism,M00166,0.035879218472468916
+60,22.18,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.04049733570159858
+61,22.18,AZC3J,Muribaculaceae,Energy metabolism,M00345,0.045115452930728245
+62,22.18,AZC3J,Muribaculaceae,Nucleotide metabolism,M00051,0.06465364120781528
+63,22.18,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00003,0.07708703374777975
+64,22.18,AZC3J,Muribaculaceae,Nucleotide metabolism,M00048,0.10230905861456484
+65,22.18,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00549,0.10905861456483126
+66,22.18,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00855,0.11616341030195382
+67,22.18,AZC3J,Muribaculaceae,Energy metabolism,M00173,0.14813499111900533
+68,22.18,AZC3J,Muribaculaceae,Energy metabolism,M00169,0.15062166962699822
+69,22.18,AZC3J,Muribaculaceae,Amino acid metabolism,M00621,0.15950266429840143
+70,22.18,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.16873889875666073
+71,22.18,AZC3J,Muribaculaceae,Nucleotide metabolism,M00052,0.17406749555950266
+72,22.18,AZC3J,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.1847246891651865
+73,22.18,AZC3J,Muribaculaceae,Gene set,M00627,0.1936056838365897
+74,22.18,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.20461811722912968
+75,22.18,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.20461811722912968
+76,22.18,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00741,0.21314387211367672
+77,22.18,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.22095914742451153
+78,22.18,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00011,0.22095914742451153
+79,22.18,AZC3J,Muribaculaceae,Glycan metabolism,M00063,0.230550621669627
+80,22.18,AZC3J,Muribaculaceae,Energy metabolism,M00167,0.2344582593250444
+81,22.18,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.2344582593250444
+82,22.18,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.24014209591474245
+83,22.18,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00552,0.24014209591474245
+84,21.95,AZC3J,Muribaculaceae,Amino acid metabolism,M00022,0.014209591474245116
+85,21.95,AZC3J,Muribaculaceae,Lipid metabolism,M00082,0.020959147424511545
+86,21.95,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.030905861456483125
+87,21.95,AZC3J,Muribaculaceae,Energy metabolism,M00166,0.035879218472468916
+88,21.95,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.04049733570159858
+89,21.95,AZC3J,Muribaculaceae,Energy metabolism,M00345,0.045115452930728245
+90,21.95,AZC3J,Muribaculaceae,Nucleotide metabolism,M00051,0.06465364120781528
+91,21.95,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00003,0.07708703374777975
+92,21.95,AZC3J,Muribaculaceae,Nucleotide metabolism,M00048,0.10230905861456484
+93,21.95,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00549,0.10905861456483126
+94,21.95,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00855,0.11616341030195382
+95,21.95,AZC3J,Muribaculaceae,Energy metabolism,M00173,0.14813499111900533
+96,21.95,AZC3J,Muribaculaceae,Energy metabolism,M00169,0.15062166962699822
+97,21.95,AZC3J,Muribaculaceae,Amino acid metabolism,M00621,0.15950266429840143
+98,21.95,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.16873889875666073
+99,21.95,AZC3J,Muribaculaceae,Nucleotide metabolism,M00052,0.17406749555950266
+100,21.95,AZC3J,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.1847246891651865
+101,21.95,AZC3J,Muribaculaceae,Gene set,M00627,0.1936056838365897
+102,21.95,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.20461811722912968
+103,21.95,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.20461811722912968
+104,21.95,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00741,0.21314387211367672
+105,21.95,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.22095914742451153
+106,21.95,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00011,0.22095914742451153
+107,21.95,AZC3J,Muribaculaceae,Glycan metabolism,M00063,0.230550621669627
+108,21.95,AZC3J,Muribaculaceae,Energy metabolism,M00167,0.2344582593250444
+109,21.95,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.2344582593250444
+110,21.95,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.24014209591474245
+111,21.95,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00552,0.24014209591474245
+112,20.87,AZC3J,Muribaculaceae,Amino acid metabolism,M00022,0.014209591474245116
+113,20.87,AZC3J,Muribaculaceae,Lipid metabolism,M00082,0.020959147424511545
+114,20.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.030905861456483125
+115,20.87,AZC3J,Muribaculaceae,Energy metabolism,M00166,0.035879218472468916
+116,20.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.04049733570159858
+117,20.87,AZC3J,Muribaculaceae,Energy metabolism,M00345,0.045115452930728245
+118,20.87,AZC3J,Muribaculaceae,Nucleotide metabolism,M00051,0.06465364120781528
+119,20.87,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00003,0.07708703374777975
+120,20.87,AZC3J,Muribaculaceae,Nucleotide metabolism,M00048,0.10230905861456484
+121,20.87,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00549,0.10905861456483126
+122,20.87,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00855,0.11616341030195382
+123,20.87,AZC3J,Muribaculaceae,Energy metabolism,M00173,0.14813499111900533
+124,20.87,AZC3J,Muribaculaceae,Energy metabolism,M00169,0.15062166962699822
+125,20.87,AZC3J,Muribaculaceae,Amino acid metabolism,M00621,0.15950266429840143
+126,20.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.16873889875666073
+127,20.87,AZC3J,Muribaculaceae,Nucleotide metabolism,M00052,0.17406749555950266
+128,20.87,AZC3J,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.1847246891651865
+129,20.87,AZC3J,Muribaculaceae,Gene set,M00627,0.1936056838365897
+130,20.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.20461811722912968
+131,20.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.20461811722912968
+132,20.87,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00741,0.21314387211367672
+133,20.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.22095914742451153
+134,20.87,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00011,0.22095914742451153
+135,20.87,AZC3J,Muribaculaceae,Glycan metabolism,M00063,0.230550621669627
+136,20.87,AZC3J,Muribaculaceae,Energy metabolism,M00167,0.2344582593250444
+137,20.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.2344582593250444
+138,20.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.24014209591474245
+139,20.87,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00552,0.24014209591474245
+140,21.87,AZC3J,Muribaculaceae,Amino acid metabolism,M00022,0.014209591474245116
+141,21.87,AZC3J,Muribaculaceae,Lipid metabolism,M00082,0.020959147424511545
+142,21.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.030905861456483125
+143,21.87,AZC3J,Muribaculaceae,Energy metabolism,M00166,0.035879218472468916
+144,21.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.04049733570159858
+145,21.87,AZC3J,Muribaculaceae,Energy metabolism,M00345,0.045115452930728245
+146,21.87,AZC3J,Muribaculaceae,Nucleotide metabolism,M00051,0.06465364120781528
+147,21.87,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00003,0.07708703374777975
+148,21.87,AZC3J,Muribaculaceae,Nucleotide metabolism,M00048,0.10230905861456484
+149,21.87,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00549,0.10905861456483126
+150,21.87,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00855,0.11616341030195382
+151,21.87,AZC3J,Muribaculaceae,Energy metabolism,M00173,0.14813499111900533
+152,21.87,AZC3J,Muribaculaceae,Energy metabolism,M00169,0.15062166962699822
+153,21.87,AZC3J,Muribaculaceae,Amino acid metabolism,M00621,0.15950266429840143
+154,21.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.16873889875666073
+155,21.87,AZC3J,Muribaculaceae,Nucleotide metabolism,M00052,0.17406749555950266
+156,21.87,AZC3J,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.1847246891651865
+157,21.87,AZC3J,Muribaculaceae,Gene set,M00627,0.1936056838365897
+158,21.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.20461811722912968
+159,21.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.20461811722912968
+160,21.87,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00741,0.21314387211367672
+161,21.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.22095914742451153
+162,21.87,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00011,0.22095914742451153
+163,21.87,AZC3J,Muribaculaceae,Glycan metabolism,M00063,0.230550621669627
+164,21.87,AZC3J,Muribaculaceae,Energy metabolism,M00167,0.2344582593250444
+165,21.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.2344582593250444
+166,21.87,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.24014209591474245
+167,21.87,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00552,0.24014209591474245
+168,21.9,AZC3J,Muribaculaceae,Amino acid metabolism,M00022,0.014209591474245116
+169,21.9,AZC3J,Muribaculaceae,Lipid metabolism,M00082,0.020959147424511545
+170,21.9,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.030905861456483125
+171,21.9,AZC3J,Muribaculaceae,Energy metabolism,M00166,0.035879218472468916
+172,21.9,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.04049733570159858
+173,21.9,AZC3J,Muribaculaceae,Energy metabolism,M00345,0.045115452930728245
+174,21.9,AZC3J,Muribaculaceae,Nucleotide metabolism,M00051,0.06465364120781528
+175,21.9,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00003,0.07708703374777975
+176,21.9,AZC3J,Muribaculaceae,Nucleotide metabolism,M00048,0.10230905861456484
+177,21.9,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00549,0.10905861456483126
+178,21.9,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00855,0.11616341030195382
+179,21.9,AZC3J,Muribaculaceae,Energy metabolism,M00173,0.14813499111900533
+180,21.9,AZC3J,Muribaculaceae,Energy metabolism,M00169,0.15062166962699822
+181,21.9,AZC3J,Muribaculaceae,Amino acid metabolism,M00621,0.15950266429840143
+182,21.9,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.16873889875666073
+183,21.9,AZC3J,Muribaculaceae,Nucleotide metabolism,M00052,0.17406749555950266
+184,21.9,AZC3J,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.1847246891651865
+185,21.9,AZC3J,Muribaculaceae,Gene set,M00627,0.1936056838365897
+186,21.9,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.20461811722912968
+187,21.9,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.20461811722912968
+188,21.9,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00741,0.21314387211367672
+189,21.9,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.22095914742451153
+190,21.9,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00011,0.22095914742451153
+191,21.9,AZC3J,Muribaculaceae,Glycan metabolism,M00063,0.230550621669627
+192,21.9,AZC3J,Muribaculaceae,Energy metabolism,M00167,0.2344582593250444
+193,21.9,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.2344582593250444
+194,21.9,AZC3J,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.24014209591474245
+195,21.9,AZC3J,Muribaculaceae,Carbohydrate metabolism,M00552,0.24014209591474245
+196,16.71,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+197,16.71,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+198,16.71,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+199,16.71,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+200,16.71,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+201,16.71,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+202,16.71,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+203,16.71,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+204,16.71,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+205,16.71,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+206,16.71,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+207,16.71,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+208,16.71,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+209,16.71,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+210,16.71,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+211,16.71,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+212,16.71,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+213,16.71,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+214,16.71,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+215,16.71,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+216,16.71,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+217,16.71,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+218,16.71,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+219,16.71,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+220,16.71,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+221,16.71,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+222,16.71,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+223,16.71,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+224,21.48,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+225,21.48,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+226,21.48,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+227,21.48,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+228,21.48,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+229,21.48,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+230,21.48,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+231,21.48,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+232,21.48,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+233,21.48,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+234,21.48,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+235,21.48,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+236,21.48,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+237,21.48,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+238,21.48,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+239,21.48,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+240,21.48,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+241,21.48,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+242,21.48,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+243,21.48,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+244,21.48,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+245,21.48,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+246,21.48,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+247,21.48,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+248,21.48,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+249,21.48,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+250,21.48,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+251,21.48,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+252,20.84,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+253,20.84,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+254,20.84,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+255,20.84,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+256,20.84,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+257,20.84,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+258,20.84,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+259,20.84,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+260,20.84,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+261,20.84,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+262,20.84,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+263,20.84,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+264,20.84,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+265,20.84,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+266,20.84,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+267,20.84,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+268,20.84,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+269,20.84,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+270,20.84,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+271,20.84,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+272,20.84,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+273,20.84,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+274,20.84,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+275,20.84,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+276,20.84,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+277,20.84,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+278,20.84,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+279,20.84,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+280,18.45,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+281,18.45,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+282,18.45,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+283,18.45,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+284,18.45,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+285,18.45,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+286,18.45,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+287,18.45,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+288,18.45,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+289,18.45,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+290,18.45,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+291,18.45,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+292,18.45,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+293,18.45,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+294,18.45,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+295,18.45,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+296,18.45,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+297,18.45,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+298,18.45,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+299,18.45,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+300,18.45,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+301,18.45,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+302,18.45,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+303,18.45,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+304,18.45,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+305,18.45,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+306,18.45,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+307,18.45,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+308,22.04,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+309,22.04,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+310,22.04,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+311,22.04,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+312,22.04,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+313,22.04,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+314,22.04,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+315,22.04,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+316,22.04,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+317,22.04,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+318,22.04,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+319,22.04,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+320,22.04,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+321,22.04,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+322,22.04,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+323,22.04,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+324,22.04,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+325,22.04,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+326,22.04,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+327,22.04,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+328,22.04,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+329,22.04,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+330,22.04,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+331,22.04,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+332,22.04,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+333,22.04,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+334,22.04,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+335,22.04,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+336,19.28,AZC5T,Bacteroidaceae,Amino acid metabolism,M00022,0.03978685612788632
+337,19.28,AZC5T,Bacteroidaceae,Lipid metabolism,M00082,0.05719360568383659
+338,19.28,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+339,19.28,AZC5T,Bacteroidaceae,Energy metabolism,M00166,0.09520426287744227
+340,19.28,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+341,19.28,AZC5T,Bacteroidaceae,Energy metabolism,M00345,0.1197158081705151
+342,19.28,AZC5T,Bacteroidaceae,Nucleotide metabolism,M00051,0.16589698046181173
+343,19.28,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+344,19.28,AZC5T,Bacteroidaceae,Nucleotide metabolism,M00048,0.2561278863232682
+345,19.28,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+346,19.28,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+347,19.28,AZC5T,Bacteroidaceae,Energy metabolism,M00173,0.35168738898756663
+348,19.28,AZC5T,Bacteroidaceae,Energy metabolism,M00169,0.35559502664298404
+349,19.28,AZC5T,Bacteroidaceae,Amino acid metabolism,M00621,0.36980461811722914
+350,19.28,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+351,19.28,AZC5T,Bacteroidaceae,Nucleotide metabolism,M00052,0.40319715808170514
+352,19.28,AZC5T,Bacteroidaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+353,19.28,AZC5T,Bacteroidaceae,Gene set,M00627,0.43374777975133216
+354,19.28,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+355,19.28,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+356,19.28,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00741,0.466785079928952
+357,19.28,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+358,19.28,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+359,19.28,AZC5T,Bacteroidaceae,Glycan metabolism,M00063,0.49413854351687386
+360,19.28,AZC5T,Bacteroidaceae,Energy metabolism,M00167,0.5015985790408526
+361,19.28,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+362,19.28,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+363,19.28,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+364,20.98,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+365,20.98,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+366,20.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+367,20.98,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+368,20.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+369,20.98,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+370,20.98,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+371,20.98,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+372,20.98,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+373,20.98,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+374,20.98,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+375,20.98,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+376,20.98,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+377,20.98,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+378,20.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+379,20.98,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+380,20.98,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+381,20.98,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+382,20.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+383,20.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+384,20.98,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+385,20.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+386,20.98,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+387,20.98,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+388,20.98,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+389,20.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+390,20.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+391,20.98,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+392,20.55,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+393,20.55,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+394,20.55,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+395,20.55,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+396,20.55,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+397,20.55,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+398,20.55,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+399,20.55,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+400,20.55,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+401,20.55,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+402,20.55,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+403,20.55,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+404,20.55,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+405,20.55,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+406,20.55,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+407,20.55,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+408,20.55,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+409,20.55,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+410,20.55,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+411,20.55,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+412,20.55,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+413,20.55,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+414,20.55,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+415,20.55,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+416,20.55,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+417,20.55,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+418,20.55,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+419,20.55,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+420,21.98,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+421,21.98,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+422,21.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+423,21.98,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+424,21.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+425,21.98,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+426,21.98,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+427,21.98,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+428,21.98,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+429,21.98,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+430,21.98,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+431,21.98,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+432,21.98,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+433,21.98,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+434,21.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+435,21.98,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+436,21.98,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+437,21.98,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+438,21.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+439,21.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+440,21.98,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+441,21.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+442,21.98,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+443,21.98,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+444,21.98,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+445,21.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+446,21.98,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+447,21.98,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+448,21.12,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+449,21.12,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+450,21.12,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+451,21.12,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+452,21.12,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+453,21.12,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+454,21.12,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+455,21.12,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+456,21.12,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+457,21.12,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+458,21.12,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+459,21.12,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+460,21.12,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+461,21.12,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+462,21.12,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+463,21.12,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+464,21.12,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+465,21.12,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+466,21.12,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+467,21.12,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+468,21.12,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+469,21.12,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+470,21.12,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+471,21.12,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+472,21.12,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+473,21.12,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+474,21.12,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+475,21.12,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+476,23.35,AZC5T,Bacteroidaceae,Amino acid metabolism,M00022,0.03978685612788632
+477,23.35,AZC5T,Bacteroidaceae,Lipid metabolism,M00082,0.05719360568383659
+478,23.35,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+479,23.35,AZC5T,Bacteroidaceae,Energy metabolism,M00166,0.09520426287744227
+480,23.35,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+481,23.35,AZC5T,Bacteroidaceae,Energy metabolism,M00345,0.1197158081705151
+482,23.35,AZC5T,Bacteroidaceae,Nucleotide metabolism,M00051,0.16589698046181173
+483,23.35,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+484,23.35,AZC5T,Bacteroidaceae,Nucleotide metabolism,M00048,0.2561278863232682
+485,23.35,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+486,23.35,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+487,23.35,AZC5T,Bacteroidaceae,Energy metabolism,M00173,0.35168738898756663
+488,23.35,AZC5T,Bacteroidaceae,Energy metabolism,M00169,0.35559502664298404
+489,23.35,AZC5T,Bacteroidaceae,Amino acid metabolism,M00621,0.36980461811722914
+490,23.35,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+491,23.35,AZC5T,Bacteroidaceae,Nucleotide metabolism,M00052,0.40319715808170514
+492,23.35,AZC5T,Bacteroidaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+493,23.35,AZC5T,Bacteroidaceae,Gene set,M00627,0.43374777975133216
+494,23.35,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+495,23.35,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+496,23.35,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00741,0.466785079928952
+497,23.35,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+498,23.35,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+499,23.35,AZC5T,Bacteroidaceae,Glycan metabolism,M00063,0.49413854351687386
+500,23.35,AZC5T,Bacteroidaceae,Energy metabolism,M00167,0.5015985790408526
+501,23.35,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+502,23.35,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+503,23.35,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+504,21.93,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+505,21.93,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+506,21.93,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+507,21.93,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+508,21.93,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+509,21.93,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+510,21.93,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+511,21.93,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+512,21.93,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+513,21.93,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+514,21.93,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+515,21.93,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+516,21.93,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+517,21.93,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+518,21.93,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+519,21.93,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+520,21.93,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+521,21.93,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+522,21.93,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+523,21.93,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+524,21.93,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+525,21.93,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+526,21.93,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+527,21.93,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+528,21.93,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+529,21.93,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+530,21.93,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+531,21.93,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+532,20.99,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+533,20.99,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+534,20.99,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+535,20.99,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+536,20.99,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+537,20.99,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+538,20.99,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+539,20.99,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+540,20.99,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+541,20.99,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+542,20.99,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+543,20.99,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+544,20.99,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+545,20.99,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+546,20.99,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+547,20.99,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+548,20.99,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+549,20.99,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+550,20.99,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+551,20.99,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+552,20.99,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+553,20.99,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+554,20.99,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+555,20.99,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+556,20.99,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+557,20.99,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+558,20.99,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+559,20.99,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+560,21.7,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+561,21.7,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+562,21.7,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+563,21.7,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+564,21.7,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+565,21.7,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+566,21.7,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+567,21.7,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+568,21.7,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+569,21.7,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+570,21.7,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+571,21.7,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+572,21.7,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+573,21.7,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+574,21.7,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+575,21.7,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+576,21.7,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+577,21.7,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+578,21.7,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+579,21.7,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+580,21.7,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+581,21.7,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+582,21.7,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+583,21.7,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+584,21.7,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+585,21.7,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+586,21.7,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+587,21.7,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+588,22.01,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+589,22.01,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+590,22.01,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+591,22.01,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+592,22.01,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+593,22.01,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+594,22.01,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+595,22.01,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+596,22.01,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+597,22.01,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+598,22.01,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+599,22.01,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+600,22.01,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+601,22.01,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+602,22.01,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+603,22.01,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+604,22.01,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+605,22.01,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+606,22.01,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+607,22.01,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+608,22.01,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+609,22.01,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+610,22.01,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+611,22.01,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+612,22.01,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+613,22.01,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+614,22.01,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+615,22.01,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+616,22.2,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+617,22.2,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+618,22.2,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+619,22.2,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+620,22.2,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+621,22.2,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+622,22.2,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+623,22.2,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+624,22.2,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+625,22.2,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+626,22.2,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+627,22.2,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+628,22.2,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+629,22.2,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+630,22.2,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+631,22.2,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+632,22.2,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+633,22.2,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+634,22.2,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+635,22.2,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+636,22.2,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+637,22.2,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+638,22.2,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+639,22.2,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+640,22.2,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+641,22.2,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+642,22.2,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+643,22.2,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+644,23.45,AZC5T,Bacteroidaceae,Amino acid metabolism,M00022,0.03978685612788632
+645,23.45,AZC5T,Bacteroidaceae,Lipid metabolism,M00082,0.05719360568383659
+646,23.45,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+647,23.45,AZC5T,Bacteroidaceae,Energy metabolism,M00166,0.09520426287744227
+648,23.45,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+649,23.45,AZC5T,Bacteroidaceae,Energy metabolism,M00345,0.1197158081705151
+650,23.45,AZC5T,Bacteroidaceae,Nucleotide metabolism,M00051,0.16589698046181173
+651,23.45,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+652,23.45,AZC5T,Bacteroidaceae,Nucleotide metabolism,M00048,0.2561278863232682
+653,23.45,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+654,23.45,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+655,23.45,AZC5T,Bacteroidaceae,Energy metabolism,M00173,0.35168738898756663
+656,23.45,AZC5T,Bacteroidaceae,Energy metabolism,M00169,0.35559502664298404
+657,23.45,AZC5T,Bacteroidaceae,Amino acid metabolism,M00621,0.36980461811722914
+658,23.45,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+659,23.45,AZC5T,Bacteroidaceae,Nucleotide metabolism,M00052,0.40319715808170514
+660,23.45,AZC5T,Bacteroidaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+661,23.45,AZC5T,Bacteroidaceae,Gene set,M00627,0.43374777975133216
+662,23.45,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+663,23.45,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+664,23.45,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00741,0.466785079928952
+665,23.45,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+666,23.45,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+667,23.45,AZC5T,Bacteroidaceae,Glycan metabolism,M00063,0.49413854351687386
+668,23.45,AZC5T,Bacteroidaceae,Energy metabolism,M00167,0.5015985790408526
+669,23.45,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+670,23.45,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+671,23.45,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+672,22.81,AZC5T,Bacteroidaceae,Amino acid metabolism,M00022,0.03978685612788632
+673,22.81,AZC5T,Bacteroidaceae,Lipid metabolism,M00082,0.05719360568383659
+674,22.81,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+675,22.81,AZC5T,Bacteroidaceae,Energy metabolism,M00166,0.09520426287744227
+676,22.81,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+677,22.81,AZC5T,Bacteroidaceae,Energy metabolism,M00345,0.1197158081705151
+678,22.81,AZC5T,Bacteroidaceae,Nucleotide metabolism,M00051,0.16589698046181173
+679,22.81,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+680,22.81,AZC5T,Bacteroidaceae,Nucleotide metabolism,M00048,0.2561278863232682
+681,22.81,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+682,22.81,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+683,22.81,AZC5T,Bacteroidaceae,Energy metabolism,M00173,0.35168738898756663
+684,22.81,AZC5T,Bacteroidaceae,Energy metabolism,M00169,0.35559502664298404
+685,22.81,AZC5T,Bacteroidaceae,Amino acid metabolism,M00621,0.36980461811722914
+686,22.81,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+687,22.81,AZC5T,Bacteroidaceae,Nucleotide metabolism,M00052,0.40319715808170514
+688,22.81,AZC5T,Bacteroidaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+689,22.81,AZC5T,Bacteroidaceae,Gene set,M00627,0.43374777975133216
+690,22.81,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+691,22.81,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+692,22.81,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00741,0.466785079928952
+693,22.81,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+694,22.81,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+695,22.81,AZC5T,Bacteroidaceae,Glycan metabolism,M00063,0.49413854351687386
+696,22.81,AZC5T,Bacteroidaceae,Energy metabolism,M00167,0.5015985790408526
+697,22.81,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+698,22.81,AZC5T,Bacteroidaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+699,22.81,AZC5T,Bacteroidaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+700,19.95,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+701,19.95,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+702,19.95,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+703,19.95,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+704,19.95,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+705,19.95,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+706,19.95,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+707,19.95,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+708,19.95,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+709,19.95,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+710,19.95,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+711,19.95,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+712,19.95,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+713,19.95,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+714,19.95,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+715,19.95,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+716,19.95,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+717,19.95,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+718,19.95,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+719,19.95,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+720,19.95,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+721,19.95,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+722,19.95,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+723,19.95,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+724,19.95,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+725,19.95,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+726,19.95,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+727,19.95,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+728,22.38,AZC5T,Muribaculaceae,Amino acid metabolism,M00022,0.03978685612788632
+729,22.38,AZC5T,Muribaculaceae,Lipid metabolism,M00082,0.05719360568383659
+730,22.38,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.08348134991119005
+731,22.38,AZC5T,Muribaculaceae,Energy metabolism,M00166,0.09520426287744227
+732,22.38,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.10692717584369449
+733,22.38,AZC5T,Muribaculaceae,Energy metabolism,M00345,0.1197158081705151
+734,22.38,AZC5T,Muribaculaceae,Nucleotide metabolism,M00051,0.16589698046181173
+735,22.38,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00003,0.1989342806394316
+736,22.38,AZC5T,Muribaculaceae,Nucleotide metabolism,M00048,0.2561278863232682
+737,22.38,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00549,0.26678507992895206
+738,22.38,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00855,0.2827708703374778
+739,22.38,AZC5T,Muribaculaceae,Energy metabolism,M00173,0.35168738898756663
+740,22.38,AZC5T,Muribaculaceae,Energy metabolism,M00169,0.35559502664298404
+741,22.38,AZC5T,Muribaculaceae,Amino acid metabolism,M00621,0.36980461811722914
+742,22.38,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.3911190053285968
+743,22.38,AZC5T,Muribaculaceae,Nucleotide metabolism,M00052,0.40319715808170514
+744,22.38,AZC5T,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.4202486678507993
+745,22.38,AZC5T,Muribaculaceae,Gene set,M00627,0.43374777975133216
+746,22.38,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.45293072824156305
+747,22.38,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.45293072824156305
+748,22.38,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00741,0.466785079928952
+749,22.38,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.4817051509769094
+750,22.38,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00011,0.4817051509769094
+751,22.38,AZC5T,Muribaculaceae,Glycan metabolism,M00063,0.49413854351687386
+752,22.38,AZC5T,Muribaculaceae,Energy metabolism,M00167,0.5015985790408526
+753,22.38,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.5015985790408526
+754,22.38,AZC5T,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.5154529307282416
+755,22.38,AZC5T,Muribaculaceae,Carbohydrate metabolism,M00552,0.5154529307282416
+756,16.38,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+757,16.38,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+758,16.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+759,16.38,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+760,16.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+761,16.38,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+762,16.38,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+763,16.38,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+764,16.38,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+765,16.38,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+766,16.38,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+767,16.38,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+768,16.38,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+769,16.38,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+770,16.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+771,16.38,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+772,16.38,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+773,16.38,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+774,16.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+775,16.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+776,16.38,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+777,16.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+778,16.38,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+779,16.38,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+780,16.38,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+781,16.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+782,16.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+783,16.38,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+784,20.22,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+785,20.22,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+786,20.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+787,20.22,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+788,20.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+789,20.22,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+790,20.22,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+791,20.22,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+792,20.22,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+793,20.22,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+794,20.22,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+795,20.22,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+796,20.22,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+797,20.22,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+798,20.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+799,20.22,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+800,20.22,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+801,20.22,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+802,20.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+803,20.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+804,20.22,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+805,20.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+806,20.22,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+807,20.22,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+808,20.22,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+809,20.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+810,20.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+811,20.22,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+812,18.27,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+813,18.27,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+814,18.27,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+815,18.27,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+816,18.27,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+817,18.27,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+818,18.27,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+819,18.27,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+820,18.27,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+821,18.27,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+822,18.27,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+823,18.27,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+824,18.27,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+825,18.27,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+826,18.27,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+827,18.27,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+828,18.27,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+829,18.27,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+830,18.27,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+831,18.27,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+832,18.27,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+833,18.27,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+834,18.27,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+835,18.27,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+836,18.27,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+837,18.27,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+838,18.27,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+839,18.27,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+840,22.18,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+841,22.18,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+842,22.18,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+843,22.18,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+844,22.18,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+845,22.18,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+846,22.18,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+847,22.18,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+848,22.18,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+849,22.18,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+850,22.18,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+851,22.18,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+852,22.18,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+853,22.18,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+854,22.18,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+855,22.18,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+856,22.18,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+857,22.18,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+858,22.18,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+859,22.18,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+860,22.18,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+861,22.18,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+862,22.18,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+863,22.18,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+864,22.18,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+865,22.18,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+866,22.18,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+867,22.18,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+868,15.12,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+869,15.12,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+870,15.12,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+871,15.12,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+872,15.12,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+873,15.12,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+874,15.12,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+875,15.12,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+876,15.12,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+877,15.12,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+878,15.12,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+879,15.12,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+880,15.12,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+881,15.12,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+882,15.12,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+883,15.12,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+884,15.12,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+885,15.12,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+886,15.12,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+887,15.12,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+888,15.12,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+889,15.12,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+890,15.12,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+891,15.12,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+892,15.12,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+893,15.12,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+894,15.12,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+895,15.12,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+896,18.45,AZC7E,Bacteroidaceae,Amino acid metabolism,M00022,0.07104795737122557
+897,18.45,AZC7E,Bacteroidaceae,Lipid metabolism,M00082,0.10195381882770871
+898,18.45,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+899,18.45,AZC7E,Bacteroidaceae,Energy metabolism,M00166,0.17158081705150977
+900,18.45,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+901,18.45,AZC7E,Bacteroidaceae,Energy metabolism,M00345,0.21492007104795738
+902,18.45,AZC7E,Bacteroidaceae,Nucleotide metabolism,M00051,0.28845470692717584
+903,18.45,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+904,18.45,AZC7E,Bacteroidaceae,Nucleotide metabolism,M00048,0.42131438721136766
+905,18.45,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+906,18.45,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+907,18.45,AZC7E,Bacteroidaceae,Energy metabolism,M00173,0.5513321492007105
+908,18.45,AZC7E,Bacteroidaceae,Energy metabolism,M00169,0.5570159857904086
+909,18.45,AZC7E,Bacteroidaceae,Amino acid metabolism,M00621,0.5737122557726465
+910,18.45,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+911,18.45,AZC7E,Bacteroidaceae,Nucleotide metabolism,M00052,0.6134991119005329
+912,18.45,AZC7E,Bacteroidaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+913,18.45,AZC7E,Bacteroidaceae,Gene set,M00627,0.661101243339254
+914,18.45,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+915,18.45,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+916,18.45,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+917,18.45,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+918,18.45,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+919,18.45,AZC7E,Bacteroidaceae,Glycan metabolism,M00063,0.7271758436944937
+920,18.45,AZC7E,Bacteroidaceae,Energy metabolism,M00167,0.7357015985790408
+921,18.45,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+922,18.45,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+923,18.45,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+924,22.55,AZC7E,Bacteroidaceae,Amino acid metabolism,M00022,0.07104795737122557
+925,22.55,AZC7E,Bacteroidaceae,Lipid metabolism,M00082,0.10195381882770871
+926,22.55,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+927,22.55,AZC7E,Bacteroidaceae,Energy metabolism,M00166,0.17158081705150977
+928,22.55,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+929,22.55,AZC7E,Bacteroidaceae,Energy metabolism,M00345,0.21492007104795738
+930,22.55,AZC7E,Bacteroidaceae,Nucleotide metabolism,M00051,0.28845470692717584
+931,22.55,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+932,22.55,AZC7E,Bacteroidaceae,Nucleotide metabolism,M00048,0.42131438721136766
+933,22.55,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+934,22.55,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+935,22.55,AZC7E,Bacteroidaceae,Energy metabolism,M00173,0.5513321492007105
+936,22.55,AZC7E,Bacteroidaceae,Energy metabolism,M00169,0.5570159857904086
+937,22.55,AZC7E,Bacteroidaceae,Amino acid metabolism,M00621,0.5737122557726465
+938,22.55,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+939,22.55,AZC7E,Bacteroidaceae,Nucleotide metabolism,M00052,0.6134991119005329
+940,22.55,AZC7E,Bacteroidaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+941,22.55,AZC7E,Bacteroidaceae,Gene set,M00627,0.661101243339254
+942,22.55,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+943,22.55,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+944,22.55,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+945,22.55,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+946,22.55,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+947,22.55,AZC7E,Bacteroidaceae,Glycan metabolism,M00063,0.7271758436944937
+948,22.55,AZC7E,Bacteroidaceae,Energy metabolism,M00167,0.7357015985790408
+949,22.55,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+950,22.55,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+951,22.55,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+952,20.67,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+953,20.67,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+954,20.67,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+955,20.67,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+956,20.67,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+957,20.67,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+958,20.67,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+959,20.67,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+960,20.67,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+961,20.67,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+962,20.67,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+963,20.67,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+964,20.67,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+965,20.67,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+966,20.67,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+967,20.67,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+968,20.67,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+969,20.67,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+970,20.67,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+971,20.67,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+972,20.67,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+973,20.67,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+974,20.67,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+975,20.67,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+976,20.67,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+977,20.67,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+978,20.67,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+979,20.67,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+980,10.2,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+981,10.2,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+982,10.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+983,10.2,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+984,10.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+985,10.2,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+986,10.2,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+987,10.2,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+988,10.2,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+989,10.2,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+990,10.2,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+991,10.2,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+992,10.2,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+993,10.2,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+994,10.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+995,10.2,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+996,10.2,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+997,10.2,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+998,10.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+999,10.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1000,10.2,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1001,10.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1002,10.2,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1003,10.2,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1004,10.2,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1005,10.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1006,10.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1007,10.2,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1008,22.38,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1009,22.38,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1010,22.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1011,22.38,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1012,22.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1013,22.38,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1014,22.38,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1015,22.38,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1016,22.38,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1017,22.38,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1018,22.38,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1019,22.38,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1020,22.38,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1021,22.38,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1022,22.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1023,22.38,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1024,22.38,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1025,22.38,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1026,22.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1027,22.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1028,22.38,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1029,22.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1030,22.38,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1031,22.38,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1032,22.38,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1033,22.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1034,22.38,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1035,22.38,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1036,21.26,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1037,21.26,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1038,21.26,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1039,21.26,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1040,21.26,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1041,21.26,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1042,21.26,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1043,21.26,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1044,21.26,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1045,21.26,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1046,21.26,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1047,21.26,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1048,21.26,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1049,21.26,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1050,21.26,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1051,21.26,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1052,21.26,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1053,21.26,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1054,21.26,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1055,21.26,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1056,21.26,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1057,21.26,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1058,21.26,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1059,21.26,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1060,21.26,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1061,21.26,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1062,21.26,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1063,21.26,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1064,20.08,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1065,20.08,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1066,20.08,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1067,20.08,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1068,20.08,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1069,20.08,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1070,20.08,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1071,20.08,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1072,20.08,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1073,20.08,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1074,20.08,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1075,20.08,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1076,20.08,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1077,20.08,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1078,20.08,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1079,20.08,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1080,20.08,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1081,20.08,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1082,20.08,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1083,20.08,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1084,20.08,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1085,20.08,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1086,20.08,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1087,20.08,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1088,20.08,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1089,20.08,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1090,20.08,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1091,20.08,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1092,19.96,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1093,19.96,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1094,19.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1095,19.96,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1096,19.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1097,19.96,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1098,19.96,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1099,19.96,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1100,19.96,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1101,19.96,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1102,19.96,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1103,19.96,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1104,19.96,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1105,19.96,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1106,19.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1107,19.96,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1108,19.96,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1109,19.96,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1110,19.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1111,19.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1112,19.96,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1113,19.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1114,19.96,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1115,19.96,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1116,19.96,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1117,19.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1118,19.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1119,19.96,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1120,19.9,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1121,19.9,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1122,19.9,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1123,19.9,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1124,19.9,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1125,19.9,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1126,19.9,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1127,19.9,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1128,19.9,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1129,19.9,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1130,19.9,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1131,19.9,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1132,19.9,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1133,19.9,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1134,19.9,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1135,19.9,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1136,19.9,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1137,19.9,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1138,19.9,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1139,19.9,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1140,19.9,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1141,19.9,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1142,19.9,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1143,19.9,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1144,19.9,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1145,19.9,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1146,19.9,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1147,19.9,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1148,21.29,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1149,21.29,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1150,21.29,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1151,21.29,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1152,21.29,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1153,21.29,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1154,21.29,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1155,21.29,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1156,21.29,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1157,21.29,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1158,21.29,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1159,21.29,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1160,21.29,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1161,21.29,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1162,21.29,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1163,21.29,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1164,21.29,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1165,21.29,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1166,21.29,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1167,21.29,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1168,21.29,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1169,21.29,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1170,21.29,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1171,21.29,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1172,21.29,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1173,21.29,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1174,21.29,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1175,21.29,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1176,18.86,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1177,18.86,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1178,18.86,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1179,18.86,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1180,18.86,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1181,18.86,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1182,18.86,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1183,18.86,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1184,18.86,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1185,18.86,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1186,18.86,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1187,18.86,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1188,18.86,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1189,18.86,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1190,18.86,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1191,18.86,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1192,18.86,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1193,18.86,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1194,18.86,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1195,18.86,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1196,18.86,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1197,18.86,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1198,18.86,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1199,18.86,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1200,18.86,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1201,18.86,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1202,18.86,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1203,18.86,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1204,20.88,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1205,20.88,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1206,20.88,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1207,20.88,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1208,20.88,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1209,20.88,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1210,20.88,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1211,20.88,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1212,20.88,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1213,20.88,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1214,20.88,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1215,20.88,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1216,20.88,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1217,20.88,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1218,20.88,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1219,20.88,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1220,20.88,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1221,20.88,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1222,20.88,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1223,20.88,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1224,20.88,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1225,20.88,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1226,20.88,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1227,20.88,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1228,20.88,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1229,20.88,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1230,20.88,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1231,20.88,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1232,15.54,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1233,15.54,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1234,15.54,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1235,15.54,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1236,15.54,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1237,15.54,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1238,15.54,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1239,15.54,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1240,15.54,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1241,15.54,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1242,15.54,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1243,15.54,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1244,15.54,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1245,15.54,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1246,15.54,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1247,15.54,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1248,15.54,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1249,15.54,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1250,15.54,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1251,15.54,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1252,15.54,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1253,15.54,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1254,15.54,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1255,15.54,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1256,15.54,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1257,15.54,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1258,15.54,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1259,15.54,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1260,19.48,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1261,19.48,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1262,19.48,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1263,19.48,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1264,19.48,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1265,19.48,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1266,19.48,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1267,19.48,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1268,19.48,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1269,19.48,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1270,19.48,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1271,19.48,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1272,19.48,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1273,19.48,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1274,19.48,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1275,19.48,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1276,19.48,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1277,19.48,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1278,19.48,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1279,19.48,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1280,19.48,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1281,19.48,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1282,19.48,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1283,19.48,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1284,19.48,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1285,19.48,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1286,19.48,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1287,19.48,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1288,20.95,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1289,20.95,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1290,20.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1291,20.95,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1292,20.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1293,20.95,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1294,20.95,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1295,20.95,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1296,20.95,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1297,20.95,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1298,20.95,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1299,20.95,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1300,20.95,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1301,20.95,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1302,20.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1303,20.95,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1304,20.95,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1305,20.95,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1306,20.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1307,20.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1308,20.95,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1309,20.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1310,20.95,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1311,20.95,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1312,20.95,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1313,20.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1314,20.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1315,20.95,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1316,21.6,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1317,21.6,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1318,21.6,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1319,21.6,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1320,21.6,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1321,21.6,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1322,21.6,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1323,21.6,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1324,21.6,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1325,21.6,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1326,21.6,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1327,21.6,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1328,21.6,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1329,21.6,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1330,21.6,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1331,21.6,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1332,21.6,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1333,21.6,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1334,21.6,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1335,21.6,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1336,21.6,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1337,21.6,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1338,21.6,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1339,21.6,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1340,21.6,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1341,21.6,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1342,21.6,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1343,21.6,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1344,17.36,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1345,17.36,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1346,17.36,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1347,17.36,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1348,17.36,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1349,17.36,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1350,17.36,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1351,17.36,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1352,17.36,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1353,17.36,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1354,17.36,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1355,17.36,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1356,17.36,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1357,17.36,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1358,17.36,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1359,17.36,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1360,17.36,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1361,17.36,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1362,17.36,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1363,17.36,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1364,17.36,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1365,17.36,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1366,17.36,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1367,17.36,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1368,17.36,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1369,17.36,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1370,17.36,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1371,17.36,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1372,20.98,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1373,20.98,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1374,20.98,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1375,20.98,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1376,20.98,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1377,20.98,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1378,20.98,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1379,20.98,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1380,20.98,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1381,20.98,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1382,20.98,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1383,20.98,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1384,20.98,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1385,20.98,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1386,20.98,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1387,20.98,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1388,20.98,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1389,20.98,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1390,20.98,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1391,20.98,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1392,20.98,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1393,20.98,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1394,20.98,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1395,20.98,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1396,20.98,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1397,20.98,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1398,20.98,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1399,20.98,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1400,21.2,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1401,21.2,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1402,21.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1403,21.2,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1404,21.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1405,21.2,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1406,21.2,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1407,21.2,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1408,21.2,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1409,21.2,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1410,21.2,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1411,21.2,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1412,21.2,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1413,21.2,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1414,21.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1415,21.2,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1416,21.2,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1417,21.2,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1418,21.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1419,21.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1420,21.2,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1421,21.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1422,21.2,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1423,21.2,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1424,21.2,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1425,21.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1426,21.2,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1427,21.2,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1428,21.58,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1429,21.58,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1430,21.58,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1431,21.58,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1432,21.58,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1433,21.58,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1434,21.58,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1435,21.58,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1436,21.58,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1437,21.58,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1438,21.58,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1439,21.58,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1440,21.58,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1441,21.58,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1442,21.58,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1443,21.58,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1444,21.58,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1445,21.58,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1446,21.58,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1447,21.58,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1448,21.58,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1449,21.58,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1450,21.58,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1451,21.58,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1452,21.58,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1453,21.58,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1454,21.58,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1455,21.58,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1456,20.96,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1457,20.96,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1458,20.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1459,20.96,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1460,20.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1461,20.96,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1462,20.96,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1463,20.96,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1464,20.96,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1465,20.96,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1466,20.96,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1467,20.96,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1468,20.96,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1469,20.96,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1470,20.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1471,20.96,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1472,20.96,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1473,20.96,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1474,20.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1475,20.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1476,20.96,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1477,20.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1478,20.96,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1479,20.96,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1480,20.96,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1481,20.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1482,20.96,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1483,20.96,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1484,19.64,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1485,19.64,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1486,19.64,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1487,19.64,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1488,19.64,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1489,19.64,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1490,19.64,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1491,19.64,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1492,19.64,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1493,19.64,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1494,19.64,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1495,19.64,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1496,19.64,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1497,19.64,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1498,19.64,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1499,19.64,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1500,19.64,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1501,19.64,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1502,19.64,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1503,19.64,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1504,19.64,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1505,19.64,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1506,19.64,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1507,19.64,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1508,19.64,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1509,19.64,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1510,19.64,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1511,19.64,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1512,21.32,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1513,21.32,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1514,21.32,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1515,21.32,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1516,21.32,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1517,21.32,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1518,21.32,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1519,21.32,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1520,21.32,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1521,21.32,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1522,21.32,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1523,21.32,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1524,21.32,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1525,21.32,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1526,21.32,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1527,21.32,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1528,21.32,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1529,21.32,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1530,21.32,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1531,21.32,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1532,21.32,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1533,21.32,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1534,21.32,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1535,21.32,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1536,21.32,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1537,21.32,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1538,21.32,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1539,21.32,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1540,21.16,AZC7E,Bacteroidaceae,Amino acid metabolism,M00022,0.07104795737122557
+1541,21.16,AZC7E,Bacteroidaceae,Lipid metabolism,M00082,0.10195381882770871
+1542,21.16,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1543,21.16,AZC7E,Bacteroidaceae,Energy metabolism,M00166,0.17158081705150977
+1544,21.16,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1545,21.16,AZC7E,Bacteroidaceae,Energy metabolism,M00345,0.21492007104795738
+1546,21.16,AZC7E,Bacteroidaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1547,21.16,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1548,21.16,AZC7E,Bacteroidaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1549,21.16,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1550,21.16,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1551,21.16,AZC7E,Bacteroidaceae,Energy metabolism,M00173,0.5513321492007105
+1552,21.16,AZC7E,Bacteroidaceae,Energy metabolism,M00169,0.5570159857904086
+1553,21.16,AZC7E,Bacteroidaceae,Amino acid metabolism,M00621,0.5737122557726465
+1554,21.16,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1555,21.16,AZC7E,Bacteroidaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1556,21.16,AZC7E,Bacteroidaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1557,21.16,AZC7E,Bacteroidaceae,Gene set,M00627,0.661101243339254
+1558,21.16,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1559,21.16,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1560,21.16,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1561,21.16,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1562,21.16,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1563,21.16,AZC7E,Bacteroidaceae,Glycan metabolism,M00063,0.7271758436944937
+1564,21.16,AZC7E,Bacteroidaceae,Energy metabolism,M00167,0.7357015985790408
+1565,21.16,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1566,21.16,AZC7E,Bacteroidaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1567,21.16,AZC7E,Bacteroidaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1568,18.15,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1569,18.15,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1570,18.15,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1571,18.15,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1572,18.15,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1573,18.15,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1574,18.15,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1575,18.15,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1576,18.15,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1577,18.15,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1578,18.15,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1579,18.15,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1580,18.15,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1581,18.15,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1582,18.15,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1583,18.15,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1584,18.15,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1585,18.15,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1586,18.15,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1587,18.15,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1588,18.15,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1589,18.15,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1590,18.15,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1591,18.15,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1592,18.15,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1593,18.15,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1594,18.15,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1595,18.15,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1596,21.22,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1597,21.22,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1598,21.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1599,21.22,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1600,21.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1601,21.22,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1602,21.22,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1603,21.22,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1604,21.22,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1605,21.22,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1606,21.22,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1607,21.22,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1608,21.22,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1609,21.22,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1610,21.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1611,21.22,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1612,21.22,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1613,21.22,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1614,21.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1615,21.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1616,21.22,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1617,21.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1618,21.22,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1619,21.22,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1620,21.22,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1621,21.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1622,21.22,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1623,21.22,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1624,20.59,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1625,20.59,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1626,20.59,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1627,20.59,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1628,20.59,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1629,20.59,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1630,20.59,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1631,20.59,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1632,20.59,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1633,20.59,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1634,20.59,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1635,20.59,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1636,20.59,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1637,20.59,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1638,20.59,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1639,20.59,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1640,20.59,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1641,20.59,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1642,20.59,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1643,20.59,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1644,20.59,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1645,20.59,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1646,20.59,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1647,20.59,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1648,20.59,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1649,20.59,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1650,20.59,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1651,20.59,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1652,19.65,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1653,19.65,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1654,19.65,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1655,19.65,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1656,19.65,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1657,19.65,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1658,19.65,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1659,19.65,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1660,19.65,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1661,19.65,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1662,19.65,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1663,19.65,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1664,19.65,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1665,19.65,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1666,19.65,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1667,19.65,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1668,19.65,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1669,19.65,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1670,19.65,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1671,19.65,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1672,19.65,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1673,19.65,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1674,19.65,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1675,19.65,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1676,19.65,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1677,19.65,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1678,19.65,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1679,19.65,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1680,19.95,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1681,19.95,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1682,19.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1683,19.95,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1684,19.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1685,19.95,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1686,19.95,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1687,19.95,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1688,19.95,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1689,19.95,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1690,19.95,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1691,19.95,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1692,19.95,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1693,19.95,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1694,19.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1695,19.95,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1696,19.95,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1697,19.95,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1698,19.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1699,19.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1700,19.95,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1701,19.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1702,19.95,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1703,19.95,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1704,19.95,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1705,19.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1706,19.95,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1707,19.95,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1708,21.76,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1709,21.76,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1710,21.76,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1711,21.76,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1712,21.76,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1713,21.76,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1714,21.76,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1715,21.76,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1716,21.76,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1717,21.76,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1718,21.76,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1719,21.76,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1720,21.76,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1721,21.76,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1722,21.76,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1723,21.76,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1724,21.76,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1725,21.76,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1726,21.76,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1727,21.76,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1728,21.76,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1729,21.76,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1730,21.76,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1731,21.76,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1732,21.76,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1733,21.76,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1734,21.76,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1735,21.76,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1736,20.57,AZC7E,Muribaculaceae,Amino acid metabolism,M00022,0.07104795737122557
+1737,20.57,AZC7E,Muribaculaceae,Lipid metabolism,M00082,0.10195381882770871
+1738,20.57,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.14955595026642984
+1739,20.57,AZC7E,Muribaculaceae,Energy metabolism,M00166,0.17158081705150977
+1740,20.57,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.19396092362344583
+1741,20.57,AZC7E,Muribaculaceae,Energy metabolism,M00345,0.21492007104795738
+1742,20.57,AZC7E,Muribaculaceae,Nucleotide metabolism,M00051,0.28845470692717584
+1743,20.57,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00003,0.3385435168738899
+1744,20.57,AZC7E,Muribaculaceae,Nucleotide metabolism,M00048,0.42131438721136766
+1745,20.57,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00549,0.4397868561278863
+1746,20.57,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00855,0.4603907637655417
+1747,20.57,AZC7E,Muribaculaceae,Energy metabolism,M00173,0.5513321492007105
+1748,20.57,AZC7E,Muribaculaceae,Energy metabolism,M00169,0.5570159857904086
+1749,20.57,AZC7E,Muribaculaceae,Amino acid metabolism,M00621,0.5737122557726465
+1750,20.57,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.5985790408525755
+1751,20.57,AZC7E,Muribaculaceae,Nucleotide metabolism,M00052,0.6134991119005329
+1752,20.57,AZC7E,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.6348134991119005
+1753,20.57,AZC7E,Muribaculaceae,Gene set,M00627,0.661101243339254
+1754,20.57,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.6852575488454707
+1755,20.57,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.6852575488454707
+1756,20.57,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00741,0.6980461811722913
+1757,20.57,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.7115452930728241
+1758,20.57,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00011,0.7115452930728241
+1759,20.57,AZC7E,Muribaculaceae,Glycan metabolism,M00063,0.7271758436944937
+1760,20.57,AZC7E,Muribaculaceae,Energy metabolism,M00167,0.7357015985790408
+1761,20.57,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.7357015985790408
+1762,20.57,AZC7E,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.7477797513321492
+1763,20.57,AZC7E,Muribaculaceae,Carbohydrate metabolism,M00552,0.7477797513321492
+1764,22.61,AZC9C,Muribaculaceae,Amino acid metabolism,M00022,0.017406749555950268
+1765,22.61,AZC9C,Muribaculaceae,Lipid metabolism,M00082,0.02699822380106572
+1766,22.61,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.03907637655417407
+1767,22.61,AZC9C,Muribaculaceae,Energy metabolism,M00166,0.045115452930728245
+1768,22.61,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.05150976909413854
+1769,22.61,AZC9C,Muribaculaceae,Energy metabolism,M00345,0.0586145648312611
+1770,22.61,AZC9C,Muribaculaceae,Nucleotide metabolism,M00051,0.08241563055062166
+1771,22.61,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00003,0.10266429840142095
+1772,22.61,AZC9C,Muribaculaceae,Nucleotide metabolism,M00048,0.1325044404973357
+1773,22.61,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00549,0.14067495559502663
+1774,22.61,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00855,0.1492007104795737
+1775,22.61,AZC9C,Muribaculaceae,Energy metabolism,M00173,0.18543516873889876
+1776,22.61,AZC9C,Muribaculaceae,Energy metabolism,M00169,0.18685612788632328
+1777,22.61,AZC9C,Muribaculaceae,Amino acid metabolism,M00621,0.19786856127886324
+1778,22.61,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.21065719360568383
+1779,22.61,AZC9C,Muribaculaceae,Nucleotide metabolism,M00052,0.21989342806394316
+1780,22.61,AZC9C,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.23268206039076378
+1781,22.61,AZC9C,Muribaculaceae,Gene set,M00627,0.24511545293072823
+1782,22.61,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.25648312611012436
+1783,22.61,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.25648312611012436
+1784,22.61,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00741,0.2642984014209592
+1785,22.61,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.2753108348134991
+1786,22.61,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00011,0.2753108348134991
+1787,22.61,AZC9C,Muribaculaceae,Glycan metabolism,M00063,0.2877442273534636
+1788,22.61,AZC9C,Muribaculaceae,Energy metabolism,M00167,0.29378330373001776
+1789,22.61,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.29378330373001776
+1790,22.61,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.30088809946714035
+1791,22.61,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00552,0.30088809946714035
+1792,23.45,AZC9C,Bacteroidaceae,Amino acid metabolism,M00022,0.017406749555950268
+1793,23.45,AZC9C,Bacteroidaceae,Lipid metabolism,M00082,0.02699822380106572
+1794,23.45,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00120,0.03907637655417407
+1795,23.45,AZC9C,Bacteroidaceae,Energy metabolism,M00166,0.045115452930728245
+1796,23.45,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00899,0.05150976909413854
+1797,23.45,AZC9C,Bacteroidaceae,Energy metabolism,M00345,0.0586145648312611
+1798,23.45,AZC9C,Bacteroidaceae,Nucleotide metabolism,M00051,0.08241563055062166
+1799,23.45,AZC9C,Bacteroidaceae,Carbohydrate metabolism,M00003,0.10266429840142095
+1800,23.45,AZC9C,Bacteroidaceae,Nucleotide metabolism,M00048,0.1325044404973357
+1801,23.45,AZC9C,Bacteroidaceae,Carbohydrate metabolism,M00549,0.14067495559502663
+1802,23.45,AZC9C,Bacteroidaceae,Carbohydrate metabolism,M00855,0.1492007104795737
+1803,23.45,AZC9C,Bacteroidaceae,Energy metabolism,M00173,0.18543516873889876
+1804,23.45,AZC9C,Bacteroidaceae,Energy metabolism,M00169,0.18685612788632328
+1805,23.45,AZC9C,Bacteroidaceae,Amino acid metabolism,M00621,0.19786856127886324
+1806,23.45,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00115,0.21065719360568383
+1807,23.45,AZC9C,Bacteroidaceae,Nucleotide metabolism,M00052,0.21989342806394316
+1808,23.45,AZC9C,Bacteroidaceae,Biosynthesis of terpenoids and polyketides,M00793,0.23268206039076378
+1809,23.45,AZC9C,Bacteroidaceae,Gene set,M00627,0.24511545293072823
+1810,23.45,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00123,0.25648312611012436
+1811,23.45,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00577,0.25648312611012436
+1812,23.45,AZC9C,Bacteroidaceae,Carbohydrate metabolism,M00741,0.2642984014209592
+1813,23.45,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00119,0.2753108348134991
+1814,23.45,AZC9C,Bacteroidaceae,Carbohydrate metabolism,M00011,0.2753108348134991
+1815,23.45,AZC9C,Bacteroidaceae,Glycan metabolism,M00063,0.2877442273534636
+1816,23.45,AZC9C,Bacteroidaceae,Energy metabolism,M00167,0.29378330373001776
+1817,23.45,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00950,0.29378330373001776
+1818,23.45,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00124,0.30088809946714035
+1819,23.45,AZC9C,Bacteroidaceae,Carbohydrate metabolism,M00552,0.30088809946714035
+1820,21.85,AZC9C,Muribaculaceae,Amino acid metabolism,M00022,0.017406749555950268
+1821,21.85,AZC9C,Muribaculaceae,Lipid metabolism,M00082,0.02699822380106572
+1822,21.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.03907637655417407
+1823,21.85,AZC9C,Muribaculaceae,Energy metabolism,M00166,0.045115452930728245
+1824,21.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.05150976909413854
+1825,21.85,AZC9C,Muribaculaceae,Energy metabolism,M00345,0.0586145648312611
+1826,21.85,AZC9C,Muribaculaceae,Nucleotide metabolism,M00051,0.08241563055062166
+1827,21.85,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00003,0.10266429840142095
+1828,21.85,AZC9C,Muribaculaceae,Nucleotide metabolism,M00048,0.1325044404973357
+1829,21.85,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00549,0.14067495559502663
+1830,21.85,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00855,0.1492007104795737
+1831,21.85,AZC9C,Muribaculaceae,Energy metabolism,M00173,0.18543516873889876
+1832,21.85,AZC9C,Muribaculaceae,Energy metabolism,M00169,0.18685612788632328
+1833,21.85,AZC9C,Muribaculaceae,Amino acid metabolism,M00621,0.19786856127886324
+1834,21.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.21065719360568383
+1835,21.85,AZC9C,Muribaculaceae,Nucleotide metabolism,M00052,0.21989342806394316
+1836,21.85,AZC9C,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.23268206039076378
+1837,21.85,AZC9C,Muribaculaceae,Gene set,M00627,0.24511545293072823
+1838,21.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.25648312611012436
+1839,21.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.25648312611012436
+1840,21.85,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00741,0.2642984014209592
+1841,21.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.2753108348134991
+1842,21.85,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00011,0.2753108348134991
+1843,21.85,AZC9C,Muribaculaceae,Glycan metabolism,M00063,0.2877442273534636
+1844,21.85,AZC9C,Muribaculaceae,Energy metabolism,M00167,0.29378330373001776
+1845,21.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.29378330373001776
+1846,21.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.30088809946714035
+1847,21.85,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00552,0.30088809946714035
+1848,15.85,AZC9C,Muribaculaceae,Amino acid metabolism,M00022,0.017406749555950268
+1849,15.85,AZC9C,Muribaculaceae,Lipid metabolism,M00082,0.02699822380106572
+1850,15.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.03907637655417407
+1851,15.85,AZC9C,Muribaculaceae,Energy metabolism,M00166,0.045115452930728245
+1852,15.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.05150976909413854
+1853,15.85,AZC9C,Muribaculaceae,Energy metabolism,M00345,0.0586145648312611
+1854,15.85,AZC9C,Muribaculaceae,Nucleotide metabolism,M00051,0.08241563055062166
+1855,15.85,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00003,0.10266429840142095
+1856,15.85,AZC9C,Muribaculaceae,Nucleotide metabolism,M00048,0.1325044404973357
+1857,15.85,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00549,0.14067495559502663
+1858,15.85,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00855,0.1492007104795737
+1859,15.85,AZC9C,Muribaculaceae,Energy metabolism,M00173,0.18543516873889876
+1860,15.85,AZC9C,Muribaculaceae,Energy metabolism,M00169,0.18685612788632328
+1861,15.85,AZC9C,Muribaculaceae,Amino acid metabolism,M00621,0.19786856127886324
+1862,15.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.21065719360568383
+1863,15.85,AZC9C,Muribaculaceae,Nucleotide metabolism,M00052,0.21989342806394316
+1864,15.85,AZC9C,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.23268206039076378
+1865,15.85,AZC9C,Muribaculaceae,Gene set,M00627,0.24511545293072823
+1866,15.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.25648312611012436
+1867,15.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.25648312611012436
+1868,15.85,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00741,0.2642984014209592
+1869,15.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.2753108348134991
+1870,15.85,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00011,0.2753108348134991
+1871,15.85,AZC9C,Muribaculaceae,Glycan metabolism,M00063,0.2877442273534636
+1872,15.85,AZC9C,Muribaculaceae,Energy metabolism,M00167,0.29378330373001776
+1873,15.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.29378330373001776
+1874,15.85,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.30088809946714035
+1875,15.85,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00552,0.30088809946714035
+1876,22.55,AZC9C,Muribaculaceae,Amino acid metabolism,M00022,0.017406749555950268
+1877,22.55,AZC9C,Muribaculaceae,Lipid metabolism,M00082,0.02699822380106572
+1878,22.55,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.03907637655417407
+1879,22.55,AZC9C,Muribaculaceae,Energy metabolism,M00166,0.045115452930728245
+1880,22.55,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.05150976909413854
+1881,22.55,AZC9C,Muribaculaceae,Energy metabolism,M00345,0.0586145648312611
+1882,22.55,AZC9C,Muribaculaceae,Nucleotide metabolism,M00051,0.08241563055062166
+1883,22.55,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00003,0.10266429840142095
+1884,22.55,AZC9C,Muribaculaceae,Nucleotide metabolism,M00048,0.1325044404973357
+1885,22.55,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00549,0.14067495559502663
+1886,22.55,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00855,0.1492007104795737
+1887,22.55,AZC9C,Muribaculaceae,Energy metabolism,M00173,0.18543516873889876
+1888,22.55,AZC9C,Muribaculaceae,Energy metabolism,M00169,0.18685612788632328
+1889,22.55,AZC9C,Muribaculaceae,Amino acid metabolism,M00621,0.19786856127886324
+1890,22.55,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.21065719360568383
+1891,22.55,AZC9C,Muribaculaceae,Nucleotide metabolism,M00052,0.21989342806394316
+1892,22.55,AZC9C,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.23268206039076378
+1893,22.55,AZC9C,Muribaculaceae,Gene set,M00627,0.24511545293072823
+1894,22.55,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.25648312611012436
+1895,22.55,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.25648312611012436
+1896,22.55,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00741,0.2642984014209592
+1897,22.55,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.2753108348134991
+1898,22.55,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00011,0.2753108348134991
+1899,22.55,AZC9C,Muribaculaceae,Glycan metabolism,M00063,0.2877442273534636
+1900,22.55,AZC9C,Muribaculaceae,Energy metabolism,M00167,0.29378330373001776
+1901,22.55,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.29378330373001776
+1902,22.55,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.30088809946714035
+1903,22.55,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00552,0.30088809946714035
+1904,22.38,AZC9C,Muribaculaceae,Amino acid metabolism,M00022,0.017406749555950268
+1905,22.38,AZC9C,Muribaculaceae,Lipid metabolism,M00082,0.02699822380106572
+1906,22.38,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.03907637655417407
+1907,22.38,AZC9C,Muribaculaceae,Energy metabolism,M00166,0.045115452930728245
+1908,22.38,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.05150976909413854
+1909,22.38,AZC9C,Muribaculaceae,Energy metabolism,M00345,0.0586145648312611
+1910,22.38,AZC9C,Muribaculaceae,Nucleotide metabolism,M00051,0.08241563055062166
+1911,22.38,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00003,0.10266429840142095
+1912,22.38,AZC9C,Muribaculaceae,Nucleotide metabolism,M00048,0.1325044404973357
+1913,22.38,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00549,0.14067495559502663
+1914,22.38,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00855,0.1492007104795737
+1915,22.38,AZC9C,Muribaculaceae,Energy metabolism,M00173,0.18543516873889876
+1916,22.38,AZC9C,Muribaculaceae,Energy metabolism,M00169,0.18685612788632328
+1917,22.38,AZC9C,Muribaculaceae,Amino acid metabolism,M00621,0.19786856127886324
+1918,22.38,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.21065719360568383
+1919,22.38,AZC9C,Muribaculaceae,Nucleotide metabolism,M00052,0.21989342806394316
+1920,22.38,AZC9C,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.23268206039076378
+1921,22.38,AZC9C,Muribaculaceae,Gene set,M00627,0.24511545293072823
+1922,22.38,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.25648312611012436
+1923,22.38,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.25648312611012436
+1924,22.38,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00741,0.2642984014209592
+1925,22.38,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.2753108348134991
+1926,22.38,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00011,0.2753108348134991
+1927,22.38,AZC9C,Muribaculaceae,Glycan metabolism,M00063,0.2877442273534636
+1928,22.38,AZC9C,Muribaculaceae,Energy metabolism,M00167,0.29378330373001776
+1929,22.38,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.29378330373001776
+1930,22.38,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.30088809946714035
+1931,22.38,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00552,0.30088809946714035
+1932,22.1,AZC9C,Muribaculaceae,Amino acid metabolism,M00022,0.017406749555950268
+1933,22.1,AZC9C,Muribaculaceae,Lipid metabolism,M00082,0.02699822380106572
+1934,22.1,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.03907637655417407
+1935,22.1,AZC9C,Muribaculaceae,Energy metabolism,M00166,0.045115452930728245
+1936,22.1,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.05150976909413854
+1937,22.1,AZC9C,Muribaculaceae,Energy metabolism,M00345,0.0586145648312611
+1938,22.1,AZC9C,Muribaculaceae,Nucleotide metabolism,M00051,0.08241563055062166
+1939,22.1,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00003,0.10266429840142095
+1940,22.1,AZC9C,Muribaculaceae,Nucleotide metabolism,M00048,0.1325044404973357
+1941,22.1,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00549,0.14067495559502663
+1942,22.1,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00855,0.1492007104795737
+1943,22.1,AZC9C,Muribaculaceae,Energy metabolism,M00173,0.18543516873889876
+1944,22.1,AZC9C,Muribaculaceae,Energy metabolism,M00169,0.18685612788632328
+1945,22.1,AZC9C,Muribaculaceae,Amino acid metabolism,M00621,0.19786856127886324
+1946,22.1,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.21065719360568383
+1947,22.1,AZC9C,Muribaculaceae,Nucleotide metabolism,M00052,0.21989342806394316
+1948,22.1,AZC9C,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.23268206039076378
+1949,22.1,AZC9C,Muribaculaceae,Gene set,M00627,0.24511545293072823
+1950,22.1,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.25648312611012436
+1951,22.1,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.25648312611012436
+1952,22.1,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00741,0.2642984014209592
+1953,22.1,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.2753108348134991
+1954,22.1,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00011,0.2753108348134991
+1955,22.1,AZC9C,Muribaculaceae,Glycan metabolism,M00063,0.2877442273534636
+1956,22.1,AZC9C,Muribaculaceae,Energy metabolism,M00167,0.29378330373001776
+1957,22.1,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.29378330373001776
+1958,22.1,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.30088809946714035
+1959,22.1,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00552,0.30088809946714035
+1960,22.54,AZC9C,Bacteroidaceae,Amino acid metabolism,M00022,0.017406749555950268
+1961,22.54,AZC9C,Bacteroidaceae,Lipid metabolism,M00082,0.02699822380106572
+1962,22.54,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00120,0.03907637655417407
+1963,22.54,AZC9C,Bacteroidaceae,Energy metabolism,M00166,0.045115452930728245
+1964,22.54,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00899,0.05150976909413854
+1965,22.54,AZC9C,Bacteroidaceae,Energy metabolism,M00345,0.0586145648312611
+1966,22.54,AZC9C,Bacteroidaceae,Nucleotide metabolism,M00051,0.08241563055062166
+1967,22.54,AZC9C,Bacteroidaceae,Carbohydrate metabolism,M00003,0.10266429840142095
+1968,22.54,AZC9C,Bacteroidaceae,Nucleotide metabolism,M00048,0.1325044404973357
+1969,22.54,AZC9C,Bacteroidaceae,Carbohydrate metabolism,M00549,0.14067495559502663
+1970,22.54,AZC9C,Bacteroidaceae,Carbohydrate metabolism,M00855,0.1492007104795737
+1971,22.54,AZC9C,Bacteroidaceae,Energy metabolism,M00173,0.18543516873889876
+1972,22.54,AZC9C,Bacteroidaceae,Energy metabolism,M00169,0.18685612788632328
+1973,22.54,AZC9C,Bacteroidaceae,Amino acid metabolism,M00621,0.19786856127886324
+1974,22.54,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00115,0.21065719360568383
+1975,22.54,AZC9C,Bacteroidaceae,Nucleotide metabolism,M00052,0.21989342806394316
+1976,22.54,AZC9C,Bacteroidaceae,Biosynthesis of terpenoids and polyketides,M00793,0.23268206039076378
+1977,22.54,AZC9C,Bacteroidaceae,Gene set,M00627,0.24511545293072823
+1978,22.54,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00123,0.25648312611012436
+1979,22.54,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00577,0.25648312611012436
+1980,22.54,AZC9C,Bacteroidaceae,Carbohydrate metabolism,M00741,0.2642984014209592
+1981,22.54,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00119,0.2753108348134991
+1982,22.54,AZC9C,Bacteroidaceae,Carbohydrate metabolism,M00011,0.2753108348134991
+1983,22.54,AZC9C,Bacteroidaceae,Glycan metabolism,M00063,0.2877442273534636
+1984,22.54,AZC9C,Bacteroidaceae,Energy metabolism,M00167,0.29378330373001776
+1985,22.54,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00950,0.29378330373001776
+1986,22.54,AZC9C,Bacteroidaceae,Metabolism of cofactors and vitamins,M00124,0.30088809946714035
+1987,22.54,AZC9C,Bacteroidaceae,Carbohydrate metabolism,M00552,0.30088809946714035
+1988,22.18,AZC9C,Muribaculaceae,Amino acid metabolism,M00022,0.017406749555950268
+1989,22.18,AZC9C,Muribaculaceae,Lipid metabolism,M00082,0.02699822380106572
+1990,22.18,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00120,0.03907637655417407
+1991,22.18,AZC9C,Muribaculaceae,Energy metabolism,M00166,0.045115452930728245
+1992,22.18,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00899,0.05150976909413854
+1993,22.18,AZC9C,Muribaculaceae,Energy metabolism,M00345,0.0586145648312611
+1994,22.18,AZC9C,Muribaculaceae,Nucleotide metabolism,M00051,0.08241563055062166
+1995,22.18,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00003,0.10266429840142095
+1996,22.18,AZC9C,Muribaculaceae,Nucleotide metabolism,M00048,0.1325044404973357
+1997,22.18,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00549,0.14067495559502663
+1998,22.18,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00855,0.1492007104795737
+1999,22.18,AZC9C,Muribaculaceae,Energy metabolism,M00173,0.18543516873889876
+2000,22.18,AZC9C,Muribaculaceae,Energy metabolism,M00169,0.18685612788632328
+2001,22.18,AZC9C,Muribaculaceae,Amino acid metabolism,M00621,0.19786856127886324
+2002,22.18,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00115,0.21065719360568383
+2003,22.18,AZC9C,Muribaculaceae,Nucleotide metabolism,M00052,0.21989342806394316
+2004,22.18,AZC9C,Muribaculaceae,Biosynthesis of terpenoids and polyketides,M00793,0.23268206039076378
+2005,22.18,AZC9C,Muribaculaceae,Gene set,M00627,0.24511545293072823
+2006,22.18,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00123,0.25648312611012436
+2007,22.18,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00577,0.25648312611012436
+2008,22.18,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00741,0.2642984014209592
+2009,22.18,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00119,0.2753108348134991
+2010,22.18,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00011,0.2753108348134991
+2011,22.18,AZC9C,Muribaculaceae,Glycan metabolism,M00063,0.2877442273534636
+2012,22.18,AZC9C,Muribaculaceae,Energy metabolism,M00167,0.29378330373001776
+2013,22.18,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00950,0.29378330373001776
+2014,22.18,AZC9C,Muribaculaceae,Metabolism of cofactors and vitamins,M00124,0.30088809946714035
+2015,22.18,AZC9C,Muribaculaceae,Carbohydrate metabolism,M00552,0.30088809946714035

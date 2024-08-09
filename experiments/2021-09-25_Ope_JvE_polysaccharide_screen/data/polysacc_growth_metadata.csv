@@ -1,0 +1,61 @@
+﻿well,polysacc,sample,sample_type,sample_day,sample_dilution,replicate
+B02,Water,jxe.066,- FMT,,,1
+B03,MGAM,jxe.066,- FMT,,,1
+B04,Glucose,jxe.066,- FMT,,,1
+B05,Arabinan,jxe.066,- FMT,,,1
+B06,Inulin,jxe.066,- FMT,,,1
+B07,Cellobiose,jxe.066,- FMT,,,1
+B08,Mucin,jxe.066,- FMT,,,1
+B09,Arabino-galactan,jxe.066,- FMT,,,1
+B10,Pectin,jxe.066,- FMT,,,1
+B11,Amylopectin,jxe.066,- FMT,,,1
+C02,Water,jxe.066,- FMT,,,2
+C03,MGAM,jxe.066,- FMT,,,2
+C04,Glucose,jxe.066,- FMT,,,2
+C05,Arabinan,jxe.066,- FMT,,,2
+C06,Inulin,jxe.066,- FMT,,,2
+C07,Cellobiose,jxe.066,- FMT,,,2
+C08,Mucin,jxe.066,- FMT,,,2
+C09,Arabino-galactan,jxe.066,- FMT,,,2
+C10,Pectin,jxe.066,- FMT,,,2
+C11,Amylopectin,jxe.066,- FMT,,,2
+D02,Water,jxe.066,Donor,,,1
+D03,MGAM,jxe.066,Donor,,,1
+D04,Glucose,jxe.066,Donor,,,1
+D05,Arabinan,jxe.066,Donor,,,1
+D06,Inulin,jxe.066,Donor,,,1
+D07,Cellobiose,jxe.066,Donor,,,1
+D08,Mucin,jxe.066,Donor,,,1
+D09,Arabino-galactan,jxe.066,Donor,,,1
+D10,Pectin,jxe.066,Donor,,,1
+D11,Amylopectin,jxe.066,Donor,,,1
+E02,Water,jxe.072,Donor,,,2
+E03,MGAM,jxe.072,Donor,,,2
+E04,Glucose,jxe.072,Donor,,,2
+E05,Arabinan,jxe.072,Donor,,,2
+E06,Inulin,jxe.072,Donor,,,2
+E07,Cellobiose,jxe.072,Donor,,,2
+E08,Mucin,jxe.072,Donor,,,2
+E09,Arabino-galactan,jxe.072,Donor,,,2
+E10,Pectin,jxe.072,Donor,,,2
+E11,Amylopectin,jxe.072,Donor,,,2
+F02,Water,jxe.072,+ FMT,,,1
+F03,MGAM,jxe.072,+ FMT,,,1
+F04,Glucose,jxe.072,+ FMT,,,1
+F05,Arabinan,jxe.072,+ FMT,,,1
+F06,Inulin,jxe.072,+ FMT,,,1
+F07,Cellobiose,jxe.072,+ FMT,,,1
+F08,Mucin,jxe.072,+ FMT,,,1
+F09,Arabino-galactan,jxe.072,+ FMT,,,1
+F10,Pectin,jxe.072,+ FMT,,,1
+F11,Amylopectin,jxe.072,+ FMT,,,1
+G02,Water,jxe.072,+ FMT,,,2
+G03,MGAM,jxe.072,+ FMT,,,2
+G04,Glucose,jxe.072,+ FMT,,,2
+G05,Arabinan,jxe.072,+ FMT,,,2
+G06,Inulin,jxe.072,+ FMT,,,2
+G07,Cellobiose,jxe.072,+ FMT,,,2
+G08,Mucin,jxe.072,+ FMT,,,2
+G09,Arabino-galactan,jxe.072,+ FMT,,,2
+G10,Pectin,jxe.072,+ FMT,,,2
+G11,Amylopectin,jxe.070,+ FMT,,,2

@@ -1,0 +1,2106 @@
+---
+title: "fig5_PolysaccharideMuribac"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+setwd("~/Dropbox/fmt/scripts/")
+library(tidyverse)
+library(wesanderson)
+library(ggthemes)
+library(data.table)
+library(tidytext)
+library(cowplot)
+source("CompteSpearmanCorrelationAndMelt.R")
+
+
+ven <- c('#FAAF40',"#1B75BB","#37B34A", "#F05A28")
+pal <- wes_palette("Zissou1", 100, type = "continuous")
+bugColors <- read.csv('../tables/bugColors.csv')$x
+
+options(stringsAsFactors = F)
+options(scipen = 10000)
+
+CorrectedData <- data.table::fread("~/Dropbox/fmt/experiments/2022-09-13 Guillaume FMT r3/CorrectedDataFrame.csv")
+Tax_Table <- data.table::fread("~/Dropbox/fmt/experiments/2022-09-13 Guillaume FMT r3/SilvaTax.csv")
+otumapping <- read.csv("../experiments/2022-09-13 Guillaume FMT r3/DeSeq_OTU_dynamics.csv")
+
+```
+
+
+
+Let's see how cluster proportions shift after treatments
+
+```{r}
+plotframe <- read.csv("../experiments/2022-09-13 Guillaume FMT r3/plotframe.csv")
+
+plotframe <- plotframe %>% 
+  group_by(Sample) %>% 
+  mutate(proportion_cluster = NumberParticles/sum(NumberParticles)) %>% 
+  ungroup() %>%
+  group_by(MouseGroup, Cluster) %>%
+  mutate(musgroup_proportion_cluster = mean(proportion_cluster)) %>% ungroup() %>%
+  select(MouseGroup,Cluster, musgroup_proportion_cluster) %>% distinct() %>%
+  mutate(noFMT_score = ifelse(MouseGroup == 'Pre FMT',log10(musgroup_proportion_cluster), NA),    
+         postFMT_score = ifelse(MouseGroup == 'Post FMT',log10(musgroup_proportion_cluster), NA),
+         donor_score = ifelse(MouseGroup == 'Donor',log10(musgroup_proportion_cluster), NA)) %>%
+  select(Cluster, noFMT_score, postFMT_score, donor_score) %>% 
+  mutate_all(~replace(., is.na(.), -10000000)) %>% #need to replace NA to calculate MAX
+  group_by(Cluster) %>%
+  mutate(noFMT_score = max(noFMT_score),
+         postFMT_score = max(postFMT_score),
+         donor_score = max(donor_score)) %>% ungroup() %>% distinct() %>% mutate(delta_fmt = postFMT_score-noFMT_score, Cluster = as.factor(Cluster)) %>% 
+    mutate(direction = ifelse(delta_fmt > 0, 'Increase', 'Decrease'))
+
+plotframe[plotframe == -10000000] <- -3   #for samples with filler value, replace with 
+
+ggplot() +
+    scale_x_continuous(breaks=seq(-3,2,1)) +
+  geom_point(data=plotframe, aes(x = noFMT_score, y = Cluster), color = 'Dodgerblue', shape = 'square', size = 3) +
+  geom_point(data=plotframe, aes(x = postFMT_score, y = Cluster), color = 'orange', size = 3) +
+  #geom_point(data=plotframe, aes(x = donor_score, y = Cluster), color = 'red', size = 2, shape = 4) +  #add envigo as X
+  geom_segment(data=plotframe, aes(x=noFMT_score , y = Cluster, 
+                                   xend = postFMT_score, yend = Cluster, color = direction),
+                  arrow = arrow(length = unit(0.15, "cm"), type = 'closed'), 
+                                lineend = "butt",
+                                linejoin = "round") +
+  scale_color_manual(values = c("#ff1d25", "#29af7f")) +
+  labs(x = 'log10(Relative abundance)', y = 'Cluster', color = 'Delta Abundance') +
+  theme_clean() +
+      theme(axis.text.x = element_text(size=12,color = 'black'), 
+        axis.text.y = element_text(size=12, color = 'black'),
+        axis.title.x.bottom = element_text(size = 14,color = 'black'),
+        axis.title.y.left = element_text(size = 14,color = 'black'),
+        legend.text = element_text(size=12,color = 'black'),
+        legend.title = element_text(size = 14, hjust = .5,color = 'black'),
+        legend.position = 'bottom')
+
+ggsave("../figs/fig5/ClusterDelta.png",  width = 2.5, height = 4)
+ggsave("../figs/fig5/ClusterDelta.pdf",  width = 2.5, height = 4)
+
+
+
+```
+
+
+
+
+#Assemble all prevalent sets
+```{r}
+
+PrevalentSets <- rbind((read.csv("../experiments/2022-09-13 Guillaume FMT r3/PrevalentSet_Post FMT.csv") %>% 
+  mutate(MouseGroup = 'Post FMT')),
+(read.csv("../experiments/2022-09-13 Guillaume FMT r3/PrevalentSet_Pre FMT.csv") %>% 
+  mutate(MouseGroup = 'Pre FMT')),
+(read.csv("../experiments/2022-09-13 Guillaume FMT r3/PrevalentSet_Donor.csv") %>% 
+  mutate(MouseGroup = 'Donor'))) %>% select(-X) %>% mutate(MouseGroup = as.factor(MouseGroup))
+                
+```
+
+
+Are interactions occuring between donor taxa or donor-recipient or recipient-recipient
+```{r}
+
+#uncomment lines to separate engrafted vs unengrafted microbes
+temp <- PrevalentSets %>% 
+  filter(Significant == T) %>% 
+  select(OTU1Type, OTU2Type, Cluster, Zscore, MouseGroup) %>%
+  mutate(interaction = NA) %>% 
+  distinct() %>%
+  mutate(interaction = ifelse(OTU1Type == 'Donor Taxa' & OTU2Type == 'Donor Taxa', 'donor-donor', interaction),
+         interaction = ifelse(OTU1Type == 'Recipient Taxa' & OTU2Type == 'Recipient Taxa', 'recipient-recipient', interaction),
+         interaction = ifelse(OTU1Type == 'Donor Taxa' & OTU2Type == 'Recipient Taxa', 'donor-recipient', interaction),
+         interaction = ifelse(OTU1Type == 'Donor Taxa' & OTU2Type == 'Shared Taxa', 'donor-shared', interaction),
+         interaction = ifelse(OTU1Type == 'Recipient Taxa' & OTU2Type == 'Shared Taxa', 'recipient-shared', interaction),
+         interaction = ifelse(OTU1Type == 'Shared Taxa' & OTU2Type == 'Shared Taxa', 'shared-shared', interaction)) %>% na.omit() %>% mutate(interaction_type = ifelse(Zscore > 0, 'Positive', 'Negative'))
+
+#What types of interactions do we see
+
+temp %>% ggplot(., aes(x=interaction)) + 
+  geom_bar(stat = 'count', aes(fill = interaction_type)) + 
+  scale_fill_manual(values = c('dodgerblue', 'firebrick2')) +
+  labs(x= 'Interactors', y = '# of Interactions', fill = 'Interaction Type') +
+  theme_clean() + 
+  scale_y_continuous(limits = c(0,200)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = 'top') + 
+  facet_wrap(~MouseGroup, scales = 'free_y', nrow = 3)
+
+ggsave("../figs/fig5/5D_InteractionCounts.png", width = 4, height = 9)
+ggsave("../figs/fig5/5D_InteractionCounts.pdf", width = 4, height = 9)
+
+
+```
+
+Let's average interactions between all clusters 
+
+```{}
+
+mean_interactions <- PrevalentSets %>% group_by(MouseGroup, OTU1, OTU2) %>% 
+  filter(Significance < .01) %>% 
+  mutate(average_corr = mean(Correlation),
+         average_sig = mean(Significance),
+         interaction = ifelse(average_corr > 0, 'Positive', 'Negative')) %>% 
+  select(OTU1, OTU2, average_corr, average_sig,interaction,MouseGroup, 
+         Order_OTU1, Family_OTU1, Order_OTU2, Family_OTU2, OTU1Type, OTU2Type)%>% 
+  distinct %>% ungroup()
+
+#Distribution of correlations between mouse groups
+
+ggplot(mean_interactions, aes(MouseGroup, fill = MouseGroup, y = average_corr)) +
+      geom_boxplot(outlier.shape = NA) + 
+      geom_jitter(alpha = .2) + theme_cowplot()
+
+#How do interactions change between microbes?
+temp <- inner_join(
+mean_interactions %>% filter(MouseGroup == 'Pre FMT') %>% 
+  select(OTU1, OTU2, average_corr_pre =average_corr) %>% mutate(pair = paste(OTU1,"_",OTU2, sep = '')),
+mean_interactions %>% filter(MouseGroup == 'Post FMT') %>% 
+  select(OTU1, OTU2, average_corr_post =average_corr) %>% mutate(pair = paste(OTU1,"_",OTU2, sep = ''))) %>% mutate()
+
+#temp[is.na(temp)] <- 0
+
+temp %>% select(pair, average_corr_pre, average_corr_post) %>% 
+  reshape2::melt() %>%
+  ggplot(., aes(x=variable, y = value, group = pair)) + 
+  geom_line(alpha = .2) + 
+  geom_point(alpha = .2) + theme_cowplot()
+
+filter(temp, average_corr_pre > .1 & average_corr_post < -.3)
+
+```
+
+#5E? Make network diagram of mean interactions, show all nodes in circle
+```{r}
+
+library(ggraph)
+library(igraph)
+
+bugColors <- setNames(c(scales::hue_pal()(length(unique(PrevalentSets$Order_OTU1)))), c(levels(as.factor(PrevalentSets$Order_OTU1))))
+
+#average interactions 
+mean_interactions <- PrevalentSets %>% group_by(MouseGroup, OTU1, OTU2) %>% 
+  filter(Significance < .01) %>% 
+  mutate(average_corr = mean(Zscore),
+         average_sig = mean(Significance),
+         interaction = ifelse(average_corr > 0, 'Positive', 'Negative')) %>% 
+  select(OTU1, OTU2, average_corr, average_sig,interaction,MouseGroup, 
+         Order_OTU1, Family_OTU1, Order_OTU2, Family_OTU2, OTU1Type, OTU2Type)%>% 
+  distinct %>% ungroup()
+
+#Count OTU instances
+Instances <- PrevalentSets %>% select(MouseGroup, OTU1, Cluster, InstancesOTU1) %>% distinct() %>%
+  ungroup() %>% group_by(MouseGroup, OTU1) %>% mutate(total_instances = sum(InstancesOTU1)) %>% 
+  ungroup() %>% select(OTU1, total_instances,MouseGroup) %>% distinct()
+
+
+
+#tbl_nodes[unique(tbl_nodes$Order_OTU1) %in% unique(PrevalentSet$Order_OTU1),]
+#unique(tbl_nodes$Order_OTU1) %in% unique(PrevalentSet$Order_OTU1)
+
+
+# Create data frame for edges
+
+cluster_network <- mean_interactions %>% left_join(., Instances, by = c("OTU1", "MouseGroup")) %>%
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2)) #only significant interactions
+
+
+
+
+#Make dummy edges
+tbl_edges_all <- cluster_network %>% 
+    select(OTU1, OTU2) %>% 
+    mutate(interaction = 1) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes_all <- cluster_network %>% 
+  select(OTU1, Order_OTU1, Color) %>%
+  mutate(OTU1 = as.numeric(OTU1)) %>%
+  distinct() %>%
+  arrange(OTU1) %>% mutate(OTU1 = as.character(OTU1))
+
+
+
+# - FMT
+
+#Get nodes found in -FMT
+
+tbl_nodes <- cluster_network %>% filter(MouseGroup == 'Pre FMT') %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% select(OTU1, total_instances)%>% distinct() %>%
+  mutate(alpha = 1, total_instances = as.numeric(total_instances)) %>% left_join(tbl_nodes_all, .) %>% replace(is.na(.), .1)
+
+
+#Now layer edges for -FMT
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Pre FMT') %>%
+    mutate(interaction = ifelse(average_corr > 0, 'Positive', 'Negative'),
+           Significance=log10(1/average_sig)) %>%
+    select(OTU1, OTU2, interaction, Significance, average_corr) %>% 
+    distinct()
+
+
+#merge node and edge data
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = T)
+
+#graph just nodes
+nodes <- ggraph(graph_nodes, layout = 'circle') +
+   geom_edge_link(aes(
+                      #edge_width = abs(average_corr), 
+                       alpha = Significance*.02, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+  geom_node_point(aes(color = Order_OTU1, size = total_instances*.3, alpha = alpha)) +
+  geom_node_point(aes(size = total_instances*.15), color = 'white') +
+  labs(fill = 'Interaction Significance', color = 'Order', 
+         title = "MouseGroup: Pre FMT") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+a <- nodes + geom_node_text(aes(label = name), size = 2.5,  nudge_x = nodes$data$x * .15, nudge_y = nodes$data$y * .15, check_overlap=FALSE)
+
+# Donor
+
+#Get nodes found in Donor
+
+tbl_nodes <- cluster_network %>% filter(MouseGroup == 'Donor') %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% select(OTU1, total_instances)%>% distinct() %>%
+  mutate(alpha = 1, total_instances = as.numeric(total_instances)) %>% left_join(tbl_nodes_all, .) %>% replace(is.na(.), .1)
+
+
+#Now layer edges for Donor
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Donor') %>%
+    mutate(interaction = ifelse(average_corr > 0, 'Positive', 'Negative'),
+           Significance=log10(1/average_sig)) %>%
+    select(OTU1, OTU2, interaction, Significance, average_corr) %>% 
+    distinct()
+
+
+#merge node and edge data
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = FALSE)
+
+#graph just nodes
+nodes <- ggraph(graph_nodes, layout = 'circle') +
+   geom_edge_link(aes(
+                       #edge_width = abs(average_corr), 
+                       alpha = Significance*.02, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+    #scale_edge_width_continuous(range = c(0,5)) +
+  geom_node_point(aes(color = Order_OTU1, size = total_instances*.3, alpha = alpha)) +
+  geom_node_point(aes(size = total_instances*.15), color = 'white') +
+      scale_size_continuous(range = c(0, 7)) +
+  labs(fill = 'Interaction Significance', color = 'Order', 
+         title = "MouseGroup: Donor") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+b <- nodes + geom_node_text(aes(label = name), size = 2.5,  nudge_x = nodes$data$x * .15, nudge_y = nodes$data$y * .15, check_overlap=FALSE)
+
+
+# +FMT
+
+#Get nodes found in Donor
+
+tbl_nodes <- cluster_network %>% filter(MouseGroup == 'Post FMT') %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% select(OTU1, total_instances)%>% distinct() %>%
+  mutate(alpha = 1, total_instances = as.numeric(total_instances)) %>% left_join(tbl_nodes_all, .) %>% replace(is.na(.), .1)
+
+#Now layer edges for Post FMT'
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Post FMT') %>%
+    mutate(interaction = ifelse(average_corr > 0, 'Positive', 'Negative'),
+           Significance=log10(1/average_sig)) %>%
+    select(OTU1, OTU2, interaction, Significance, average_corr) %>% 
+    distinct()
+
+
+#merge node and edge data
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = FALSE)
+
+#graph just nodes
+nodes <- ggraph(graph_nodes, layout = 'circle') +
+   geom_edge_link(aes(
+                       #edge_width = abs(average_corr), 
+                       alpha = Significance*.02, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+    #scale_edge_width_continuous(range = c(0,5)) +
+  geom_node_point(aes(color = Order_OTU1, size = total_instances*.3, alpha = alpha)) +
+  geom_node_point(aes(size = total_instances*.15), color = 'white') +
+      scale_size_continuous(range = c(0, 7)) +
+  labs(fill = 'Interaction Significance', color = 'Order', 
+         title = "MouseGroup: +FMT") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+
+c <- nodes + geom_node_text(aes(label = name), size = 2.5,  nudge_x = nodes$data$x * .15, nudge_y = nodes$data$y * .15, check_overlap=FALSE)
+
+
+
+leg <- cowplot::get_legend(ggraph(graph_nodes, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = average_corr), alpha =.4) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(size = 14, aes(color = Order_OTU1)) +
+    scale_color_manual(values = bugColors) +labs(color = 'Order') +
+      theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'bottom'))
+    
+
+temp <- cowplot::plot_grid(a,b,c, nrow = 1)
+temp
+ggsave("../figs/fig5/5E_InteractionNetworks.png", width = 10,height = 3.5)
+ggsave("../figs/fig5/5E_InteractionNetworks.pdf", width = 10,height = 3.5)
+
+cowplot::plot_grid(leg)
+ggsave("../figs/fig5/5E_InteractionNetworks_leg.png", width = 14,height = 1.5)
+ggsave("../figs/fig5/5E_InteractionNetworks_leg.pdf", width = 14,height = 1.5)
+cowplot::plot_grid(temp, leg, nrow = 2)
+
+#ggsave("../figs/fig5/5D_InteractionNetworks.png", width = 10, height = 5.5)
+#ggsave("../figs/fig5/5D_InteractionNetworks.pdf", width = 10, height = 5.5)
+#ggsave("../figs/fig5/5D_InteractionNetworks_allInteractions.png", width = 12, height = 6)
+#ggsave("../figs/fig5/5D_InteractionNetworks_allInteractions.pdf", width = 12, height = 6)
+
+```
+
+#5E? Make network diagram of mean interactions, show present nodes arranged in auto
+```{r}
+
+library(ggraph)
+library(igraph)
+
+#average interactions 
+mean_interactions <- PrevalentSets %>% group_by(MouseGroup, OTU1, OTU2) %>% 
+  filter(Significance < .0001) %>% 
+  mutate(average_corr = mean(Zscore),
+         average_sig = mean(Significance),
+         interaction = ifelse(average_corr > 0, 'Positive', 'Negative')) %>% 
+  select(OTU1, OTU2, average_corr, average_sig,interaction,MouseGroup, 
+         Order_OTU1, Family_OTU1, Order_OTU2, Family_OTU2, OTU1Type, OTU2Type)%>% 
+  distinct %>% ungroup()
+
+#Count OTU instances
+Instances <- PrevalentSets %>% select(MouseGroup, OTU1, Cluster, InstancesOTU1) %>% distinct() %>%
+  ungroup() %>% group_by(MouseGroup, OTU1) %>% mutate(total_instances = sum(InstancesOTU1)) %>% 
+  ungroup() %>% select(OTU1, total_instances,MouseGroup) %>% distinct()
+
+bugColors <- setNames(c(scales::hue_pal()(length(unique(PrevalentSets$Order_OTU1)))), c(levels(as.factor(PrevalentSets$Order_OTU1))))
+
+#tbl_nodes[unique(tbl_nodes$Order_OTU1) %in% unique(PrevalentSet$Order_OTU1),]
+#unique(tbl_nodes$Order_OTU1) %in% unique(PrevalentSet$Order_OTU1)
+
+
+# Create data frame for edges
+
+cluster_network <- mean_interactions %>% left_join(., Instances, by = c("OTU1", "MouseGroup")) %>%
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2)) 
+
+
+
+
+
+# - FMT
+
+#Get nodes found in -FMT
+
+tbl_nodes <- cluster_network %>% filter(MouseGroup == 'Pre FMT') %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% select(OTU1, total_instances, Order_OTU1)%>% distinct() %>%
+  mutate(total_instances = as.numeric(total_instances)) %>% replace(is.na(.), .1)
+
+
+#Now layer edges for -FMT
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Pre FMT') %>%
+    mutate(interaction = ifelse(average_corr > 0, 'Positive', 'Negative'),
+           Significance=log10(1/average_sig)) %>%
+    select(OTU1, OTU2, interaction, Significance, average_corr) %>% 
+    distinct()
+
+
+#merge node and edge data
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = T)
+
+#graph just nodes
+nodes <- ggraph(graph_nodes, layout = 'auto') +
+   geom_edge_link(aes(edge_width = abs(average_corr), 
+                       alpha = Significance*.02, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+      scale_edge_width_continuous(range = c(0,5)) +
+  geom_node_point(aes(color = Order_OTU1, size = total_instances*.3)) +
+  geom_node_point(aes(size = total_instances*.1), color = 'white') +
+        scale_size_continuous(range = c(0, 7)) +
+  labs(fill = 'Interaction Significance', color = 'Order', 
+         title = "MouseGroup: Pre FMT") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+a <- nodes + geom_node_text(aes(label = name), size = 3,  nudge_x = nodes$data$x * .03, nudge_y = nodes$data$y * .03, check_overlap=FALSE)
+
+# Donor
+
+#Get nodes found in Donor
+
+tbl_nodes <- cluster_network %>% filter(MouseGroup == 'Donor') %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% select(OTU1, total_instances, Order_OTU1)%>% distinct() %>%
+  mutate(total_instances = as.numeric(total_instances)) %>% replace(is.na(.), .1)
+
+
+#Now layer edges for Donor
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Donor') %>%
+    mutate(interaction = ifelse(average_corr > 0, 'Positive', 'Negative'),
+           Significance=log10(1/average_sig)) %>%
+    select(OTU1, OTU2, interaction, Significance, average_corr) %>% 
+    distinct()
+
+
+#merge node and edge data
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = FALSE)
+
+#graph just nodes
+nodes <- ggraph(graph_nodes, layout = 'auto') +
+   geom_edge_link(aes(edge_width = abs(average_corr), 
+                       alpha = Significance*.02, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+  geom_node_point(aes(color = Order_OTU1, size = total_instances*.3)) +
+  geom_node_point(aes(size = total_instances*.1), color = 'white') +
+      scale_size_continuous(range = c(0, 7)) +
+  labs(fill = 'Interaction Significance', color = 'Order', 
+         title = "MouseGroup: Donor") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+b <- nodes + geom_node_text(aes(label = name), size = 3,  nudge_x = nodes$data$x * .02, nudge_y = nodes$data$y * .02, check_overlap=FALSE)
+
+
+# +FMT
+
+#Get nodes found in postFMT
+
+tbl_nodes <- cluster_network %>% filter(MouseGroup == 'Post FMT') %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% select(OTU1, total_instances, Order_OTU1)%>% distinct() %>%
+  mutate(total_instances = as.numeric(total_instances)) %>% replace(is.na(.), .1)
+
+#Now layer edges for Post FMT'
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Post FMT') %>%
+    mutate(interaction = ifelse(average_corr > 0, 'Positive', 'Negative'),
+           Significance=log10(1/average_sig)) %>%
+    select(OTU1, OTU2, interaction, Significance, average_corr) %>% 
+    distinct()
+
+
+#merge node and edge data
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = FALSE)
+
+#graph just nodes
+nodes <- ggraph(graph_nodes, layout = 'auto') +
+   geom_edge_link(aes(edge_width = abs(average_corr), 
+                       alpha = Significance*.02, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+  geom_node_point(aes(color = Order_OTU1, 
+                      size = total_instances*.3)) +
+  geom_node_point(aes(size = total_instances*.1), color = 'white') +
+      scale_size_continuous(range = c(0, 7)) +
+  labs(fill = 'Interaction Significance', color = 'Order', 
+         title = "MouseGroup: +FMT") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+
+c <- nodes + geom_node_text(aes(label = name), size = 3,  nudge_x = nodes$data$x * .02, nudge_y = nodes$data$y * .02, check_overlap=FALSE)
+
+
+
+leg <- cowplot::get_legend(ggraph(graph_nodes, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = average_corr), alpha =.4) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(size = 14, aes(color = Order_OTU1)) +
+    scale_color_manual(values = bugColors) +labs(color = 'Order') +
+      theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'bottom'))
+    
+
+temp <- cowplot::plot_grid(a,c,b, nrow = 1)
+temp
+ggsave("../figs/fig5/5E_InteractionNetworks_auto.png", width = 12,height = 3.5)
+ggsave("../figs/fig5/5E_InteractionNetworks_auto.pdf", width = 12,height = 3.5)
+
+cowplot::plot_grid(leg)
+ggsave("../figs/fig5/5E_InteractionNetworks_leg_auto.png", width = 14,height = 1.5)
+ggsave("../figs/fig5/5E_InteractionNetworks_leg_auto.pdf", width = 14,height = 1.5)
+
+cowplot::plot_grid(temp, leg, nrow = 2)
+ggsave("../figs/fig5/5E_InteractionNetworks_auto_combo.png", width = 14, height = 7)
+ggsave("../figs/fig5/5E_InteractionNetworks_auto_combo.pdf", width = 14, height = 7)
+
+
+```
+
+#5E? Make network diagram of mean interactions, show present nodes arranged in auto
+COLORED CENTERS TO INDICATE SHARED OR SPECIFIC TO ONE TYPE
+```{r}
+
+library(ggraph)
+library(igraph)
+
+#average interactions 
+mean_interactions <- PrevalentSets %>% group_by(MouseGroup, OTU1, OTU2) %>% 
+  filter(Significance < .0001) %>% 
+  mutate(average_corr = mean(Zscore),
+         average_sig = mean(Significance),
+         interaction = ifelse(average_corr > 0, 'Positive', 'Negative')) %>% 
+  select(OTU1, OTU2, average_corr, average_sig,interaction,MouseGroup, 
+         Order_OTU1, Family_OTU1, Order_OTU2, Family_OTU2, OTU1Type, OTU2Type)%>% 
+  distinct %>% ungroup()
+
+#Count OTU instances
+Instances <- PrevalentSets %>% select(MouseGroup, OTU1, Cluster, InstancesOTU1) %>% distinct() %>%
+  ungroup() %>% group_by(MouseGroup, OTU1) %>% mutate(total_instances = sum(InstancesOTU1)) %>% 
+  ungroup() %>% select(OTU1, total_instances,MouseGroup) %>% distinct()
+
+bugColors <- setNames(c(scales::hue_pal()(length(unique(PrevalentSets$Order_OTU1)))), c(levels(as.factor(PrevalentSets$Order_OTU1))))
+
+#tbl_nodes[unique(tbl_nodes$Order_OTU1) %in% unique(PrevalentSet$Order_OTU1),]
+#unique(tbl_nodes$Order_OTU1) %in% unique(PrevalentSet$Order_OTU1)
+
+
+# Create data frame for edges
+
+cluster_network <- mean_interactions %>% left_join(., Instances, by = c("OTU1", "MouseGroup")) %>%
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2)) 
+
+
+
+
+
+# - FMT
+
+#Get nodes found in -FMT
+
+tbl_nodes <- cluster_network %>% filter(MouseGroup == 'Pre FMT') %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% 
+  select(OTU1, total_instances, Order_OTU1, OTU1Type)%>% distinct() %>%
+  mutate(total_instances = as.numeric(total_instances)) %>% replace(is.na(.), .1)
+
+
+#Now layer edges for -FMT
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Pre FMT') %>%
+    mutate(interaction = ifelse(average_corr > 0, 'Positive', 'Negative'),
+           Significance=log10(1/average_sig)) %>%
+    select(OTU1, OTU2, interaction, Significance, average_corr) %>% 
+    distinct()
+
+
+#merge node and edge data
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = T)
+
+#graph just nodes
+nodes <- ggraph(graph_nodes, layout = 'auto') +
+   geom_edge_link(aes(edge_width = abs(average_corr), 
+                       alpha = Significance*.02, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+      scale_edge_width_continuous(range = c(0,5)) +
+  geom_node_point(aes(size = total_instances*.1, color = OTU1Type)) +
+  scale_color_manual(values = c( 'blue','red', 'gray60')) +
+        scale_size_continuous(range = c(0, 7)) +
+  labs(fill = 'Interaction Significance', color = 'Order', 
+         title = "MouseGroup: Pre FMT") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+a <- nodes + geom_node_text(aes(label = name), size = 3,  nudge_x = nodes$data$x * .03, nudge_y = nodes$data$y * .03, check_overlap=FALSE)
+
+# Donor
+
+#Get nodes found in Donor
+
+tbl_nodes <- cluster_network %>% filter(MouseGroup == 'Donor') %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% select(OTU1, total_instances, Order_OTU1, OTU1Type)%>% distinct() %>%
+  mutate(total_instances = as.numeric(total_instances)) %>% replace(is.na(.), .1)
+
+
+#Now layer edges for Donor
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Donor') %>%
+    mutate(interaction = ifelse(average_corr > 0, 'Positive', 'Negative'),
+           Significance=log10(1/average_sig)) %>%
+    select(OTU1, OTU2, interaction, Significance, average_corr) %>% 
+    distinct()
+
+
+#merge node and edge data
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = FALSE)
+
+#graph just nodes
+nodes <- ggraph(graph_nodes, layout = 'auto') +
+   geom_edge_link(aes(edge_width = abs(average_corr), 
+                       alpha = Significance*.02, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+  geom_node_point(aes(size = total_instances*.1, color = OTU1Type)) +
+  scale_color_manual(values = c( 'blue','red', 'gray60')) +
+      scale_size_continuous(range = c(0, 7)) +
+  labs(fill = 'Interaction Significance', color = 'Order', 
+         title = "MouseGroup: Donor") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+b <- nodes + geom_node_text(aes(label = name), size = 3,  nudge_x = nodes$data$x * .02, nudge_y = nodes$data$y * .02, check_overlap=FALSE)
+
+
+# +FMT
+
+#Get nodes found in postFMT
+
+tbl_nodes <- cluster_network %>% filter(MouseGroup == 'Post FMT') %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1)) %>% 
+  select(OTU1, total_instances, Order_OTU1, OTU1Type)%>% distinct() %>%
+  mutate(total_instances = as.numeric(total_instances)) %>% replace(is.na(.), .1)
+
+#Now layer edges for Post FMT'
+tbl_edges<- cluster_network %>% filter(MouseGroup == 'Post FMT') %>%
+    mutate(interaction = ifelse(average_corr > 0, 'Positive', 'Negative'),
+           Significance=log10(1/average_sig)) %>%
+    select(OTU1, OTU2, interaction, Significance, average_corr) %>% 
+    distinct()
+
+
+#merge node and edge data
+graph_nodes <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = FALSE)
+
+#graph just nodes
+nodes <- ggraph(graph_nodes, layout = 'auto') +
+   geom_edge_link(aes(edge_width = abs(average_corr), 
+                       alpha = Significance*.02, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+  geom_node_point(aes(size = total_instances*.1, color = OTU1Type)) +
+  scale_color_manual(values = c( 'blue','red', 'gray60')) +
+      scale_size_continuous(range = c(0, 7)) +
+  labs(fill = 'Interaction Significance', color = 'Order', 
+         title = "MouseGroup: +FMT") +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none') 
+
+
+c <- nodes + geom_node_text(aes(label = name), size = 3,  nudge_x = nodes$data$x * .02, nudge_y = nodes$data$y * .02, check_overlap=FALSE)
+
+
+
+leg <- cowplot::get_legend(ggraph(graph_nodes, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = average_corr), alpha =.4) +
+    scale_edge_width_continuous(range = c(0,5)) +
+  geom_node_point(aes(size = total_instances*.1, color = OTU1Type)) +
+  scale_color_manual(values = c( 'blue','red', 'gray60')) +
+    labs(color = 'Order') +
+      theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'bottom'))
+    
+
+temp <- cowplot::plot_grid(a,c,b, nrow = 1)
+temp
+ggsave("../figs/fig5/5E_InteractionNetworks_auto_OTUtype.png", width = 12,height = 3.5)
+ggsave("../figs/fig5/5E_InteractionNetworks_auto_OTUtype.pdf", width = 12,height = 3.5)
+
+cowplot::plot_grid(leg)
+ggsave("../figs/fig5/5E_InteractionNetworks_leg_auto_OTUtype.png", width = 14,height = 1.5)
+ggsave("../figs/fig5/5E_InteractionNetworks_leg_auto_OTUtype.pdf", width = 14,height = 1.5)
+
+cowplot::plot_grid(temp, leg, nrow = 2)
+ggsave("../figs/fig5/5E_InteractionNetworks_auto_combo_OTUtype.png", width = 14, height = 7)
+ggsave("../figs/fig5/5E_InteractionNetworks_auto_combo_OTUtype.pdf", width = 14, height = 7)
+
+
+```
+
+FIgure 5E) Network of interactions. - V1
+```{}
+library(ggraph)
+library(igraph)
+
+bugColors <- setNames(c(scales::hue_pal()(length(unique(PrevalentSet$Order_OTU1)))), c(levels(as.factor(PrevalentSet$Order_OTU1))))
+
+#tbl_nodes[unique(tbl_nodes$Order_OTU1) %in% unique(PrevalentSet$Order_OTU1),]
+#unique(tbl_nodes$Order_OTU1) %in% unique(PrevalentSet$Order_OTU1)
+
+
+# Create data frame for edges
+
+clustr <- 0
+cluster_network <- PrevalentSet %>%  
+  #mutate(OTU1 = OTU1ColorName, OTU2 = OTU2ColorName) %>%
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2)) %>%
+    filter(Cluster == clustr, Significant == T) #only significant interactions
+    #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes <- cluster_network %>% 
+  select(OTU1, Order_OTU1, InstancesOTU1, Color) %>% 
+  distinct() %>% 
+  #mutate(OTU1 = as.numeric(gsub('Otu', '', .$OTU1))) %>% 
+  arrange(OTU1)
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+a<- ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('firebrick', 'navyblue')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1*.3)) +
+    scale_size_continuous(range = c(0, 7)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(aes(size = InstancesOTU1*.2), color = 'white') +
+    #geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    #geom_node_text(aes(label = name)) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste('Cluster', clustr, sep = ' ')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+#add labels radially
+a <- a + geom_node_text(aes(label = name), size = 3,  nudge_x = a$data$x * .2, nudge_y = a$data$y * .2, check_overlap=FALSE) 
+
+
+clustr <- 1
+cluster_network <- PrevalentSet %>%  
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2)) %>%
+    filter(Cluster == clustr, Significant == T) #only significant interactions
+    #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes <- cluster_network %>% 
+  select(OTU1, Order_OTU1, InstancesOTU1, Color) %>% 
+  distinct() %>% 
+  mutate(OTU1 = as.numeric(gsub('Otu', '', .$OTU1))) %>% 
+  arrange(OTU1)
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+b<-ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue',  'firebrick')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1*.3)) +
+    scale_size_continuous(range = c(0, 7)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(aes(size = InstancesOTU1*.2), color = 'white') +
+    #geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    #geom_node_text(aes(label = name)) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste('Cluster', clustr, sep = ' ')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+#add labels radially
+b <- b + geom_node_text(aes(label = name), size = 3,  nudge_x = b$data$x * .2, nudge_y = b$data$y * .2, check_overlap=FALSE) 
+
+
+clustr <- 2
+
+cluster_network <- PrevalentSet %>%  
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2)) %>%
+    filter(Cluster == clustr, Significant == T) #only significant interactions
+    #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes <- cluster_network %>% 
+  select(OTU1, Order_OTU1, InstancesOTU1, Color) %>% 
+  distinct() %>% 
+  mutate(OTU1 = as.numeric(gsub('Otu', '', .$OTU1))) %>% 
+  arrange(OTU1)
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+#graph
+c <- ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c( 'firebrick', 'navyblue')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1*.3)) +
+    scale_size_continuous(range = c(0, 7)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(aes(size = InstancesOTU1*.2), color = 'white') +
+    #geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    #geom_node_text(aes(label = name)) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste('Cluster', clustr, sep = ' ')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+#add labels radially
+c <- c + geom_node_text(aes(label = name), size = 3,  nudge_x = c$data$x * .2, nudge_y = c$data$y * .2, check_overlap=FALSE) 
+
+leg <- cowplot::get_legend(ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = Correlation), alpha =.4) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(size = 14, aes(color = Order_OTU1)) +
+    scale_color_manual(values = bugColors) +labs(color = 'Order') +
+      theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'bottom'))
+    
+temp <- cowplot::plot_grid(a,b,c, nrow = 1)
+temp
+ggsave("../figs/fig5/5E_InteractionNetworks.png", width = 8,height = 3)
+ggsave("../figs/fig5/5E_InteractionNetworks.pdf", width = 8,height = 3)
+
+cowplot::plot_grid(leg)
+ggsave("../figs/fig5/5E_InteractionNetworks_leg.png", width = 14,height = 1.5)
+ggsave("../figs/fig5/5E_InteractionNetworks_leg.pdf", width = 14,height = 1.5)
+cowplot::plot_grid(temp, leg, nrow = 2)
+
+#ggsave("../figs/fig5/5D_InteractionNetworks.png", width = 10, height = 5.5)
+#ggsave("../figs/fig5/5D_InteractionNetworks.pdf", width = 10, height = 5.5)
+#ggsave("../figs/fig5/5D_InteractionNetworks_allInteractions.png", width = 12, height = 6)
+#ggsave("../figs/fig5/5D_InteractionNetworks_allInteractions.pdf", width = 12, height = 6)
+
+```
+
+Bonus Clusters
+```{}
+clustr <- 8
+cluster_network <- PrevalentSet %>% 
+    filter(Cluster == clustr, Significant == T) #only significant interactions
+   #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes <- cluster_network %>% 
+  select(OTU1, Order_OTU1, InstancesOTU1) %>% distinct()
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+ggraph(graph) + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('firebrick', 'navyblue')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1*2)) +
+    scale_size_continuous(range = c(0, 10)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(aes(size = InstancesOTU1), color = 'white') +
+    #geom_node_text(aes(label = name)) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste('Cluster', clustr, sep = ' ')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+```
+
+
+
+==========SUPPLEMENTARY FIGURES HERE=====================
+
+
+Supplement - How many OTUs per cluster & taxonomy
+```{r}
+
+PrevalentSets[PrevalentSets == 'Neither'] <- 'Shared'
+PrevalentSets[PrevalentSets == 'Envigo Specific'] <- 'Donor'
+PrevalentSets[PrevalentSets == 'Jackson Specific'] <- 'Recipient'
+#PrevalentSets$OTU1Type[PrevalentSets$OTU1Type == ''] <- NA
+
+#number of OTUs colored by Origin
+a <- PrevalentSets %>% select(MouseGroup,Cluster, OTU1, OTU1Type) %>% distinct() %>% 
+  group_by(MouseGroup,Cluster, OTU1Type) %>% mutate(num_OTU_type = n()) %>% 
+  ungroup() %>%
+  group_by(Cluster,MouseGroup,) %>% mutate(num_OTU = n()) %>% ungroup() %>% select(-OTU1) %>% distinct() %>% 
+  ggplot(., aes(x=as.factor(Cluster), num_OTU_type, fill = OTU1Type), fill = 'dodgerblue', color = 'black') + 
+  scale_fill_manual(values = c(' gray', '#37b34a', '#7e09d5', '#1b75bb')) +
+  geom_bar(stat = 'identity', position = 'stack') + 
+  labs(x='Cluster', y = 'No. OTUs', fill = 'OTU Origin') +
+  #coord_flip() +
+  theme_cowplot() +
+    theme(axis.text.x = element_text(size=14,color = 'black'), 
+        axis.text.y = element_text(size=14, color = 'black'),
+        axis.title.x.bottom = element_text(size = 14,color = 'black'),
+        axis.title.y.left = element_text(size = 14,color = 'black'),
+        legend.text = element_text(size=12,color = 'black'),
+        legend.title = element_text(size = 14, hjust = .5,color = 'black'),
+        legend.position = 'top') + facet_wrap(~MouseGroup, scales = 'free_x')
+  
+
+
+#colored by taxonomy, stacked by abundance
+b<- PrevalentSets %>% select(MouseGroup,Cluster, OTU1, Order_OTU1, InstancesOTU1) %>% distinct() %>% 
+  ggplot(., aes(x=as.factor(Cluster),y = InstancesOTU1,),  color = 'black') + 
+  geom_bar(stat = 'identity', position = 'fill', aes(fill = Order_OTU1)) + 
+  labs(x='Cluster', y = 'Proportion of Cluster', fill = 'Order') +
+ # coord_flip() +
+  theme_cowplot() +
+    theme(axis.text.x = element_text(size=12,color = 'black'), 
+        axis.text.y = element_text(size=12, color = 'black'),
+        axis.title.x.bottom = element_text(size = 14,color = 'black'),
+        axis.title.y.left = element_text(size = 14,color = 'black'),
+        legend.text = element_text(size=10,color = 'black'),
+        legend.title = element_text(size = 12, hjust = .5,color = 'black'),
+        legend.position = 'bottom') + facet_wrap(~MouseGroup, scales = 'free_x')
+
+plot_grid(a,b, nrow = 2)
+
+ggsave("../figs/s5/S5A_ParticleComposition_FMT.png",  width = 8, height = 6)
+ggsave("../figs/s5/S5A_ParticleComposition_FMT.pdf",  width = 8, height = 6)
+
+
+```
+
+Number of counts per clusters
+```{r}
+
+PrevalentSets %>% select(Cluster, MouseGroup) %>% 
+  ggplot(.,aes(x=Cluster)) +
+  geom_bar(stat = 'count', fill = 'dodgerblue', color = 'black') +
+  theme_cowplot() +
+  scale_x_continuous(breaks = seq(0,16,1)) +
+  theme(
+    axis.text = element_text(size = 14),
+    strip.background = element_blank(),
+    strip.text = element_text(size = 14)) +
+  labs(fill = "Order", x = "Cluster", y = '# of Particles') + 
+  facet_wrap(~factor(MouseGroup, levels = c('Pre FMT', 'Post FMT', 'Donor')), nrow = 3, scales = 'free_x', strip.position = 'right') 
+
+ggsave(paste("../figs/s5/S5A_ClusterCounts_all.pdf",sep = ''), width = 4.5, height = 12)
+ggsave(paste("../figs/s5/S5A_ClusterCounts_all.png",  sep = ''), width = 4.5, height = 12)
+
+Are microbes that engraft, generally the ones that have high number of interactions?
+
+
+
+Look at interactions between microbes
+```{r}
+
+temp <- PrevalentSets %>% mutate(interaction = NA) %>% 
+  filter(Significant == T) %>% 
+  #inner_join(., engraftment, by = 'OTU1') %>%
+  #select(OTU1Type, OTU2Type, Significance, Sample, Correlation, Cluster, interaction, engrafted) %>%
+  select(Order_OTU1, Order_OTU2, Significance, Sample, Correlation, Cluster, interaction, OTU1, OTU2) %>%
+  mutate(interaction_type = ifelse(Correlation > 0, 'Positive', 'Negative')) %>%
+  mutate(Order_OTU1 = ifelse(Order_OTU1 == '', 'Unknown', Order_OTU1),
+         Order_OTU2 = ifelse(Order_OTU2 == '', 'Unknown', Order_OTU2)) %>%
+  group_by(Order_OTU1, Order_OTU2) %>% 
+  filter(., interaction_type == 'Positive') %>%
+    #filter(., interaction_type == 'Negative') %>%
+     mutate(num_pos = n()) %>% select(Order_OTU1, Order_OTU2, num_pos) %>% distinct()
+
+print(paste("# positive interactions =", sum(temp$num_pos), sep = ' '))
+
+a <- temp %>% ggplot(., aes(x = Order_OTU1, y = Order_OTU2, fill = log10(as.numeric(num_pos)))) + 
+        geom_tile() + 
+  theme_cowplot() + geom_text(aes(label = num_pos), color = 'white', size = 6) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_gradientn(colors = pal) + 
+  labs(title = "+ Interactions", 
+    fill="# of interactions", x = '', y = '')
+
+
+temp <- PrevalentSets %>% mutate(interaction = NA) %>% 
+  filter(Significant == T) %>% 
+  #inner_join(., engraftment, by = 'OTU1') %>%
+  #select(OTU1Type, OTU2Type, Significance, Sample, Correlation, Cluster, interaction, engrafted) %>%
+  select(Order_OTU1, Order_OTU2, Significance, Sample, Correlation, Cluster, interaction) %>%
+  mutate(interaction_type = ifelse(Correlation > 0, 'Positive', 'Negative')) %>%
+  mutate(Order_OTU1 = ifelse(Order_OTU1 == '', 'Unknown', Order_OTU1),
+         Order_OTU2 = ifelse(Order_OTU2 == '', 'Unknown', Order_OTU2)) %>%
+  group_by(Order_OTU1, Order_OTU2) %>% 
+  #filter(., interaction_type == 'Positive') %>%
+    filter(., interaction_type == 'Negative') %>%
+     mutate(num_pos = n()) %>% select(Order_OTU1, Order_OTU2, num_pos) %>% distinct()
+
+print(paste("# negative interactions =", sum(temp$num_pos), sep = ' '))
+
+b <- temp %>% ggplot(., aes(x = Order_OTU1, y = Order_OTU2, fill = log10(as.numeric(num_pos)))) + 
+        geom_tile() + 
+  theme_cowplot() + geom_text(aes(label = num_pos), color = 'white', size = 6) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_gradientn(colors = pal) +
+  labs(title = "- Interactions", 
+    fill="# of interactions", x = '', y = '')
+
+plot_grid(a,b, nrow = 2)
+
+ggsave("../figs/s6/s6A_Interactions.png", width = 8, height = 10)
+ggsave("../figs/s6/s6A_Interactions.pdf", width = 8, height = 10)
+
+```
+
+
+How do these interaction networks work when subset by 
+
+Do donor strains bridge interactions between envigo donors?
+```{r}
+
+clustr <- 1
+cluster_network <- PrevalentSets %>%  
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>% 
+  filter(OTU1Type != 'Donor Taxa') %>%
+  filter(OTU2Type != 'Donor Taxa') %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2)) %>%
+    filter(Cluster == clustr, Significant == T) #only significant interactions
+    #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes <- cluster_network %>% 
+  select(OTU1, Order_OTU1, InstancesOTU1, Color) %>% 
+  distinct() %>% 
+  mutate(OTU1 = as.numeric(gsub('Otu', '', .$OTU1))) %>% 
+  arrange(OTU1)
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+a<-ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('firebrick', 'navyblue')) + #swap colors since no negative interactions
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1*.3)) +
+    scale_size_continuous(range = c(0, 7)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(aes(size = InstancesOTU1*.2), color = 'white') +
+    #geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    #geom_node_text(aes(label = name)) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste("Cluster ", clustr, ': - FMT', sep = '')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+#add labels radially
+a <- a + geom_node_text(aes(label = name), size = 3,  nudge_x = a$data$x * .2, nudge_y = a$data$y * .2, check_overlap=FALSE) 
+
+
+cluster_network <- PrevalentSets %>%  
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  filter(OTU1Type != 'Recipient Taxa') %>%
+  filter(OTU2Type != 'Recipient Taxa') %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2)) %>%
+    filter(Cluster == clustr, Significant == T) #only significant interactions
+    #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes <- cluster_network %>% 
+  select(OTU1, Order_OTU1, InstancesOTU1, Color) %>% 
+  distinct() %>% 
+  mutate(OTU1 = as.numeric(gsub('Otu', '', .$OTU1))) %>% 
+  arrange(OTU1)
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+b<-ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue',  'firebrick')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1*.3)) +
+    scale_size_continuous(range = c(0, 7)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(aes(size = InstancesOTU1*.2), color = 'white') +
+    #geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    #geom_node_text(aes(label = name)) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste("Cluster ", clustr, ': Donor', sep = '')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+#add labels radially
+b <- b + geom_node_text(aes(label = name), size = 3,  nudge_x = b$data$x * .2, nudge_y = b$data$y * .2, check_overlap=FALSE) 
+
+
+cluster_network <- PrevalentSets %>%  
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2)) %>%
+    filter(Cluster == clustr, Significant == T) #only significant interactions
+    #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes <- cluster_network %>% 
+  select(OTU1, Order_OTU1, InstancesOTU1, Color) %>% 
+  distinct() %>% 
+  mutate(OTU1 = as.numeric(gsub('Otu', '', .$OTU1))) %>% 
+  arrange(OTU1)
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+c<-ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue',  'firebrick')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1*.3)) +
+    scale_size_continuous(range = c(0, 7)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(aes(size = InstancesOTU1*.2), color = 'white') +
+    #geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    #geom_node_text(aes(label = name)) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste("Cluster ", clustr, ': + FMT', sep = '')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+#add labels radially
+c <- c + geom_node_text(aes(label = name), size = 3,  nudge_x = c$data$x * .2, nudge_y = c$data$y * .2, check_overlap=FALSE) 
+
+leg <- cowplot::get_legend(ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = Correlation), alpha =.4) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(size = 14, aes(color = Order_OTU1)) +
+    scale_color_manual(values = bugColors) +labs(color = 'Order') +
+      theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'bottom'))
+    
+temp <- cowplot::plot_grid(a,b,c, nrow = 3)
+temp
+ggsave("../figs/s6/s6B_InteractionNetworks.png", width = 3,height = 8)
+ggsave("../figs/s6/s6B_InteractionNetworks.pdf", width = 3,height = 8)
+
+cowplot::plot_grid(leg)
+ggsave("../figs/s6/s6B_InteractionNetworks_leg.png", width = 14,height = 1.5)
+ggsave("../figs/s6/s6B_InteractionNetworks_leg.pdf", width = 14,height = 1.5)
+cowplot::plot_grid(temp, leg, nrow = 2)
+
+
+```
+
+What new interactions occur when + donor microbes are introduced
+```{r}
+
+clustr <- 1
+cluster_network <- PrevalentSets %>%  
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>% 
+  filter(OTU1Type != 'Donor Taxa') %>%
+  filter(OTU2Type != 'Donor Taxa') %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2)) %>%
+    filter(Cluster == clustr, Significant == T) #only significant interactions
+    #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+minusFMT_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+clustr <- 1
+cluster_network <- PrevalentSets %>%  
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>% 
+  filter(OTU1Type != 'Recipient Taxa') %>%
+  filter(OTU2Type != 'Recipient Taxa') %>%
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2)) %>%
+    filter(Cluster == clustr, Significant == T) #only significant interactions
+    #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+donor_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+clustr <- 1
+cluster_network <- PrevalentSets %>%  
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>% 
+  mutate(OTU1 = gsub('Otu', '', .$OTU1),
+         OTU2 = gsub('Otu', '', .$OTU2)) %>%
+    filter(Cluster == clustr, Significant == T) #only significant interactions
+    #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+postFMT_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+postFMT_edges %>% anti_join(., minusFMT_edges, by = c('OTU1', 'OTU2')) %>%
+                  anti_join(., donor_edges, by = c('OTU1', 'OTU2'))
+
+
+```
+
+Let's see how much engrafting OTUs are interacting
+```{r}
+
+#Label OTUs as engrafted or not
+engrafted_donors <- read.csv("../experiments/2021-06-09_JxE_MaPS02/PrevalentSet_Post FMT.csv") %>% 
+    filter(OTU1Type == 'Donor Taxa') %>%
+    select(OTU1) %>% distinct() %>% mutate(engrafted = 'engrafted')
+
+
+#This strategy removes OTUs that appear in engrafted OTUs but not donor particles
+engraftment <- read.csv("../experiments/2021-06-09_JxE_MaPS02/PrevalentSet_Donor.csv") %>% 
+  filter(OTU1Type == 'Donor Taxa') %>%
+  select(OTU1) %>% distinct() %>% 
+  left_join(., engrafted_donors)
+
+engraftment[is.na(engraftment)] <- 'unengrafted'
+
+
+```
+
+
+
+
+Does number of interactions correlate with relative abundance?
+```{r}
+
+#PrevalentSet$Order_OTU1[which(PrevalentSet$Order_OTU1 == '')] <- 'Undetermined'
+
+temp <- PrevalentSet %>% filter(Significant == T) %>% 
+            select(OTU1, Cluster,InstancesOTU1, Order_OTU1) %>% 
+            group_by(Cluster, OTU1) %>% 
+            mutate(num_interactions = n()) %>% ungroup() %>% distinct() %>%
+            #group_by(Cluster) %>% 
+            #mutate(InstancesOTU1 = InstancesOTU1/sum(InstancesOTU1)) %>% 
+            ungroup() %>%
+              filter(Cluster == '1') 
+
+
+pval <- cor.test(temp$InstancesOTU1, temp$num_interactions, method = c("pearson"))$p.value
+cor <- cor(temp$InstancesOTU1, temp$num_interactions, method = c("pearson"))
+
+    
+a <- temp %>% arrange(Cluster) %>% mutate(Cluster = as.factor(Cluster)) %>% ggplot(., aes(InstancesOTU1, num_interactions)) + 
+    geom_point(aes(color = Order_OTU1)) + 
+    theme_cowplot() + 
+      scale_color_manual(values = bugColors) +
+    ylim(0,15) +
+    geom_smooth(method = 'lm') + 
+    annotate("text", label = paste("r = ", 
+                                    signif(cor, 3), ", p = ", signif(pval, 2),  sep = ''), 
+                                x = 70, y = 10, size = 6) +
+      labs(x = "OTU instances within particles", 
+           y = '# of interactions in cluster', 
+           color = 'Order', title = 'Cluster 1') + 
+  guides(color=guide_legend(ncol=2)) +
+      theme(panel.background = element_blank(),
+          axis.text.x = element_text(size=12,color = 'black'), 
+        axis.text.y = element_text(size=12, color = 'black'),
+        axis.title.x.bottom = element_text(size = 14,color = 'black'),
+        axis.title.y.left = element_text(size = 14,color = 'black'),
+        strip.text = element_text(size = 14), legend.text = element_text(size = 16))#, legend.key.size=unit(1,"cm"))
+
+plotly::ggplotly(a)
+
+#now for all
+temp <- PrevalentSet %>% filter(Significant == T) %>% 
+            select(OTU1, Cluster,InstancesOTU1, Order_OTU1) %>% 
+            group_by(Cluster, OTU1) %>% 
+            mutate(num_interactions = n()) %>% ungroup() %>% distinct() %>%
+            #group_by(Cluster) %>% 
+            #mutate(InstancesOTU1 = InstancesOTU1/sum(InstancesOTU1)) %>% 
+            ungroup()
+
+b <- temp %>% arrange(Cluster) %>% mutate(Cluster = as.factor(Cluster)) %>% ggplot(., aes(InstancesOTU1, num_interactions)) + 
+    geom_point(aes(color = Order_OTU1)) + 
+    theme_cowplot() + 
+      ylim(0,15) +
+    geom_smooth(method = 'lm') + 
+    scale_fill_manual(values = bugColors) +
+      labs(x = "OTU instances within particles", 
+           y = '# of interactions in cluster', 
+           color = 'Cluster') + facet_wrap(~Cluster) +
+  theme(strip.background = element_blank(),
+          axis.text.x = element_text(size=12,color = 'black'), 
+        axis.text.y = element_text(size=12, color = 'black'),
+        axis.title.x.bottom = element_text(size = 14,color = 'black'),
+        axis.title.y.left = element_text(size = 14,color = 'black'),
+        strip.text = element_text(size = 14),
+        legend.position = 'none')
+  
+plot_grid(a,b, nrow = 2, rel_heights = c(1,1.5))
+
+ggsave("../figs/s7/S7_InteractionVabundance.png", width = 10, height = 12)
+ggsave("../figs/s7/S7_InteractionVabundance.pdf", width = 10, height = 12)
+
+
+```
+
+
+Let's see if fold change is correlated with nuber of interactions
+```{r}
+
+
+#Let's subset to things present in at least .1% of particles
+
+#numInteractions
+temp <- PrevalentSet %>% filter(Significant == T) %>% 
+            select(OTU=OTU2, Order=Order_OTU2) %>% 
+            group_by(OTU) %>% 
+            mutate(num_interactions = n()) %>% ungroup() %>% 
+            distinct() %>% replace(is.na(.), "Undetermined")
+
+
+temp <- Tax_Table %>% select(OTU, Order) %>% distinct() %>% left_join(., temp) %>% replace(is.na(.), 0) %>% mutate(interactor = ifelse(num_interactions > 1, "Interactor", "NonInteractor")) %>% 
+  left_join(., (select(PrevalentSet, OTU=OTU2, OTUType = OTU2Type) %>% distinct())) %>% distinct()
+
+#sample metadata
+mock <- data.frame(Sample = c("J1","J2","J3","J4",
+            "E5","E6","E7","E8",
+            "JE9","JE10","JE11","JE12"),
+          SampleType=c('- FMT','- FMT','- FMT','- FMT',
+            'Donor','Donor','Donor','Donor',
+            '+ FMT','+ FMT','+ FMT','+ FMT'))
+
+#$$$ df
+OTUfc <- CorrectedData %>% inner_join(., mock) %>% filter(Count > 1) %>%
+          group_by(Particle) %>%
+          mutate(total_particle_reads = sum(Count),OTU_rel_abd = Count/sum(Count))  %>% 
+                                                ungroup() %>%
+                                                filter(OTU_rel_abd > .001) %>% 
+                                                group_by(Particle) %>% 
+                                                mutate(num_OTUs_particle = n()) %>% 
+                                                ungroup %>% group_by(Sample) %>% 
+                                                mutate(ParticleNumberPerSample = n()) %>% ungroup() %>%
+                                                filter(num_OTUs_particle > 3, 
+                                                       total_particle_reads > 25) %>% #filter out to select good particles
+                                  ungroup() %>% distinct() %>%
+                                  select(Particle, OTU, SampleType) %>% 
+                                  group_by(SampleType) %>% 
+                                      mutate(particle_count = n()) %>%
+                                  ungroup() %>%
+                                  group_by(SampleType, OTU) %>% 
+                                  mutate(OTU_hitsPerSampleType = n(),
+                                   prop_OTUhitsPerSampleType = OTU_hitsPerSampleType/particle_count) %>% 
+                                  select(SampleType, OTU, 
+                                         OTU_hitsPerSampleType, prop_OTUhitsPerSampleType) %>% ungroup() %>%
+                                  distinct() %>% mutate(donorProp = ifelse(SampleType == 'Donor',
+                                                                           prop_OTUhitsPerSampleType/0.0001166045,
+                                                                           .1), #scale to lowest non-zero in SampleType
+                                                        noFMTProp = ifelse(SampleType == '- FMT',
+                                                                           prop_OTUhitsPerSampleType/0.0007369197,
+                                                                           .1), #lowest non-zero
+                                                         plusFMTProp = ifelse(SampleType == '+ FMT',
+                                                                           prop_OTUhitsPerSampleType/0.0002052967,
+                                                                           .1)) %>% #lowest non-zero
+         group_by(OTU) %>% mutate(donorProp = max(donorProp),
+                           noFMTProp = max(noFMTProp),
+                           plusFMTProp = max(plusFMTProp)) %>% select(OTU, donorProp,noFMTProp,plusFMTProp) %>% 
+         distinct() %>% ungroup() %>% 
+          mutate(FC_donor2plusFMT = log2(plusFMTProp/donorProp), #calculate fc from 
+                 FC_noFMT2plusFMT = log2(plusFMTProp/noFMTProp),
+                 FC_donorDplusFMT = plusFMTProp-donorProp, #calculate fc from 
+                 FC_noFMTDplusFMT = plusFMTProp-noFMTProp) %>% 
+        left_join(., temp, by = "OTU") 
+           
+#interacting vs non, interacting? 
+OTUfc %>% #filter(OTUType == 'Donor Taxa') %>% 
+  ggplot(., aes(FC_noFMT2plusFMT, fill = interactor)) + 
+    geom_density(alpha = .5, position = 'identity', fill = NA, aes(color = interactor)) +
+    geom_histogram(bins = 10, alpha = .3, position = 'identity', aes(y=..density..)) +
+    scale_fill_manual(values = c('navyblue', 'gray70')) +
+      scale_color_manual(values = c('navyblue', 'gray30'), guide = 'none') +
+   labs(x = '+ FMT : - FMT OTU Abundance', y = 'Density', fill = 'Interactor?') +
+    theme_cowplot()
+  
+
+
+```
+
+Can we assign OTUs as donor specific, recipient specific, shared?
+```{r}
+library(ggsignif)
+
+temp <- CorrectedData %>% inner_join(., mock) %>% filter(Count > 1) %>%
+          group_by(Particle) %>%
+          mutate(total_particle_reads = sum(Count),OTU_rel_abd = Count/sum(Count))  %>% 
+                                                    ungroup() %>%
+                                        filter(OTU_rel_abd > .001) %>%
+                                        group_by(Particle) %>% 
+                                        mutate(num_OTUs_particle = n()) %>% 
+                                        ungroup %>% group_by(Sample) %>% 
+                                        mutate(ParticleNumberPerSample = n()) %>% ungroup() %>%
+                                        filter(num_OTUs_particle > 3, 
+                                               total_particle_reads > 25) %>% #filter out to select good particles
+                                  ungroup() %>% 
+                                  select(Particle, OTU, SampleType) %>% 
+                                  group_by(SampleType) %>% 
+                                      mutate(particle_count = n()) %>%
+                                  ungroup() %>%
+                                  group_by(SampleType, OTU) %>% 
+                                  mutate(OTU_hitsPerSampleType = n(),
+                                   prop_OTUhitsPerSampleType = OTU_hitsPerSampleType/particle_count) %>% 
+                                  select(SampleType, OTU, 
+                                         OTU_hitsPerSampleType, prop_OTUhitsPerSampleType) %>% ungroup() %>% distinct() %>% 
+  filter(prop_OTUhitsPerSampleType > .01 & SampleType != '+ FMT') %>% 
+  mutate(recipient_present = ifelse(SampleType == '- FMT', 1, 0),
+         donor_present = ifelse(SampleType == 'Donor', 1, 0)) %>%
+         select(-SampleType) %>% 
+         group_by(OTU) %>%
+         mutate(OTUType = ifelse(sum(recipient_present > 0), 
+                          ifelse(sum(donor_present > 0), 'Shared', 'Recipient Specific'), 'Donor Specific')) %>% 
+        select(OTU, OTUType) %>% distinct()
+
+
+
+
+a <- OTUfc %>% select(-OTUType) %>% inner_join(., temp) %>% 
+  filter(OTUType == 'Donor Specific') %>%
+  ggplot(., aes(y= plusFMTProp, x = interactor)) + 
+  geom_boxplot(outlier.shape = NA, alpha = .4) +
+  geom_jitter(aes(color = Order)) +
+  #scale_fill_manual(values = c('navyblue', 'gray70'), guide = "none") +
+  labs(x = 'OTU type', y = '+ FMT abundance', title = 'Donor OTUs') + theme_cowplot() +
+    scale_color_manual(values = bugColors, guide = "none") +
+  geom_signif(comparisons = list(c("Interactor", "NonInteractor")), 
+                         y_position = c(350),
+                         map_signif_level=TRUE, #Comment out for p-values
+                         test = "wilcox.test")
+
+b <- OTUfc %>% select(-OTUType) %>% inner_join(., temp) %>% 
+  filter(OTUType == 'Recipient Specific') %>%
+  ggplot(., aes(y= FC_noFMTDplusFMT, x = interactor)) + 
+  geom_boxplot(outlier.shape = NA, alpha = .4) +
+  geom_jitter(aes(color = Order)) +
+  geom_hline(yintercept = 0, linetype = 'dashed') +
+  #scale_fill_manual(values = c('navyblue', 'gray70'), guide = "none") +
+  labs(x = 'OTU type', y = paste("\u0394", '+ FMT abundance'), title = 'Recipient OTUs') +
+  scale_color_manual(values = bugColors) +
+  theme_cowplot() +
+   geom_signif(comparisons = list(c("Interactor", "NonInteractor")), 
+                         y_position = c(100),
+                         map_signif_level=TRUE, #Comment out for p-values
+                         test = "wilcox.test")
+
+cowplot::plot_grid(a,b, ncol = 2, rel_widths = c(1,2))
+
+```
+
+Does envigo have more positive interactions or not?
+```{r}
+
+#PrevalentSet[PrevalentSet == 'Neither'] <- 'Shared Taxa'
+#PrevalentSet[PrevalentSet == 'Envigo Specific'] <- 'Donor Taxa'
+#PrevalentSet[PrevalentSet == 'Jackson Specific'] <- 'Recipient Taxa'
+
+PrevalentSet %>% select(Cluster,OTU1Type,Family_OTU1, Order_OTU1, Significant, Correlation) %>% 
+      group_by(Cluster) %>% mutate(num_OTU_cluster = n(), 
+                                   interaction_type = ifelse(Correlation > 0, 'Positive', 'Negative')) %>% 
+      filter(Significant == TRUE, OTU1Type != '') %>% 
+      ggplot(., aes(y=as.factor(Cluster), fill = interaction_type)) + 
+        geom_bar(position = 'stack') + 
+        facet_wrap(~OTU1Type, nrow = 1) +
+        scale_fill_manual(values = c('dodgerblue', 'firebrick2')) +
+        labs(x = 'Number of Interactions', y = 'Cluster', fill = 'Interaction Type') +
+      theme_clean() +
+      theme(axis.text.x = element_text(size=12,color = 'black'), 
+        axis.text.y = element_text(size=12, color = 'black'),
+        axis.title.x.bottom = element_text(size = 14,color = 'black'),
+        axis.title.y.left = element_text(size = 14,color = 'black'),
+        strip.text = element_text(size = 14),
+        legend.text = element_text(size=12,color = 'black'),
+        legend.title = element_text(size = 14, hjust = .5,color = 'black'),
+        legend.position = 'bottom')
+  
+
+ggsave("../figs/fig5/ClusterInteractions.png",  width = 5.5, height = 4)
+ggsave("../figs/fig5/ClusterInteractions.pdf",  width = 5.5, height = 4)
+
+```
+
+Correlations within particles - 
+
+OTU4 & OTU6 highly correlated 
+
+```{}
+
+CorrectedData <- data.table::fread("~/Dropbox/fmt/experiments/2021-06-09_JxE_MaPS02/2022-01-12 Miles MaPS-seq/CorrectedDataFrame.csv")
+Tax_Table <- data.table::fread("~/Dropbox/fmt/experiments/2021-06-09_JxE_MaPS02/2022-01-12 Miles MaPS-seq/Silva Tax_Table.csv")
+
+
+#Change this for each group, need to run once for samples 1-3
+
+  
+fulldataset <- CorrectedData %>% group_by(Particle) %>% 
+          mutate(total_particle_reads = sum(Count),OTU_rel_abd = Count/sum(Count))  %>% 
+                                                ungroup() %>%
+                                                filter(OTU_rel_abd > .001) %>% 
+                                                group_by(Particle) %>% 
+                                                mutate(num_OTUs_particle = n()) %>% 
+                                                ungroup %>% group_by(Sample) %>% 
+                                                mutate(ParticleNumberPerSample = n()) %>%
+                                                ungroup() %>%
+                                                filter(num_OTUs_particle > 2, total_particle_reads > 25) %>%
+                                                ungroup() %>% 
+                                                left_join(., Tax_Table) 
+
+fulldataset <- fulldataset[!grepl("bulk",fulldataset$Particle),]
+#including 4/6, 53/74, 48,82, 10/18 good, 
+
+Otu1 <- "Otu10"
+Otu2 <- "Otu18"
+  
+temp <- full_join(
+  (fulldataset %>% filter(OTU == Otu1) %>% select(Particle, OTU1_count=Count)),
+  (fulldataset %>% filter(OTU == Otu2) %>% select(Particle, OTU2_count=Count))
+) 
+
+temp[is.na(temp)] <- 0
+
+corr <- signif(cor(temp$OTU1_count, temp$OTU2_count, method = 'pearson'), 3)
+  
+temp %>% ggplot(., aes(OTU1_count, OTU2_count)) + geom_point() + 
+  scale_x_log10() + scale_y_log10() + 
+  geom_smooth(method = 'lm') + 
+  labs(x = paste(Otu1, "count", sep = ' '), y = paste(Otu2, "count", sep = ' ')) + 
+  theme_cowplot() + 
+  annotate(geom = 'text', label = paste("r = ", corr, sep = ''), x = 5, y = 4000)
+
+```
+
+
+Network of interactions. - V1
+```{}
+library(ggraph)
+library(igraph)
+
+bugColors <- setNames(c(scales::hue_pal()(length(unique(PrevalentSet$Order_OTU1)))), c(levels(as.factor(PrevalentSet$Order_OTU1))))
+
+#tbl_nodes[unique(tbl_nodes$Order_OTU1) %in% unique(PrevalentSet$Order_OTU1),]
+#unique(tbl_nodes$Order_OTU1) %in% unique(PrevalentSet$Order_OTU1)
+
+
+# Create data frame for edges
+
+clustr <- 0
+cluster_network <- PrevalentSet %>% 
+    filter(Cluster == clustr, Significant == T)
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes <- cluster_network %>% 
+  select(OTU1, Order_OTU1) %>% distinct()
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+a<- ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = Significance, edge_color = interaction), alpha =.6) +
+    scale_edge_color_manual(values = c('firebrick', 'navyblue')) +
+    scale_edge_width_continuous(range = c(0,13)) +
+    geom_node_point(size = 14, aes(color = Order_OTU1)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(size = 10, color = 'white') +
+    geom_node_text(aes(label = name)) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste('Cluster', clustr, sep = '')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+
+clustr <- 1
+cluster_network <- PrevalentSet %>% 
+    filter(Cluster == clustr, Significant == T)
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance) %>% 
+    distinct()
+
+#create node information
+tbl_nodes <- cluster_network %>% 
+  select(OTU1, Order_OTU1) %>% distinct()
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+b <- ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = Significance, edge_color = interaction), alpha =.6) +
+    scale_edge_color_manual(values = c('navyblue','firebrick')) +
+      scale_edge_width_continuous(range = c(0,13)) +
+      geom_node_point(size = 14, aes(color = Order_OTU1)) +
+      scale_color_manual(values = bugColors) +
+    geom_node_point(size = 10, color = 'white') +
+    geom_node_text(aes(label = name)) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste('Cluster', clustr, sep = '')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+clustr <- 2
+cluster_network <- PrevalentSet %>% 
+    filter(Cluster == clustr, Significant == T)
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance) %>% 
+    distinct()
+
+#create node information
+tbl_nodes <- cluster_network %>% 
+  select(OTU1, Order_OTU1) %>% distinct()
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+c <-ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = Significance, edge_color = interaction), alpha =.6) +
+    scale_edge_color_manual(values = c('firebrick', 'navyblue')) +  #need to reverse since no negative interactions
+      scale_edge_width_continuous(range = c(0,13)) +
+    geom_node_point(size = 14, aes(color = Order_OTU1)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(size = 10, color = 'white') +
+    geom_node_text(aes(label = name)) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste('Cluster', clustr, sep = '')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+
+
+leg <- cowplot::get_legend(ggraph(graph, layout = 'circle') + 
+    geom_edge_link(aes(edge_width = Significance), alpha =.4) +
+    scale_edge_width_continuous(range = c(0,12)) +
+    geom_node_point(size = 14, aes(color = Order_OTU1)) +
+    scale_color_manual(values = bugColors) +labs(color = 'Order') +
+      theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'bottom'))
+    
+temp <- cowplot::plot_grid(a,b,c, nrow = 1)
+cowplot::plot_grid(temp, leg, nrow = 2)
+
+ggsave("../figs/fig5/5D_InteractionNetworks.png", width = 14, height = 6)
+ggsave("../figs/fig5/5D_InteractionNetworks.pdf", width = 14, height = 6)
+
+```
+
+
+
+
+
+
+
+
+
+Taxonomic distribution of OTUs in each cluster
+```{}
+
+PrevalentSet %>% select(Cluster, Family_OTU1) %>% 
+                 group_by(Cluster, Family_OTU1) %>%  #count number of each taxa type
+  mutate(num_fam = n()) %>% ungroup %>%
+  group_by(Cluster) 
+
+ggplot(PrevalentSet,aes(tidytext::reorder_within(OTU1ColorName, InstancesOTU1, Cluster),y = '', fill=Order_OTU1)) +
+  geom_bar(stat = 'count') +
+  #scale_fill_gradient2(low="blue", high="darkred",midpoint = 0,limits=c(-1,1)) +
+  theme_clean() +
+  theme(
+    axis.text.x = ggtext::element_markdown(angle = 90, vjust = 0.35, hjust=1, size = 10),
+    axis.text.y = ggtext::element_markdown()) +
+  upstartr::scale_x_reordered() +
+  upstartr::scale_y_reordered() +
+  labs(fill = "Correlation")  +
+  xlab("OTU 1") +
+  ylab("OTU 2") #+
+  #facet_wrap(~Cluster,scales="free")
+
+```
+
+
+MaPS-Seq correlation figure for all
+```{}
+PrevalentSet <- read.table("../experiments/2021-06-09_JxE_MaPS02/OTU Correlation by Cluster more than10 instances each otu.csv", sep = ',', header = T)
+
+corplot_all <- #PrevalentSet %>% filter(InstancesOTU1 > 15 & InstancesOTU2 > 15) %>%
+  ggplot(PrevalentSet,aes(tidytext::reorder_within(OTU1ColorName, InstancesOTU1, Cluster),
+                                   tidytext::reorder_within(OTU2ColorName, InstancesOTU2, Cluster),
+                                   fill=Correlation)) +
+  geom_tile() +
+  scale_fill_gradient2(low="blue", high="darkred",midpoint = 0,limits=c(-.5,.5)) +
+  theme_clean() +
+  theme(
+    axis.text.x = ggtext::element_markdown(angle = 90, vjust = 0.35, hjust=1, size = 10),
+    axis.text.y = ggtext::element_markdown()) +
+  upstartr::scale_x_reordered() +
+  upstartr::scale_y_reordered() +
+  labs(fill = "Correlation")  +
+  xlab("OTU 1") +
+  ylab("OTU 2") +
+  geom_point(data=function(x){x[PrevalentSet$Significant == TRUE, ]},size=.75,alpha=.7,color="black",shape=8) +
+  facet_wrap(~Cluster,scales="free")
+
+corplot_all
+ggsave("../figs/fig5/MaPSSeq_Correlations.pdf",  width = 20, height = 18)
+ggsave("../figs/fig5/MaPSSeq_Correlations.png",  width = 20, height = 18)
+
+#Now get family values
+
+corplot_fam <- ggplot(PrevalentSet,aes(tidytext::reorder_within(OTU1ColorName, InstancesOTU1, Cluster),y = '',
+                                   fill=Order_OTU1)) +
+  geom_tile() +
+  #scale_fill_gradient2(low="blue", high="darkred",midpoint = 0,limits=c(-1,1)) +
+  theme_clean() +
+  theme(
+    axis.text.x = ggtext::element_markdown(angle = 90, vjust = 0.35, hjust=1, size = 10),
+    axis.text.y = ggtext::element_markdown()) +
+  upstartr::scale_x_reordered() +
+  upstartr::scale_y_reordered() +
+  labs(fill = "Correlation")  +
+  xlab("OTU 1") +
+  ylab("OTU 2") +
+  facet_wrap(~Cluster,scales="free")
+
+corplot_fam
+ggsave("../figs/fig5/MaPSSeq_order_all.pdf",  width = 24, height = 18)
+
+
+```
+
+MaPS-Seq correlation figure for cluster 1, using hierarchical clustering
+```{}
+set.seed(123)
+
+PrevalentSet.cast <- PrevalentSet %>% filter(Cluster == '1') %>%
+  filter(OTU1 != 'NA') %>% 
+  select(OTU1, OTU2, Correlation) %>% distinct() %>% 
+  reshape2::dcast(OTU1~OTU2)
+
+#clustering
+PrevalentSet.cast.matrix <- as.matrix(PrevalentSet.cast[, -c(1)])
+rownames(PrevalentSet.cast.matrix) <- PrevalentSet.cast$OTU1
+PrevalentSet.cast.dendro <- as.dendrogram(hclust(d = dist(x = PrevalentSet.cast.matrix)))
+
+##Heatmap
+PrevalentSet.cast.long <- reshape2::melt(PrevalentSet.cast, id = c("OTU1")) %>% distinct()
+
+#reorder
+PrevalentSet.cast.order <- order.dendrogram(PrevalentSet.cast.dendro)
+
+temp <- PrevalentSet.cast.long %>% select(OTU1, OTU2=variable, Correlation = 'value') %>% 
+  left_join(., 
+            (filter(PrevalentSet, Cluster == '1') %>% 
+               select(OTU1, OTU2, Significant, Family_OTU1)), 
+            by = c("OTU1", "OTU2")) #%>% mutate(OTU1=factor(OTU1, ordered = T), OTU2=factor(OTU2, ordered = T))
+
+temp$OTU1 <- factor(x = temp$OTU1,
+                               levels = PrevalentSet.cast$OTU1[PrevalentSet.cast.order], 
+                               ordered = TRUE)
+
+#PrevalentSet.cast.long$OTU1 <- factor(x = PrevalentSet.cast.long$OTU1,
+#                               levels = PrevalentSet.cast$OTU1[PrevalentSet.cast.order], 
+#                               ordered = TRUE)
+
+#PrevalentSet.cast.long$OTU2 <- factor(x = PrevalentSet.cast.long$OTU2,
+#                               levels = PrevalentSet.cast$OTU2[PrevalentSet.cast.order], 
+#                               ordered = TRUE)
+
+#PrevalentSet.cast.long$OTU2_fac <- factor(PrevalentSet.cast.long$OTU2, ordered = T)
+
+#PrevalentSet.cast.long 
+temp %>% ggplot(aes(x = factor(OTU1,levels = PrevalentSet.cast.long$OTU1[PrevalentSet.cast.order]), y = OTU2, fill = Correlation)) +
+geom_tile() +
+  scale_fill_gradient2(low="blue", high="darkred",midpoint = 0) +#,limits=c(-.5,.5)) +
+  theme_clean() +
+  scale_y_discrete(limits = rev(PrevalentSet.cast.long$OTU1[PrevalentSet.cast.order])) +
+  scale_x_discrete(limits = rev(PrevalentSet.cast.long$OTU1[PrevalentSet.cast.order])) +
+  theme(
+    axis.text.x = ggtext::element_markdown(angle = 90, vjust = 0.35, hjust=1, size = 10),
+    axis.text.y = ggtext::element_markdown()) +
+  #upstartr::scale_x_reordered() +
+  #upstartr::scale_y_reordered() +
+  labs(fill = "Correlation")  +
+  xlab("OTU 1") +
+  ylab("OTU 2") +
+  geom_point(data=function(x){x[temp$Significant == TRUE, ]},size=.75,alpha=.7,color="black",shape=8)
+  
+```
+
+Also Clusters colored by whether they're recipient ot Donor
+```{}
+clustr <- 1
+cluster_network <- PrevalentSet %>% 
+  mutate(OTU1 = gsub("Otu", "", .$OTU1),
+         OTU2 = gsub("Otu", "", .$OTU2)) %>%
+  left_join(., data.frame(OTU1Type = c("Donor Taxa", 'Recipient Taxa', 'Shared Taxa'), 
+                            Color = c('#377Ebb', '#E41A1C','#828382'))) %>%
+    filter(Cluster == clustr, Significant == T) #only significant interactions
+    #filter(Cluster == clustr)  #All OTUs regardless of if significant
+
+tbl_edges<- cluster_network %>% 
+    mutate(interaction = ifelse(Correlation > 0, 'Positive', 'Negative'),
+           Significance=log10(1/Significance)) %>%
+    select(OTU1, OTU2, interaction, Significance, Correlation) %>% 
+    distinct()
+
+
+#create node information
+tbl_nodes <- cluster_network %>% 
+  select(OTU1, Order_OTU1, InstancesOTU1, Color) %>% distinct()
+
+#merge node and edge data
+graph <- graph_from_data_frame(tbl_edges, tbl_nodes, directed = TRUE)
+
+#graph
+a<- ggraph(graph) + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue', 'firebrick')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1)) +
+    scale_size_continuous(range = c(0, 10)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(aes(size = InstancesOTU1*.5), color = 'white') +
+    #geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    #geom_node_text(aes(label = name)) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste('Cluster', clustr, sep = ' ')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+b<- ggraph(graph) + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue', 'firebrick')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1)) +
+    scale_size_continuous(range = c(0, 10)) +
+    scale_color_manual(values = bugColors) +
+   # geom_node_point(aes(size = InstancesOTU1*.5), color = 'white') +
+    #geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    geom_node_text(aes(label = name), color = tbl_nodes$Color, size = 3) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste('Cluster', clustr, sep = ' ')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+c<- ggraph(graph) + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue', 'firebrick')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1)) +
+    scale_size_continuous(range = c(0, 10)) +
+    scale_color_manual(values = bugColors) +
+    geom_node_point(aes(size = InstancesOTU1*.5), color = 'white') +
+    geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$OTU1Type) +
+    #geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    geom_node_text(aes(label = name), color = tbl_nodes$Color, size = 3) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste('Cluster', clustr, sep = ' ')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+d<- ggraph(graph) + 
+    geom_edge_link(aes(edge_width = abs(Correlation), 
+                       alpha = Significance, 
+                       edge_color = interaction)) +
+    scale_edge_color_manual(values = c('navyblue', 'firebrick')) +
+    scale_edge_width_continuous(range = c(0,5)) +
+    geom_node_point(aes(color = Order_OTU1, size = InstancesOTU1)) +
+    scale_size_continuous(range = c(0, 10)) +
+    scale_color_manual(values = bugColors) +
+    #geom_node_point(aes(size = InstancesOTU1*.5), color = 'white') +
+    geom_node_point(aes(size = InstancesOTU1*.5), color = tbl_nodes$Color) +
+    geom_node_text(aes(label = name)) +
+    labs(fill = 'Interaction Significance', color = 'Order', 
+         title = paste('Cluster', clustr, sep = ' ')) +
+    theme(panel.background = element_blank(),
+          legend.text = element_text(size = 12),
+          plot.title = element_text(hjust = 0.5, size = 16),
+          legend.key = element_blank(),
+          legend.position = 'none')
+
+
+cowplot::plot_grid(a,b,c,d, nrow = 2, labels = 'AUTO')
+
+```

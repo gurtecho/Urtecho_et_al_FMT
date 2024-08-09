@@ -1,0 +1,334 @@
+---
+title: "MAGstats"
+output: html_document
+date: "2024-02-12"
+---
+
+```{r setup, include=FALSE}
+setwd("/Users/guillaumeurtecho/Dropbox/fmt/experiments/20240208_micom/scripts/")
+
+library(tidyverse)
+library(wesanderson)
+library(ggthemes)
+library(cowplot)
+library(ggsignif)
+library(reshape2)
+library(RColorBrewer)
+
+#library('phyloseq')
+
+ven <- c('#FAAF40',"#1B75BB", "#37B34A","#F05A28")
+pal <- wes_palette("Zissou1", 100, type = "continuous")
+
+options(stringsAsFactors = F)
+options(scipen = 10000)
+
+lengths <- read.csv('../ref/output_10_reAssemblyDuplicates.stat', sep = '\t') %>% select(id=assemblyID, totalLength)
+
+data <- read.csv('../processed_data/MAG_stats.csv') %>% select(-X) %>% 
+  separate(id, into = c('cohort', 'mag_no'), sep = '_', remove = F) %>% 
+  group_by(sample_id) %>%
+  mutate(rel_abundace = (abundance/sum(abundance))*50000) %>% ungroup() %>% left_join(., lengths)
+
+taxa_cols <- c("#E11F26","#FBB019")
+vendor_cols <- c(c("#37B34A", "#F05A28","#1B75BB",'#FAAF40')) 
+bugColors <- read.table('../../../tables/bugColors2.txt', sep = '\t')
+bugColors <- setNames(bugColors$x, rownames(bugColors))
+
+```
+
+Table for MAGs (SUPPLEMENTARY TABLE S1)
+```{r}
+
+data %>% select("MAG"='id', cohort, domain, phylum, class, order, family, genus, species, totalLength) %>% distinct() %>% write.csv(., "../../../tables/MAG_descriptions.csv", quote = F, row.names = F)
+
+
+```
+
+
+
+Get size of Bacteroidales MAGs in each sample
+```{r}
+
+#Look at genome sizes
+data %>% select(order, family, id, cohort, totalLength) %>% 
+  distinct() %>%
+  filter(order == 'Bacteroidales') %>%
+  ggplot(., aes(cohort, totalLength,)) + 
+  stat_boxplot(geom = 'errorbar', width = .35) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(aes(color=family)) + theme_clean() + facet_wrap(~family)
+
+  
+
+data %>% select(order, family, id, cohort, totalLength) %>% 
+ # filter(cohort == 'AZC3J' | cohort == 'AZC7E') %>%
+  mutate(totalLength = totalLength/1000000) %>%
+  distinct() %>%
+  filter(family == 'Muribaculaceae'| family == 'Bacteroidaceae') %>%
+  #  filter(order == 'Bacteroidales') %>%
+  ggplot(., aes(cohort, totalLength,)) + 
+  stat_boxplot(geom = 'errorbar', width = .15) +
+  geom_boxplot(outlier.shape = NA, width = .35) +
+  geom_jitter(aes(color=cohort)) + 
+  theme_clean() + #facet_wrap(~family)
+  scale_color_manual(values = vendor_cols) +
+  geom_signif(comparisons = list(c("AZC3J", "AZC7E")), 
+              map_signif_level = F,
+              test = "wilcox.test",
+              test.args='greater') + labs(x = '', y = 'MAG Size (Mbp)') +
+    theme(axis.text = element_text(size = 14),
+          axis.title = element_text(size = 14), legend.title = element_blank())
+
+ggsave("../figs/MAGsizes.pdf", width = 4, height = 3)
+                
+#how many observations?
+data %>%   filter(family == 'Muribaculaceae'| family == 'Bacteroidaceae') %>%
+  select(id, cohort) %>% distinct() %>% group_by(cohort) %>% mutate(num_taxa = n()) %>% select(cohort, num_taxa) %>% distinct()
+
+
+```
+
+Let's look at metabolic independence and module completeness for all!
+```{r}
+
+independence_completeness <- read.csv("../processed_data/enrichment_score_vs_module.csv")
+
+#Look at completeness of modules
+independence_completeness %>% 
+  select(group, module, module_category, percentage) %>%
+  distinct() %>%
+  ggplot(aes(x = group, y = percentage)) + 
+    stat_boxplot(geom = 'errorbar', width = .15) +
+    geom_boxplot(outlier.shape = NA, width = .35) +
+    geom_jitter(aes(color = module_category), position = position_jitter(width = 0.2)) +
+    scale_color_brewer(palette = "Set1") +
+    theme_cowplot() +
+    geom_signif(comparisons = list(c("AZC3J", "AZC7E")), 
+                map_signif_level = T,
+                test = "wilcox.test") + 
+    labs(x = '', y = 'Community-level Module Completeness') +
+    theme(axis.text = element_text(size = 14),
+          axis.title = element_text(size = 14), 
+          legend.title = element_blank())
+
+ggsave("../figs/ModuleCompleteness.pdf", width = 7, height = 3.5)
+
+temp <- independence_completeness %>% 
+  select(group, module, module_category, percentage) %>%
+  distinct()
+
+wilcox.test(temp %>% filter(group == 'AZC3J') %>% pull(percentage),
+            temp %>% filter(group == 'AZC7E') %>% pull(percentage))
+
+```
+
+Old stuff on Jax and E only
+========================================================================================================
+
+Are there more metabolic modules in general? Nah
+```{r}
+
+presence <- read.csv('../processed_data/MAG_metabolism-module_stepwise_presence-MATRIX.txt', header = T, sep = '\t') %>% melt() %>% filter(value == 1) %>% group_by(variable) %>% mutate(num_modules = n()) %>% ungroup %>% select(variable, num_modules) %>% distinct() %>%
+  separate(variable, into = c('mouse_group', 'MAG'), remove = F)
+
+presence %>% ggplot(., aes(mouse_group, num_modules,)) + 
+  stat_boxplot(geom = 'errorbar', width = .15) +
+  geom_boxplot(outlier.shape = NA, width = .35) +
+  geom_jitter(aes(color=mouse_group)) + theme_clean() + #facet_wrap(~family)
+  scale_color_manual(values = taxa_cols) +
+  geom_signif(comparisons = list(c("AZC3J", "AZC7E")), 
+              map_signif_level = F,
+              test = "wilcox.test",
+              test.args='greater') + labs(x = '', y = 'Modules Present') +
+    theme(axis.text = element_text(size = 14),
+          axis.title = element_text(size = 14), legend.title = element_blank())
+
+
+
+```
+
+
+How's the metabolic independence?
+```{r}
+
+independence <- read.csv('../processed_data/genome_score_family.csv', header = T, sep = ',')
+
+independence %>% ggplot(., aes(group, score)) + 
+  stat_boxplot(geom = 'errorbar', width = .15) +
+  geom_boxplot(outlier.shape = NA, width = .35) +
+  geom_jitter(aes(color=group)) + theme_clean() + #facet_wrap(~family)
+  scale_color_manual(values = vendor_cols) +
+  geom_signif(comparisons = list(c("AZC3J", "AZC7E")), 
+              map_signif_level = F,
+              test = "wilcox.test",
+              test.args='greater') + labs(x = '', y = 'Metabolic Independence') +
+    theme(axis.text = element_text(size = 14),
+          axis.title = element_text(size = 14), legend.title = element_blank())
+
+ggsave("../figs/MetabolicIndependence.pdf", width = 4.1, height = 3)
+
+
+```
+
+
+Look at niche accession and colonization rate
+```{r}
+
+enrichment <- read.csv("../processed_data/metagenomic.enrichment.csv") %>% #rename('assembly'='taxon') %>% 
+  group_by(assembly) %>% mutate(mean_fc = mean(log2fold_change),
+                             mean_d0 = mean(d0_abundance),
+                             mean_d5 = mean(d5_abundance)
+                             ) %>% ungroup %>% select(assembly, mean_d0, mean_d5, mean_fc, shift) %>% distinct()
+
+tSNE<- read.csv("../processed_data/reduced.csv") %>% rename('assembly'='taxon') %>% inner_join(., enrichment) %>% 
+    mutate(supplier = ifelse(grepl('AZC7E', assembly), 'Envigo', 'Jackson')) %>% 
+  group_by(assembly) %>% mutate(TSNE.1_ave = mean(TSNE.1),
+                             TSNE.2_ave = mean(TSNE.2)) %>% ungroup %>%
+  select(assembly, TSNE.1_ave, TSNE.2_ave, supplier, shift, mean_d0, mean_d5, mean_fc) %>% distinct() 
+
+
+# First plot all points in one color
+tSNE %>%
+  ggplot(aes(x = TSNE.1_ave, y = TSNE.2_ave, color = supplier)) +
+  geom_point(alpha = 0.5) + # Set alpha for better visibility if points overlap
+  theme_cowplot() +
+  labs(color = "Supplier") # Label for the legend
+
+# Then add points for 'Envigo' with a gradient color scale
+tSNE %>%
+  filter(supplier == 'Envigo') %>%
+  ggplot(aes(x = TSNE.1_ave, y = TSNE.2_ave, color = mean_fc)) +
+  geom_point(size = 2) +
+  scale_color_gradient(low = "blue", high = "red") +
+  theme_cowplot() +
+  labs(color = "Mean FC") # Label for the legend
+
+
+write.csv(enrichment, "../processed_data/MAGenrichmentEnv2Jax.csv", quote = F, row.names = F)
+```
+
+
+#Let's look at predicted metabolic growth rates
+```{r}
+
+#get growth rates for all according to MICOM
+growth_rates <- read.csv("../processed_data/growth_rates_comparison_entire_MAGs.csv") %>% select(-X, -abundance_high_fiber, -abundance_western) %>%
+  rename('High Fiber' = 'growth_rate_high_fiber', 'Western' = 'growth_rate_western') %>%
+  melt(id.vars = 'MAGs') %>%
+  mutate(supplier = ifelse(grepl('AZC7E', MAGs), 'Envigo', 'Jackson')) %>% group_by(variable, MAGs, supplier) %>%
+  mutate(value = mean(value), value = mean(value)) %>% ungroup() %>% distinct() %>% 
+  left_join(., data %>% select('MAGs'='id', order) %>% distinct())
+
+
+
+# Perform t-tests
+sig_HF <- growth_rates %>% filter(variable == 'High Fiber') %>%
+  summarise(p_value = t.test(value ~ supplier, data = .)$p.value)
+
+sig_west <- growth_rates %>% filter(variable == 'Western') %>%
+  summarise(p_value = t.test(value ~ supplier, data = .)$p.value)
+
+# Plot with jitter/dodge and legend in top-left corner
+plot <- ggplot(growth_rates, aes(variable, value, fill = supplier)) + 
+  geom_boxplot(position = position_dodge(width = 0.75), width = 0.6, outlier.shape = NA) + 
+  geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
+  theme_cowplot() +
+  labs(x = 'Diet', y = 'OTU Simulated Growth Rate') +
+  theme(legend.position = c(0.98, 0.98), legend.justification = c("right", "top"),
+        axis.text = element_text(size = 14)) +
+  scale_fill_manual(values = c(vendor_cols[3], vendor_cols[1])) +
+  annotate(geom = 'text', x = 'High Fiber', y = 1.15, label = signif(sig_HF, 2)) +
+  annotate(geom = 'text', x = 'Western', y = .4, label = signif(sig_west, 2)) +
+geom_segment(aes(x = 0.8, xend = 1.2, y = 1.12, yend = 1.12), color = "black") + # Segment under "High Fiber"
+  geom_segment(aes(x = 1.8, xend = 2.2, y = 0.37, yend = 0.37), color = "black")  # Segment under "Western"
+  
+plot
+
+
+#ggsave("../figs/GrowthRate.pdf", width = 4.1, height = 3)
+
+```
+
+add postFMT community
+```{r}
+
+temp <- read.csv("../processed_data/postFMT_res_high_fiber_grow_rate_entire_MAGs.csv") %>%
+  select('MAGs'='compartments', 'High Fiber' = growth_rate) %>%  melt(id.vars = 'MAGs') %>%
+  mutate(supplier = 'PostFMT') %>% group_by(variable, MAGs, supplier) %>%
+  mutate(value = mean(value), value = mean(value)) %>% ungroup() %>% distinct() %>% 
+  left_join(., data %>% select('MAGs'='id', order) %>% distinct()) %>% rbind(
+  
+      read.csv("../processed_data/postFMT_res_western_grow_rates_entire_MAGs.csv") %>%
+  select('MAGs'='compartments', 'Western' = growth_rate) %>%  melt(id.vars = 'MAGs') %>%
+  mutate(supplier = 'PostFMT') %>% group_by(variable, MAGs, supplier) %>%
+  mutate(value = mean(value), value = mean(value)) %>% ungroup() %>% distinct() %>% 
+  left_join(., data %>% select('MAGs'='id', order) %>% distinct())
+  
+  )
+
+all_growthrates <- rbind(temp, growth_rates)
+
+
+# Perform t-tests
+sig_HF <- all_growthrates %>% filter(variable == 'High Fiber' & supplier != 'Envigo') %>%
+  summarise(p_value = t.test(value ~ supplier, data = .)$p.value)
+#.00340
+sig_west <- all_growthrates %>% filter(variable == 'Western' & supplier != 'Envigo') %>%
+  summarise(p_value = t.test(value ~ supplier, data = .)$p.value)
+#.00234
+plot <- all_growthrates %>% ggplot(., aes(variable, value, fill = supplier)) + 
+  geom_boxplot(position = position_dodge(width = 0.75), width = 0.6, outlier.shape = NA) + 
+  geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5, alpha = .4) +
+  theme_cowplot() +
+  labs(x = 'Diet', y = 'OTU Simulated Growth Rate') +
+  theme(legend.position = c(0.98, 0.98), legend.justification = c("right", "top"),
+        axis.text = element_text(size = 14)) +
+  scale_fill_manual(values = c(vendor_cols[3], vendor_cols[1], '#26a9e0')) +
+  annotate(geom = 'text', x = 1.1, y = 1.15, label = signif(sig_HF, 2)) +
+  annotate(geom = 'text', x = 2.1, y = .4, label = signif(sig_west, 2)) +
+geom_segment(aes(x = 1, xend = 1.2, y = 1.12, yend = 1.12), color = "black") + # Segment under "High Fiber"
+  geom_segment(aes(x = 2, xend = 2.2, y = 0.37, yend = 0.37), color = "black")  # Segment under "Western"
+  
+plot
+
+ggsave("../figs/GrowthRate.pdf", width = 4.1, height = 3)
+
+```
+
+
+#color by taxonomy, eh
+```{r}
+
+ggplot(growth_rates, aes(order, value, fill = supplier)) + 
+  geom_boxplot(position = position_dodge(width = 0.75), width = 0.6) + 
+  geom_jitter(aes(color = order),position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
+  theme_cowplot() +
+  labs(x = 'Diet', y = 'OTU Simulated Growth Rate') +
+  theme(legend.position = c(0.98, 0.98), legend.justification = c("right", "top"),
+        axis.text = element_text(size = 14)) +
+  scale_fill_manual(values = c(vendor_cols[3], vendor_cols[1])) +
+  facet_wrap(~variable) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+  
+
+```
+#Alternative...
+
+plot <- ggplot(growth_rates, aes(supplier, value)) + 
+ stat_boxplot(geom ='errorbar', width = .5) + 
+  geom_boxplot(position = position_dodge(width = 0.75), width = 0.6, outlier.shape = NA) + 
+  geom_jitter(aes(color = family)) +
+  #, position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), size = 1.5) +
+  theme_cowplot() +
+  labs(x = 'Diet', y = 'OTU Simulated Growth Rate') +
+  theme(axis.text = element_text(size = 14), strip.background = element_blank()) +
+  facet_wrap(~variable)
+
+plot
+
+```
+
+
+
+
