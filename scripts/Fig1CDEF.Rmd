@@ -1,0 +1,552 @@
+---
+title: "Fig2_fmt"
+output: html_document
+---
+---
+title: "Fig2_FMT"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+setwd("~/Dropbox/fmt/scripts/")
+library(tidyverse)
+library(wesanderson)
+library(ggthemes)
+library(cowplot)
+#library(svglite)
+
+ven <- c('#FAAF40',"#1B75BB","#37B34A", "#F05A28")
+pal <- wes_palette("Zissou1", 100, type = "continuous")
+order <- read.csv("../misc/otu_order_unifrac.csv", col.names = c('order', 'OTU'))$OTU
+
+options(stringsAsFactors = F)
+options(scipen = 10000)
+
+```
+
+Load data
+
+```{r cars}
+
+zotu <- read_csv("../seq/zotu.csv") 
+tax <- read_csv("../seq/tax.csv")
+meta <- read_csv("../experiments/2017-10-10_pairwise_cohousing/metadata/samples.csv")
+
+# Check read counts
+read.counts <- zotu %>%
+  rowwise(seqid) %>%
+  mutate(numreads = rowSums(across(where(is.numeric)))) %>%
+  ungroup() %>%
+  select(seqid, numreads)
+
+# Pull out samples w/ >10k reads
+samples.to.keep <- read.counts %>%
+  filter(numreads > 1000) %>%
+  select(seqid) %>%
+  as_vector()
+
+# Drop <10k read samples from zotu table
+zotu <- zotu %>%
+  filter(seqid %in% samples.to.keep)
+
+# make tidy data
+# Convert to relative abundance
+zotu <- zotu %>%
+  pivot_longer(!seqid, names_to="OTU", values_to="reads") %>%
+  group_by(seqid) %>%
+  mutate(relabd = (reads / sum(reads))) %>% ungroup
+
+
+# calc log10 OTU abd
+zotu <- zotu %>%
+  mutate(log10relabd = if_else(relabd == 0, -6, log10(relabd)))
+
+
+
+# Join metadata to zotu table
+zotu <- zotu %>%
+  left_join(meta, ., by="seqid")
+
+gtable <- tax %>%
+  select(OTU, genus, family)
+```
+
+filter out for only OTUs with sufficient abundance in any mouse type
+
+```{r}
+
+jax.otus.to.keep <- zotu %>%
+  filter(mouse_type == "Jackson") %>%
+  group_by(OTU) %>%
+  summarise(avg_abd = mean(relabd)) %>%
+  filter(avg_abd > .005) %>%
+  select(OTU) %>%
+  as_vector()
+
+envigo.otus.to.keep <- zotu %>%
+  filter(mouse_type == "Envigo") %>%
+  group_by(OTU) %>%
+  summarise(avg_abd = mean(relabd)) %>%
+  filter(avg_abd > .005) %>%
+  select(OTU) %>%
+  as_vector()
+
+charles.otus.to.keep <- zotu %>%
+  filter(mouse_type == "Charles River") %>%
+  group_by(OTU) %>%
+  summarise(avg_abd = mean(relabd)) %>%
+  filter(avg_abd > .005) %>%
+  select(OTU) %>%
+  as_vector()
+
+taconic.otus.to.keep <- zotu %>%
+  filter(mouse_type == "Taconic") %>%
+  group_by(OTU) %>%
+  summarise(avg_abd = mean(relabd)) %>%
+  filter(avg_abd > .005) %>%
+  select(OTU) %>%
+  as_vector()
+
+otus.to.keep <- unique(c(jax.otus.to.keep, envigo.otus.to.keep,
+                         charles.otus.to.keep, taconic.otus.to.keep))
+
+# Drop OTUs not at least 1% abd
+zotu <- zotu %>%
+  filter(OTU %in% otus.to.keep)
+
+```
+
+
+Compare D0 vs D5 pairwise cohousing
+```{r}
+allvsall <- zotu %>% filter(tx_type == '2mix') %>% 
+                  group_by(tx_grup, OTU, day, mouse_type) %>% 
+            mutate(meanrelabd = mean(relabd)) %>% ungroup() %>%
+            select(OTU, meanrelabd, day, tx_grup, mouse_type) %>% distinct() %>% 
+            left_join(., gtable) %>%
+            separate(tx_grup, into = c("mouse1", "mouse2"), sep = 'x') %>% rbind(.,
+
+(zotu %>% filter(tx_type == 'control') %>% 
+                  group_by(tx_grup, OTU, day, mouse_type) %>% 
+            mutate(meanrelabd = mean(relabd)) %>% ungroup() %>%
+            select(OTU, meanrelabd, day, tx_grup, mouse_type) %>% distinct() %>% 
+            left_join(., gtable) %>%
+            separate(tx_grup, into = c("mouse1", "mouse2"), sep = '_cntrl') %>% mutate(mouse2=mouse1)))
+
+
+#rename for easier processing
+allvsall[allvsall == "Envigo"] <- "E"
+allvsall[allvsall == "Jackson"] <- "J"
+allvsall[allvsall == "Charles River"] <- "C"
+allvsall[allvsall == "Taconic"] <- "T"
+
+
+#calculate d0 abundance
+d0 <- allvsall %>% mutate(donor = ifelse(mouse1 == mouse_type, mouse2, mouse1),
+                    recipient = mouse_type) %>% 
+                    filter(day == 0) %>% 
+                    select(donor, recipient, OTU, d0_abd=meanrelabd)
+
+#merge with d5 analysis
+d5vs0 <- allvsall %>% mutate(donor = ifelse(mouse1 == mouse_type, mouse2, mouse1),
+                    recipient = mouse_type) %>% filter(day == 5) %>%
+                    full_join(., d0, by = c('donor', 'recipient', 'OTU')) %>% 
+                    mutate(fc_abd = meanrelabd/d0_abd,
+                           fc_abd = ifelse(meanrelabd < .005, 0, fc_abd)) %>% #don't count as engrafted if < .1%
+                    select(fc_abd, donor, recipient, OTU, d0_abd, meanrelabd) %>% distinct()
+
+#Reorder for consistent plotting
+d5vs0$donor <- factor(d5vs0$donor,      # Reordering group factor levels
+                         levels = c("E","C","J","T"))
+
+d5vs0$recipient <- factor(d5vs0$recipient,      # Reordering group factor levels
+                          levels = c("T","J", "C", "E"))
+
+grid <- expand_grid(donor=as.factor(c('T','J','C','E')),recipient=as.factor(c('T','J','C','E'))) %>% mutate(num_transfers = 0)
+
+temp <- d5vs0 %>% 
+  filter(meanrelabd > .005 & d0_abd < .005 & fc_abd > 10) %>%
+  group_by(donor, recipient) %>% mutate(num_transfers = n()) %>% 
+  select(num_transfers, donor, recipient) %>% distinct() %>% ungroup()
+
+transfer_table <- rbind(temp, anti_join(grid,temp, by = c('donor', 'recipient'))) 
+
+ggplot(transfer_table, aes(y=donor, x=recipient, fill=num_transfers)) + 
+    geom_tile(size=0.5, fill = 'white') +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "firebrick2") +
+  #scale_fill_gradientn(colors = pal) +
+  geom_text(aes(label = num_transfers), size = 8) +
+  labs(x = 'Recipient', y = 'Donor', fill = '# of OTUs Transferred') +
+  theme_clean() +
+  theme(panel.background = element_rect(fill = "white"),
+              axis.text.y = element_text(size = 14),
+              axis.title.x = element_text(size = 14),
+              axis.title.y = element_text(size = 14),
+              axis.text.x = element_text(size = 14),
+              strip.text = element_text(size = 10),
+              panel.spacing = unit(0.2, "lines"),
+        legend.position = 'none',
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_blank(),
+        strip.background = element_blank()) 
+
+ggsave("../figs/fig2/2B_cohouse_square.png",  width = 4, height = 4)
+ggsave("../figs/fig2/2B_cohouse_square.pdf",  width = 4, height = 4)
+
+
+```
+
+Does # OTU transferred scale with donor eveness/ recipient evenness?
+
+```{r}
+
+#read in diversity scores from figure 1
+diversity <- read.csv('../misc/VendorDiversity.csv') %>% mutate(mouse_type = substr(.$mouse_type, 1, 1)) %>% group_by(mouse_type) %>% mutate(ave_entropy = median(shann_entropy)) %>% select(mouse_type, ave_entropy) %>% ungroup() %>% distinct()
+
+#merge diversity scores with transfer table, calculate log2()
+temp <- transfer_table %>%
+    left_join(., select(diversity, donor = mouse_type, donor_entropy=ave_entropy)) %>%
+    left_join(., select(diversity, recipient = mouse_type, recipient_entropy=ave_entropy)) %>% 
+    mutate(div_ratio = log2(donor_entropy/recipient_entropy)) %>% filter(donor != recipient)
+
+#calculate correlation
+yarr_value <- cor.test(temp$num_transfers, temp$div_ratio, method = 'spearman')$p.value
+
+
+ggplot(temp, aes(div_ratio, num_transfers)) + geom_point(size = 2) + geom_smooth(method = lm) +
+    annotate('text', x = -.2, y = 20, label = paste("~~italic(p) ~ ", signif(yarr_value, 3)), parse=TRUE, size = 5) +
+    labs(x= 'log2(Shannon Entropy(Donor) / Shannon Entropy(Recipient)', y = '# of OTUs transferred') +
+    theme_cowplot() +
+              theme(axis.text.y = element_text(size = 12),
+              axis.title.x = element_text(size = 14),
+              axis.title.y = element_text(size = 14),
+              axis.text.x = element_text(size = 12))
+
+
+ggsave("../figs/s2/2A_transferCorrelation.png",  width = 3.5, height = 3.5)
+ggsave("../figs/s2/2A_transferCorrelation.pdf",  width = 3.5, height = 3.5)
+
+```
+
+
+2C - Compare D0 vs D5 Envigo
+```{r}
+
+allvsE <- zotu %>% filter(tx_grup == 'TxE' & mouse_type == 'Taconic' | 
+                            tx_grup == 'JxE' & mouse_type == 'Jackson' |
+                            tx_grup == 'ExC' & mouse_type == 'Charles River' |
+                            tx_grup == 'E_cntrl' & mouse_type == 'Envigo') %>% 
+                  group_by(tx_grup, OTU, day) %>% 
+            mutate(meanrelabd = mean(relabd)) %>% ungroup() %>% 
+  select(OTU, meanrelabd, day, tx_grup) %>% distinct() %>% 
+  left_join(., gtable) %>% 
+  mutate(OTU = as.factor(OTU)) %>% arrange(family)
+
+#filter out OTUs that never appear over .5%
+OTU_thresholds <- zotu %>% group_by(OTU, mouse_type) %>%
+  summarise(avg_abd = mean(relabd)) %>%
+  filter(avg_abd > .005) %>%
+  select(OTU) %>% distinct()
+
+
+#reorder based on experiment
+allvsE$tx_grup <- factor(allvsE$tx_grup,      # Reordering group factor levels
+                         levels = c("TxE","JxE", "ExC", "E_cntrl"))
+
+#define color labels for families
+bugColors <- setNames(c(scales::hue_pal()(length(unique(allvsE$family)))), c(levels(as.factor(allvsE$family))))
+
+#plot d0 next to d5 abundances
+transfer <- allvsE %>% semi_join(., OTU_thresholds) %>%
+  mutate(family = ifelse(day == 0, 'aaa', family)) %>%
+  ggplot(., aes(x = factor(OTU, levels = order), y = meanrelabd*1000, 
+              #fill = as.character(day)
+              fill = interaction(as.character(day), family)
+              )) +
+  geom_bar(stat = "identity", position = position_dodge(), 
+           alpha = 0.75, color = 'black', width = .6) +
+  scale_y_log10(limits = c(1,1000)) +
+  labs(x = 'OTU', y = 'Relative Abundance', fill = 'Day of Cohousing') +
+  facet_wrap(~tx_grup, ncol = 1, scales = 'free_y', strip.position = 'right') +
+  theme_clean() +
+    theme(panel.background = element_rect(fill = "white"),
+              axis.text.y = element_text(size = 12),
+              axis.title.x = element_text(size = 14),
+              axis.title.y = element_text(size = 14),
+              axis.text.x = element_text(angle = 90, size = 12),
+              strip.text = element_text(size = 10),
+              panel.spacing = unit(0.2, "lines"),
+        legend.position = 'bottom',
+        panel.border = element_blank(),
+        plot.background = element_blank(),
+        strip.background = element_blank()) 
+
+transfer
+
+fam <- allvsE %>% semi_join(., OTU_thresholds) %>%
+    ggplot(., aes(x = factor(OTU, levels = order), y = '')) + 
+    geom_tile(aes(fill = family), color = 'white') +
+    labs(fill = 'Family') +
+    scale_fill_manual(values = bugColors) +
+    theme(strip.text.y.right = element_text(angle = 0),
+              panel.background = element_rect(fill = "white"), 
+              axis.ticks = element_blank(), 
+              axis.text.y = element_blank(),
+              axis.title.y = element_blank(),
+              axis.text.x = element_blank(), 
+              axis.title.x = element_blank(),
+              strip.text = element_blank(),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = 'bottom',
+          legend.text = element_text(size = 16),
+          legend.title = element_text(size = 16)) + guides(fill = guide_legend(nrow = 3))
+
+
+cowplot::plot_grid(transfer, fam, ncol=1, rel_heights = c(.8,.3))
+ggsave("../figs/fig2/2C_cohouse.png",  width = 13, height = 8.5)
+ggsave("../figs/fig2/2C_cohouse.pdf",  width = 13, height = 8.5)
+
+
+```
+
+What are the OTUs gained?
+```{r}
+
+#d0 <- allvsE %>% filter(day == 0) %>% select(tx_grup, OTU, d0_abd=meanrelabd)
+#d5vs0 <- allvsE %>% filter(day == 5) %>% 
+#  left_join(., d0, by = c('tx_grup', 'OTU')) %>% 
+#  mutate(fc_abd = meanrelabd/d0_abd,
+#          fc_abd = ifelse(meanrelabd < .005, 0, fc_abd),
+#          fc_abd = ifelse(fc_abd > 1e6, 1e6,fc_abd)) %>% #set to 0 if not over .1% resultant population
+#  semi_join(., data.frame(OTU=envigo.otus.to.keep))
+
+d5vs0 %>% #semi_join(., OTU_thresholds) %>% 
+  filter(donor == "E") %>% left_join(., tax) %>%
+    filter(meanrelabd > .001 & d0_abd < .001 & fc_abd > 10) %>%
+  ggplot(., aes(x = recipient, fill = family)) + 
+  geom_bar(stat="count", position = 'stack') +
+  labs(x='', y = '# OTUs Transferred', fill = 'Family') +
+    scale_fill_manual(values = bugColors) +
+  scale_y_continuous(position = "right") +
+  facet_wrap(~recipient, ncol = 1, scales = 'free_x', strip.position = 'left') +
+  theme_clean() +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+              axis.text.y = element_text(size = 12), 
+              axis.text.x = element_blank(), 
+              strip.text = element_text(size = 6),
+              axis.ticks.x = element_blank(),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = "none")
+
+ggsave("../figs/fig2/2C.1_OTU.png",  width = 1.5, height = 7)
+ggsave("../figs/fig2/2C.1_OTU.pdf",  width = 1.5, height = 7)
+
+#How many OTUs per flip?
+
+d5vs0 %>%   filter(meanrelabd > .005 & d0_abd < .005 & fc_abd > 10) %>% group_by(tx_grup) %>% mutate(num_transfers = n()) %>% select(num_transfers, tx_grup) %>% distinct()
+
+```
+
+Calculate Significance of decrease for OTU139, OTU160, OTU174, OTU217, OTU240, OTU271, OTU327 in TxE mice
+
+```{r}
+
+lac_OTU <-  data.frame(OTU = c('Otu139', 'Otu160', 'Otu174', 'Otu217', 'Otu240', 'Otu271', 'Otu327'))
+
+temp <- allvsE %>% mutate(OTU = as.character(OTU)) %>% 
+  filter(OTU %in% lac_OTU$OTU) %>% 
+  filter(tx_grup == 'TxE')
+
+#calculate differences on log 10 relabd, using wilcoxon signed rank test
+wilcox.test(log10((temp %>% filter(day == 5))$meanrelabd) %>% replace(., is.infinite(.), -6), 
+            log10((temp%>% filter(day == 0))$meanrelabd) %>% replace(., is.infinite(.), -6))
+
+#p-value = 0.0005828 
+
+```
+
+Figure S2 - is it the same OTUs transferred?
+```{r}
+
+#d5vs0$tx_grup <- factor(d5vs0$tx_grup,      # Reordering group factor levels
+#                         levels = c( "TxE","JxE", "ExC", "E_cntrl"))
+temp <- expand_grid(tx_grup = c("TxE","JxE", "ExC", "E_cntrl"),
+                    OTU=(d5vs0$OTU%>% unique())) %>% mutate(fc_abd = 0, transfer = NULL)
+
+a<- d5vs0 %>%# semi_join(.,data.frame(OTU=envigo.otus.to.keep)) %>% 
+    filter(meanrelabd > .001 & d0_abd < .001 & fc_abd > 10) %>%
+  filter(donor == 'E') %>%
+    left_join(., gtable) %>% 
+  mutate(OTU = as.factor(OTU)) %>% arrange(family) %>%
+  mutate(transfer = ifelse(fc_abd > 10, 1, 0)) %>%    
+  ggplot(., aes(x = factor(OTU, levels = order), 
+                y = factor(recipient, levels = c('J','T','C','E')),
+                fill=as.character(transfer))) + 
+  geom_tile(na.rm = T, color = 'white') +
+  scale_fill_manual(values = c('#1357a6','white')) +
+    labs(x='', y ='Recipient (from Envigo)', fill = 'OTU Transferred?') +
+      theme(panel.background = element_rect(fill = "white"),
+              axis.text.y = element_text(size = 12),
+              axis.title.x = element_text(size = 14),
+              axis.title.y = element_text(size = 14),
+              axis.text.x = element_text(angle = 90, size = 12),
+              strip.text = element_text(size = 10),
+              panel.spacing = unit(0.2, "lines"),
+        legend.position = 'bottom',
+        panel.border = element_blank(),
+        plot.background = element_blank(),
+        strip.background = element_blank()) 
+a
+a$data$OTU
+
+fam <- d5vs0 %>% left_join(., gtable) %>% 
+      filter(meanrelabd > .001 & d0_abd < .001 & fc_abd > 10) %>%
+  filter(donor == 'E') %>%
+   select(OTU, family) %>% distinct() #%>%
+      ggplot(., aes(x = OTU,
+                    #x = factor(OTU, levels = a$data$OTU), 
+                    y = '', 
+                    fill = as.character(family))) + 
+    geom_tile(color = 'white') +
+    labs(fill = 'Family') +
+    #scale_fill_manual(values = bugColors) +
+    theme(strip.text.y.right = element_text(angle = 0),
+              panel.background = element_rect(fill = "white"), 
+              axis.ticks = element_blank(), 
+              axis.text.y = element_blank(),
+              axis.title.y = element_blank(),
+      #        axis.text.x = element_blank(), 
+              axis.title.x = element_blank(),
+              strip.text = element_blank(),
+              panel.spacing = unit(0.05, "lines"),
+          legend.position = 'bottom',
+          legend.text = element_text(size = 16),
+          legend.title = element_text(size = 16)) + guides(fill = guide_legend(nrow = 2))
+fam
+
+abd <- d5vs0 %>% filter(donor == 'E' & recipient == 'E') %>%
+      select(OTU, d0_abd) %>% distinct() %>%     
+        ggplot(., aes(x = factor(OTU, levels = order), y = d0_abd*100)) + 
+        geom_bar(stat = 'identity', color = 'black', fill = 'gray80') + 
+        theme_cowplot() + labs(y = '% abd. \n(Envigo)') +
+        theme(axis.text.y = element_text(size = 12),
+              axis.title.y = element_text(size = 12),
+              axis.text.x = element_blank(), 
+              axis.title.x = element_blank())
+abd
+
+cowplot::plot_grid(abd, a, fam, ncol=1, rel_heights = c(.2,.8,.3))
+
+ggsave("../figs/s2/S2B_transferredOTU.pdf",  width = 12, height = 6)
+
+```
+
+For transfer, let's do a Chi-Squared test for independence
+```{r}
+table <- matrix(c(10, 20, 30, 40), nrow = 2, ncol = 2)
+
+# Add row and column names to the table
+dimnames(table) <- list(c("Group 1", "Group 2"), c("Outcome 1", "Outcome 2"))
+
+# Print the table
+table
+
+# Perform a chi-squared test on the table
+chisq.test(table)
+
+```
+
+
+ What are the OTUs lost?
+```{r}
+
+#d0 <- allvsE %>% filter(day == 0) %>% select(tx_grup, OTU, d0_abd=meanrelabd)
+#d5vs0 <- allvsE %>% filter(day == 5) %>% 
+#  left_join(., d0, by = c('tx_grup', 'OTU')) %>% mutate(fc_abd = meanrelabd/d0_abd)
+
+#calculate d0 abundance
+d0 <- allvsE %>% filter(day == 0) %>% 
+                    select(tx_grup, OTU, d0_abd=meanrelabd)
+
+#merge with d5 analysis
+d0vs5 <- allvsE %>% filter(day == 5) %>%
+                    left_join(., d0, by = c('tx_grup', 'OTU')) %>% 
+                    mutate(fc_abd = d0_abd/meanrelabd,
+                           fc_abd = ifelse(d0_abd < .001, 0, fc_abd)) %>% #don't count as lost if not there before
+                    select(fc_abd, OTU, d0_abd, meanrelabd, tx_grup, family) %>% distinct()
+
+
+temp <- d0vs5
+temp$tx_grup <- gsub('E_cntrl','Envigo \nx \nEnvigo',x = temp$tx_grup)
+temp$tx_grup <- gsub('ExC','Envigo \nx \nCharles' ,x = temp$tx_grup)
+temp$tx_grup <- gsub('JxE','Envigo \nx \nJackson',x = temp$tx_grup)
+temp$tx_grup <- gsub('TxE','Envigo \nx \nTaconic',x = temp$tx_grup)
+
+
+temp$tx_grup <- factor(temp$tx_grup, 
+                       levels=c('Envigo \nx \nEnvigo', 
+                                'Envigo \nx \nCharles',
+                                'Envigo \nx \nJackson', 
+                                'Envigo \nx \nTaconic'
+                                ))
+
+
+temp %>% filter(meanrelabd < .001 & d0_abd > .001 & fc_abd > 10) %>%
+  filter(fc_abd > 10) %>%
+  ggplot(., aes(x = tx_grup, fill = family)) + 
+  #geom_hline(yintercept = c(3, 6), linetype = 'dashed') +
+#scale_y_continuous(breaks=c(3,6), position = 'left') +
+  geom_bar(stat="count", position = 'stack', width = .5) +
+  labs(x='', y = '# OTUs Displaced', fill = 'Family') +
+    scale_fill_manual(values = bugColors) +
+  facet_wrap(~tx_grup, nrow = 1, scales = 'free_x', strip.position = 'top') +
+  #cowplot::theme_cowplot() +
+  theme_clean() +
+  guides(fill=guide_legend(ncol=2)) +
+    theme(plot.background = element_blank(),
+          strip.background = element_blank(),
+          axis.title.y = element_text(size = 14),
+          legend.text = element_text(size = 8),
+              axis.text.y = element_text(size = 12), 
+              axis.text.x = element_blank(), 
+              strip.text = element_text(size = 10),
+              axis.ticks.x = element_blank(),
+              panel.spacing = unit(0.05, "lines"))
+
+ggsave("../figs/s2/S2C_Cohousi00 _Lost_OTU.png",  width = 6, height = 3)
+ggsave("../figs/s2/S2C_Cohousing_Lost_OTU.pdf",  width = 6, height = 3)
+
+#How many OTUs per flip?
+
+temp %>% filter(meanrelabd < .005 & d0_abd > .005 & fc_abd > 10) %>%  
+  group_by(tx_grup) %>% mutate(num_transfers = n()) %>% select(num_transfers, tx_grup) %>% distinct()
+
+```
+
+
+
+Old 2c.2
+```{}
+#calculate d0 abundance
+d0 <- allvsall %>% mutate(donor = ifelse(mouse1 == mouse_type, mouse2, mouse1),
+                    recipient = mouse_type) %>% 
+                    filter(day == 0) %>% 
+                    select(donor, recipient, OTU, d0_abd=meanrelabd)
+
+#merge with d5 analysis
+d0vs5 <- allvsall %>% mutate(donor = ifelse(mouse1 == mouse_type, mouse2, mouse1),
+                    recipient = mouse_type) %>% filter(day == 5) %>%
+                    full_join(., d0, by = c('donor', 'recipient', 'OTU')) %>% 
+                    mutate(fc_abd = d0_abd/meanrelabd,
+                           fc_abd = ifelse(d0_abd < .005, 0, fc_abd)) %>% #don't count as lost if not there before
+                    select(fc_abd, donor, recipient, OTU, d0_abd, meanrelabd) %>% distinct()
+
+
+```

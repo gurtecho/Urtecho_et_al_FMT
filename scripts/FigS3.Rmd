@@ -1,0 +1,520 @@
+---
+title: "20270311_BA_growth_profiling"
+output: html_document
+date: "2024-03-11"
+---
+
+```{r setup, include=FALSE}
+setwd('~/Dropbox/fmt/experiments/20240308_BA_profiling/scripts/')
+library(tidyverse)
+library(reshape2)
+library(ggthemes)
+library(Biostrings)
+library(cowplot)
+
+
+ven <- c('#FAAF40',"#1B75BB", "#37B34A","#F05A28")
+
+
+#READ IN DATA
+growth_data <- read.csv("../raw_data/20240307_BA_JaxVEnv_od600.csv")
+
+growth_data <- growth_data %>% melt(id.vars = 'Well') %>%
+  mutate(variable = gsub("^X", "", variable)) %>%
+  separate(variable, into = c("Hour", "Minute", "Second"), sep = "\\.", convert = TRUE, remove = T) %>%
+  mutate(time_mins= (Hour * 60 + Minute)) %>%
+  select(-Hour, -Minute, -Second) %>% rename('value' = 'OD600')
+  
+
+metadata <- read.csv("../ref/20240307_BA_PlateMap.csv")
+
+#combine growth & metadata
+alldata <- inner_join(growth_data, metadata, id.vars = Well)
+
+#average replicates
+#alldata <- alldata %>% group_by(abi, time_mins) %>% mutate(ave_growth = mean(OD600)) %>% ungroup() %>% filter(time_mins <= 760) %>% #select(-OD600, -replicate, -Well) %>% distinct()
+
+# Define Order I want to plot BAs in, to be used as levels (i.e. plot order)
+BA.order <-c("water","GCA","TCA", "CA","CDCA","dmso")
+
+
+```
+
+
+
+```{r}
+# Compute the bg growth from the OD600 of the water wells
+bg <- alldata %>%
+  filter(community == "blank") %>% select(bg=OD600,time_mins, condition, concentration) 
+
+
+# Add bg data to the actual data
+data <- alldata %>% filter(community != 'blank') %>%
+  left_join(.,bg, by=c("time_mins", "condition", "concentration")) %>% na.omit() %>%
+  mutate(norm_OD600 = OD600/bg,  # Compute OD600 normalized against water controls
+         corr_OD600 = OD600-bg) # Compute the OD600 corrected against water controls
+        # sample_type = factor(data$sample_type, levels = c("- FMT", "Donor", "+ FMT")), # convert sample type to factor with levels ordered [would sepcify order here eg. jax, envigo, both]
+         #, # convert polysaccharide to factor, levels in order I want to plot
+        # replicate = factor(alldata$replicate, levels=as.character(unique(alldata$replicate)))) #Order replicates
+
+#reorderdf
+data <- data %>% mutate(condition = factor(data$condition, levels = BA.order)) 
+
+
+# Create averaged out data
+avg.data <- data %>%
+  group_by(community, condition, concentration, time_mins) %>%
+  summarise(OD600 = mean(OD600), bg= mean(bg)) %>% ungroup()
+
+# Compute OD600 normalized against water controls
+avg.data$norm_OD600 <- avg.data$OD600 / avg.data$bg
+
+# Compute the OD600 corrected against water controls
+avg.data$corr_OD600 <- avg.data$OD600 - avg.data$bg
+  
+```
+
+plot for different concentrations
+```{r}
+
+# Plot averaged out data
+avg.viz <- avg.data  %>% ungroup() %>% filter(condition != 'CDCA') %>%
+ # filter(polysacc != "Water", polysacc != "Mucin", polysacc != "Amylopectin", polysacc != "Pectin") %>% #remove carbohydrate sources too-dense to measure growth of
+   # filter(polysacc != "Water") %>%
+  group_by(condition, concentration) %>% mutate(Nmax = norm_OD600/max(norm_OD600)) %>% 
+  filter(concentration == 1 | condition == 'water' | condition == 'dmso') %>%
+  ungroup() %>% 
+  ggplot() +
+  geom_line(aes(x=time_mins/60, y=corr_OD600, color=community)) +
+  #stat_smooth(aes(x=time_mins/60, y=norm_OD600, color=community), method = "loess", span = .2) +
+  scale_color_manual(values = c('#26a9e0','#f6921e')) +
+  facet_wrap(~factor(condition, 
+                     levels = BA.order
+             ),
+             nrow = 1,
+             scales = 'fixed') + 
+  scale_x_continuous(breaks = c(0,12,24), limits = c(0,25)) +
+  labs(x="Time (hrs)", y = 'Normalized OD600', color = 'Fecal Source') +
+  theme_clean() +
+ # scale_y_continuous(breaks = c(.25,.5,.75,1), limits = c(.15,1)) +
+  # theme... used for the theme of the graph
+  theme(
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size=12),
+    axis.title.y = element_text(size = 14),
+    axis.text.y = element_text(size=12),
+    legend.title = element_text(size=14),
+    legend.text = element_text(size=14),
+    strip.text.x = element_text(size=12),
+    strip.text.y = element_text(size=12),
+    strip.text.y.right = element_text(angle = 0))
+
+avg.viz
+
+ggsave("../figs/BA_1percent.png", width = 6, height = 2)
+ggsave("../figs/BA_1percent.pdf", width = 6, height = 2)
+
+```
+
+
+overview of bile acid data
+```{r}
+library(ggdendro)
+
+# read in data
+BA_matrix <- xlsx::read.xlsx("../processed_data/Bile Acids Quantification Analysis Result.xlsx", sheetIndex = 1)
+
+# Set the first column as row names
+rownames(BA_matrix) <- BA_matrix[, 1]
+BA_matrix <- BA_matrix[, -1]
+
+# Rename the remaining columns to match the 'supplier' part of their current names
+colnames(BA_matrix) <- sub(".*_(.*)_.*", "\\1", colnames(BA_matrix))
+
+# Remove specific rows
+BA_matrix <- BA_matrix[!rownames(BA_matrix) %in% c('Glycohyocholic acid', 'Taurodehydrocholic acid'), ]
+
+
+# Log10 transform the values
+BA_matrix_log10 <- log10(BA_matrix)
+
+
+# Create a new dataframe with averages for each group
+BA_matrix_log10$Jax <- rowMeans(BA_matrix_log10[, grepl("Jax", colnames(BA_matrix_log10))])
+BA_matrix_log10$Env <- rowMeans(BA_matrix_log10[, grepl("Env", colnames(BA_matrix_log10))])
+BA_matrix_log10$Env2Jax <- rowMeans(BA_matrix_log10[, grepl("Env2Jax", colnames(BA_matrix_log10))])
+
+# Select the new columns
+BA_matrix_avg <- BA_matrix_log10[, c("Jax", "Env", "Env2Jax")]
+
+# Perform hierarchical clustering
+vendor.dendro <- as.dendrogram(hclust(d = dist(x = BA_matrix_avg)))
+
+# Create dendrogram plot
+dendro.plot <- ggdendrogram(data = vendor.dendro, rotate = TRUE)
+print(dendro.plot)
+
+# Order the rows based on hierarchical clustering
+vendor.order <- order.dendrogram(vendor.dendro)
+ordered_bile_acids <- rownames(BA_matrix_avg)[vendor.order]
+
+
+# Melt the data for ggplot
+BA_matrix_avg$Bile_Acid <- row.names(BA_matrix_avg)
+vendor.long <- reshape2::melt(BA_matrix_avg, id.vars = 'Bile_Acid') %>% mutate(Bile_Acid = factor(Bile_Acid, levels = ordered_bile_acids))
+
+
+# Create a black border grob
+border_grob <- grid::rectGrob(gp = grid::gpar(fill = NA, col = "black", lwd = 3))
+
+# Plot the heatmap
+heatmap.plot <- ggplot(data = vendor.long, aes(x = variable, y = Bile_Acid)) +
+  geom_tile(aes(fill = value), color = 'white', size = 1.1) +
+  scale_fill_gradient2(high = 'firebrick3', mid = 'white', low = '#1357a6', midpoint = 1) +
+  labs(x = 'Supplier', fill = 'log10(Concentration)',
+       y = 'Bile Acid Concentration (nmol/g)') +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
+        axis.text.y = element_text(size = 10),
+        legend.position = 'bottom',
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(0.1, 0.9), 
+      #legend.justification = c(0, -3)
+      ) +
+    annotation_custom(border_grob, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf)
+
+heatmap.plot
+
+ggsave("../figs/BA_abundance_heatmap.pdf", width = 5, height = 6)
+ggsave("../figs/BA_abundance_heatmap.png", width = 5, height = 6)
+
+```
+
+are total Bile acide the same?
+```{r}
+BA_sums <- BA_matrix_avg %>%
+  rowwise() %>%
+  mutate(Total = sum(c_across(Jax:Env2Jax), na.rm = TRUE)) %>%
+  ungroup()  
+
+top_10_BA <- BA_sums$Bile_Acid[order(-BA_sums$Total)][1:10]
+
+# Step 2: Modify the dataset to group remaining bile acids under 'Other'
+BA_matrix_avg <- BA_matrix_avg %>%
+  mutate(Bile_Acid = ifelse(Bile_Acid %in% top_10_BA, Bile_Acid, 'Other'))
+
+# Step 3: Define a custom color palette
+custom_colors <- c(RColorBrewer::brewer.pal(10, "Set3"), "gray")
+names(custom_colors) <- c(top_10_BA, "Other")
+
+# Step 4: Plot the data
+plot <- BA_matrix_avg %>%
+  melt(id.vars = 'Bile_Acid') %>%
+  ggplot(aes(x = variable, y = (10^value), fill = factor(Bile_Acid, levels = c(top_10_BA, 'Other')))) +
+  geom_bar(stat = 'identity') +
+  scale_fill_manual(values = custom_colors) +
+  theme_cowplot() +
+  labs(x = 'Mouse Group', y = 'BA Levels (nmol/g)', fill = 'Bile Acid') +
+  theme(axis.text = element_text(size = 14))
+
+plotly::ggplotly(plot)
+
+ggsave("../figs/BA_sum.pdf", width = 5, height = 3.25)
+ggsave("../figs/BA_sum.png", width = 5, height = 3.25)
+
+#How much of an increase is that?
+
+# Step 1: Sum the total bile acid levels for each group
+total_Jax <- sum(10^BA_matrix_avg$Jax, na.rm = TRUE)
+total_Env2Jax <- sum(10^BA_matrix_avg$Env2Jax, na.rm = TRUE)
+
+# Step 2: Calculate the fold change
+fold_change <- total_Env2Jax / total_Jax
+
+# Print the results
+cat("Total BA for Jax:", total_Jax, "\n")
+cat("Total BA for Env2Jax:", total_Env2Jax, "\n")
+cat("Fold Change (Env2Jax / Jax):", fold_change, "\n")
+
+#41.7% increase from Jax to Env2Jax
+
+#What is the total change in taurine-conjugated muricholic acids?
+
+# Subset the dataframe for the specified bile acids
+bile_acids_of_interest <- c("Tauro-omega-muricholic acid", "Tauro-beta-muricholic acid", "Tauro-alpha-muricholic acid")
+
+
+# Assuming your dataframe is named BA_matrix_avg and has a column Bile_Acid
+subset_df <- BA_matrix_avg %>%
+  filter(Bile_Acid %in% bile_acids_of_interest)
+
+# Calculate the total amounts for each group
+totals <- subset_df %>%
+  summarise(
+    Total_Jax = sum(Jax),
+    Total_Env = sum(Env),
+    Total_Env2Jax = sum(Env2Jax)
+  ) %>% mutate(
+    FoldChange_Env_vs_Jax = 1- (10^Total_Env / 10^Total_Jax),
+    FoldChange_Env2Jax_vs_Jax = 1- (10^Total_Env2Jax / 10^Total_Jax)
+  )
+
+# Print the results
+print(paste('Env has a ', 100*signif(totals$FoldChange_Env_vs_Jax, 3), '% decrease relative to Jax', sep = ''))
+print(paste('JaxEnv has a ', 100*signif(totals$FoldChange_Env2Jax_vs_Jax, 3), '% decrease relative to Jax', sep = ''))
+
+#this shows a 59.9% decrease and 
+
+
+```
+
+PCA of Bile acid profiles, followed by pairwise adonis (PERMANOVA) to determine whether groups are significantly different
+
+```{r}
+
+if (!requireNamespace("pairwiseAdonis", quietly = TRUE)) {
+  devtools::install_github("pmartinezarbizu/pairwiseAdonis/pairwiseAdonis")
+}
+library(pairwiseAdonis)
+
+set.seed(123)
+
+# Perform PCA
+pca_result <- prcomp(t(BA_matrix_log10), scale. = FALSE)
+
+# Get the proportion of variance explained
+pca_var <- summary(pca_result)$importance[2, ]
+
+# Create a data frame for plotting
+pca_data <- as.data.frame(pca_result$x)
+group <- factor(rep(c("Jax", "Env", "Env2Jax"), each = 4))
+pca_data$group <- group
+
+# Plot PCA with percentage of variance explained
+ggplot(pca_data, aes(PC1, PC2, color = group)) +
+  geom_point(size = 3) +
+  stat_ellipse(type = "norm", level = .5, alpha = .2, aes(color = group)) +
+  labs(
+       x = paste0("PC1 (", round(pca_var[1] * 100, 1), "%)"),
+       y = paste0("PC2 (", round(pca_var[2] * 100, 1), "%)"),
+       color = "Mouse Group") +
+    scale_color_manual(values = c('#26a9e0','#1b75bb','#f6921e')) +
+  theme_cowplot()
+
+
+
+ggsave("../figs/BA_PCA.pdf", width = 4.5, height = 2.5)
+ggsave("../figs/BA_PCA.png", width = 4.5, height = 2.5)
+
+
+
+#overall are they different?
+adonis_result <- adonis2(t(BA_matrix_log10)  ~ group, method = "euclidean")
+print(adonis_result)
+#Yes!
+
+#from Martinez Arbizu, P. (2020). pairwiseAdonis: Pairwise multilevel comparison using adonis. R package version 0.4
+# Perform pairwise Adonis tests
+pairwise_results <- pairwise.adonis(t(BA_matrix_log10), group, sim.method = 'euclidean', p.adjust.m = 'fdr')
+
+# Print the results
+print(pairwise_results)
+
+#           pairs Df SumsOfSqs   F.Model        R2 p.value p.adjusted sig
+#1     Jax vs Env  1  9.861258 5.3288591 0.4703791   0.030      0.048   .
+#2 Jax vs Env2Jax  1 11.685882 5.4271093 0.4749328   0.032      0.048   .
+#3 Env vs Env2Jax  1  1.755534 0.9731047 0.1395511   0.445      0.445    
+
+```
+
+
+
+
+alternative PCA
+```{}
+
+library(M3C)
+
+# PCA of resulting matrix
+M3C::pca(BA_matrix_log10, 
+         labels = as.factor(names(BA_matrix_log10)),
+         colvec = ven,dotsize = 3,
+         controlscale = T, scale = 3, 
+         axistextsize = 10,
+         legendtextsize = 14, legendtitle = '')
+
+```
+
+
+#Which bile acids are 
+```{r}
+# Get loadings
+loadings <- as.data.frame(pca_result$rotation)
+
+# Top variables contributing to PC1 and PC2
+top_pc1_vars <- rownames(loadings)[order(abs(loadings[, "PC1"]), decreasing = TRUE)[1:5]]
+top_pc2_vars <- rownames(loadings)[order(abs(loadings[, "PC2"]), decreasing = TRUE)[1:5]]
+
+# Display top contributing variables to PC1, the major axis
+top_pc1_vars
+#[1] "Tauro-omega-muricholic acid" "Tauro-beta-muricholic acid"  "Ursodeoxycholic acid"        "Tauro-alpha-Muricholic acid"
+#[5] "Taurolithocholic acid" 
+
+top_pc2_vars
+
+
+```
+
+
+
+#Looks like tauro-conjugated muricholic acids are. Let's see if that's true!
+
+```{r}
+  
+# ba_list = c('Tauro-beta-muricholic acid', 
+#             'Tauro-alpha-muricholic acid', 
+#             'Tauro-omega-muricholic acid', 
+#             'Taurocholic acid')
+
+
+
+long_BA <- BA_matrix %>%
+  rownames_to_column('Bile_Acid') %>%
+  melt(id.vars = 'Bile_Acid') %>%
+  filter(Bile_Acid %in% c(top_pc1_vars)) %>%
+  mutate(variable = sub("\\..*", "", variable))
+
+plot <- ggplot(long_BA, aes(Bile_Acid, y = log10(value), fill = variable)) +
+        stat_boxplot(geom = 'errorbar', width = .25, 
+                     position = position_dodge(width = 0.75)) +
+  geom_boxplot(position = 'dodge', outlier.shape = NA) +
+  geom_jitter(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), alpha = .4) +
+  theme_cowplot() +
+  labs(x = 'Bile Acid', y = 'Log10(BA Levels (nmol/g))', fill = 'Mouse Group') +
+  theme(axis.text.y = element_text(size = 14),
+        axis.text.x = element_text(size = 14, angle = 45, hjust = 1)) + 
+      scale_fill_manual(values = c('#26a9e0','#1b75bb','#f6921e'))
+
+plot
+
+
+#Do mann-whitney U-tests to see if significant differences
+test_results <- data.frame(Bile_Acid = character(), p_value = numeric(), stringsAsFactors = FALSE)
+
+for (bile_acid in top_pc1_vars) {
+  test_data <- long_BA %>%
+    filter(Bile_Acid == bile_acid) %>% mutate(value = (value))
+  
+  p_value <- wilcox.test(value ~ variable, data = test_data %>% filter(variable %in% c('Jax', 'Env2Jax')), alternative = "two.sided")$p.value
+  test_results <- rbind(test_results, data.frame(Bile_Acid = bile_acid, p_value = p_value))
+}
+
+test_results$adjusted_p_value <- p.adjust(test_results$p_value, method = "fdr")
+
+print(test_results)
+
+#                   Bile_Acid    p_value adjusted_p_value
+#1 Tauro-omega-muricholic acid 0.02857143       0.03571429
+#2  Tauro-beta-muricholic acid 0.05714286       0.05714286
+#3        Ursodeoxycholic acid 0.02857143       0.03571429
+#4 Tauro-alpha-muricholic acid 0.02857143       0.03571429
+#5       Taurolithocholic acid 0.02857143       0.03571429
+
+# # Add bars and p-values
+# for (i in 1:nrow(test_results)) {
+#   bile_acid <- test_results$Bile_Acid[i]
+#   p_value <- test_results$adjusted_p_value[i]
+#   
+#   plot <- plot +
+#     geom_segment(aes(x = i - 0.2, xend = i + 0.2, y = log10(max(long_BA$value[long_BA$Bile_Acid == bile_acid], na.rm = TRUE)), yend = log10(max(long_BA$value[long_BA$Bile_Acid == bile_acid], na.rm = TRUE))), color = "black") +
+#     annotate("text", x = i, y = log10(max(long_BA$value[long_BA$Bile_Acid == bile_acid], na.rm = TRUE)), label = paste0("p = ", signif(p_value, 2)), size = 4)
+# }
+
+# Display the plot
+print(plot)
+
+
+ggsave("../figs/TauroComparison.pdf", width = 4.5, height = 4.5)
+ggsave("../figs/TauroComparison.png", width = 4.5, height = 4.5)
+
+
+#Is DCA also significantly elevated?
+
+test_data <-  BA_matrix %>%
+  rownames_to_column('Bile_Acid') %>%
+  melt(id.vars = 'Bile_Acid') %>%
+  filter(Bile_Acid == 'Deoxycholic acid') %>%
+  mutate(variable = sub("\\..*", "", variable)) %>% mutate(value = log10(value))
+  
+p_value<- wilcox.test(value ~ variable, data = test_data %>% filter(variable %in% c('Jax', 'Env2Jax')), alternative = "two.sided")$p.value
+
+print(paste('Deoxycholic acid: Jax vs Env2Jax, p = ', signif(p_value, 3)))
+
+temp <- BA_matrix_avg %>% filter(Bile_Acid == 'Deoxycholic acid') %>%
+    melt(id.vars = 'Bile_Acid') %>%
+    mutate(value = 10^value)
+  
+print(paste('Deoxycholic acid increased by', signif(100*(((temp %>% filter(variable == 'Env2Jax'))$value/(temp %>% filter(variable == 'Jax'))$value)-1),3), '%'))
+
+```
+# Perform PERMANOVA
+adonis_result <- adonis2(t(BA_matrix_log10) ~ group, method = "euclidean")
+
+# Perform Betadisper (multivariate homogeneity of group dispersions)
+betadisper_result <- betadisper(dist(t(BA_matrix_log10)), group)
+anova(betadisper_result)
+
+# Extract the most contributing variables
+pairwise_results <- pairwise.adonis(t(BA_matrix_log10), factors = group, sim.method = 'euclidean', p.adjust.m = 'fdr')
+
+# Identify variables with significant contributions
+significant_vars <- pairwise_results[pairwise_results$p.value < 0.05, ]
+significant_vars
+
+library(MASS)
+
+# Prepare data for LDA
+lda_data <- as.data.frame(t(BA_matrix_log10))
+lda_data$group <- group
+
+# Perform LDA
+lda_result <- lda(group ~ ., data = lda_data)
+
+# Predict group membership
+pred <- predict(lda_result)
+
+# Plot LDA
+lda_plot_data <- as.data.frame(pred$x)
+lda_plot_data$group <- group
+
+ggplot(lda_plot_data, aes(LD1, LD2, color = group)) +
+  geom_point(size = 3) +
+  labs(title = "LDA of Bile Acids",
+       x = "Linear Discriminant 1",
+       y = "Linear Discriminant 2") +
+  theme_minimal()
+
+# Variables contributing to LDA
+lda_contrib <- as.data.frame(lda_result$scaling)
+top_lda_vars <- rownames(lda_contrib)[order(abs(lda_contrib[, 1]), decreasing = TRUE)[1:5]]
+top_lda_vars
+
+library(pheatmap)
+
+# Ensure 'group' is a data frame with proper column names
+annotation_col <- data.frame(Supplier = group)
+rownames(annotation_col) <- colnames(BA_matrix_log10_centered)
+
+# Create a heatmap
+pheatmap(BA_matrix_log10_centered, 
+         cluster_rows = TRUE, 
+         cluster_cols = TRUE,
+         show_rownames = TRUE, 
+         show_colnames = TRUE,
+         annotation_col = annotation_col,
+         annotation_colors = list(Supplier = c(Jax = "#00AFBB", Env = "#E7B800", Jax2Env = "#FC4E07")),
+         fontsize = 10, 
+         border_color = "black")
+
+```
